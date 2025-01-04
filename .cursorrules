@@ -1,0 +1,102 @@
+{
+  "project": "Therapify",
+  "version": "1.0.0",
+  "technical_stack": {
+    "frontend": {
+      "framework": "Quasar",
+      "version": "^2.0.0",
+      "language": {
+        "core": "TypeScript",
+        "version": "^5.0.0",
+        "vue_version": "Vue.js 3",
+        "composition_api": true,
+        "script_setup": true
+      },
+      "styling": [
+        "SCSS",
+        "Quasar Components"
+      ],
+      "build_tool": "Vite",
+      "linting": {
+        "eslint": true,
+        "prettier": true,
+        "typescript_eslint": true
+      }
+    },
+    "backend": {
+      "language": "PHP",
+      "version": "^8.1",
+      "framework": "Laravel",
+      "api": "REST",
+      "authentication": "JWT"
+    },
+    "database": {
+      "type": "MySQL",
+      "version": "^8.0",
+      "orm": "Eloquent"
+    },
+    "ai_components": {
+      "frontend": {
+        "library": "TensorFlow.js",
+        "version": "^4.0.0"
+      }
+    }
+  },
+  "code_standards": {
+    "naming_conventions": {
+      "variables": "camelCase",
+      "components": "PascalCase",
+      "classes": "PascalCase",
+      "functions": "camelCase",
+      "constants": "UPPER_SNAKE_CASE",
+      "interfaces": "PascalCase",
+      "types": "PascalCase",
+      "enums": "PascalCase"
+    },
+    "file_structure": {
+      "frontend": {
+        "components": "src/components",
+        "views": "src/views",
+        "store": "src/store",
+        "assets": "src/assets",
+        "styles": "src/styles",
+        "utils": "src/utils",
+        "types": "src/types",
+        "composables": "src/composables",
+        "interfaces": "src/interfaces"
+      },
+      "backend": {
+        "controllers": "app/Http/Controllers",
+        "models": "app/Models",
+        "services": "app/Services",
+        "middleware": "app/Http/Middleware",
+        "routes": "routes"
+      }
+    }
+  },
+  "security_rules": {
+    "authentication_required": true,
+    "api_rate_limiting": true,
+    "csrf_protection": true,
+    "xss_protection": true,
+    "sql_injection_prevention": true,
+    "secure_headers": true
+  },
+  "development_workflow": {
+    "branch_naming": {
+      "feature": "feature/*",
+      "bugfix": "bugfix/*",
+      "hotfix": "hotfix/*",
+      "release": "release/*"
+    },
+    "commit_convention": "conventional-commits",
+    "code_review_required": true,
+    "testing_required": true,
+    "type_checking": {
+      "strict": true,
+      "no_implicit_any": true,
+      "strict_null_checks": true,
+      "strict_function_types": true
+    }
+  }
+}
