@@ -13,17 +13,24 @@
 // Tip: Use the "Theme Builder" on Quasar's documentation website.
 
 // Custom brand colors
-$primary: #1976d2;
-$secondary: #26a69a;
-$accent: #9c27b0;
+$primary: #4361ee;
+$secondary: #3bc4b2;
+$accent: #9b5de5;
 
 $dark: #1d1d1d;
 $dark-page: #121212;
 
-$positive: #21ba45;
-$negative: #c10015;
-$info: #31ccec;
-$warning: #f2c037;
+$positive: #21bf73;
+$negative: #ef476f;
+$info: #4cc9f0;
+$warning: #ffd93d;
+
+// Additional custom colors for gradients and accents
+$gradient-start: #4361ee;
+$gradient-end: #3bc4b2;
+$highlight: #ff6b6b;
+$soft-bg: #f8f9ff;
+$card-bg: #ffffff;
 
 // Additional custom variables
 $body-font-family:
@@ -32,18 +39,15 @@ $body-font-family:
   BlinkMacSystemFont,
   'Segoe UI',
   Roboto,
-  Oxygen,
-  Ubuntu,
-  Cantarell,
-  'Fira Sans',
-  'Droid Sans',
-  'Helvetica Neue',
   sans-serif;
 $heading-font-family: 'Poppins', $body-font-family;
 
 // Update Quasar variables
 $typography-font-family: $body-font-family !default;
 $button-font-weight: 600 !default;
-$button-border-radius: 8px !default;
-$generic-border-radius: 8px !default;
-$shadow-color: rgba(0, 0, 0, 0.1) !default;
+$button-border-radius: 12px !default;
+$generic-border-radius: 12px !default;
+$shadow-color: rgba(67, 97, 238, 0.15) !default;
+
+// Card styling
+$card-shadow: 0 8px 24px rgba(67, 97, 238, 0.12);

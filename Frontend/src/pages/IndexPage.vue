@@ -177,11 +177,17 @@ const scrollToServices = () => {
 </script>
 
 <style lang="scss" scoped>
+@use 'sass:color';
+
 .hero-section {
-  min-height: 60vh;
+  min-height: 70vh;
   display: flex;
   align-items: center;
-  background: linear-gradient(135deg, $primary 0%, darken($primary, 15%) 100%);
+  background: linear-gradient(
+    135deg,
+    $gradient-start 0%,
+    scale-color($gradient-start, $lightness: -15%) 100%
+  );
   color: white;
   padding: 2rem 0;
   position: relative;
@@ -194,8 +200,9 @@ const scrollToServices = () => {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(45deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 100%);
-    z-index: 1;
+    background: url('/images/pattern.svg') repeat;
+    opacity: 0.1;
+    animation: float 20s linear infinite;
   }
 
   .container {
@@ -205,22 +212,29 @@ const scrollToServices = () => {
 
   h1 {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    animation: fadeInUp 0.8s ease-out;
   }
 
   p {
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    animation: fadeInUp 0.8s ease-out 0.2s both;
   }
 
   .hero-btn {
     font-weight: 600;
     border-width: 2px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: fadeInUp 0.8s ease-out 0.4s both;
 
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
     }
+  }
+
+  .q-img {
+    animation: float 6s ease-in-out infinite;
   }
 }
 
@@ -231,31 +245,64 @@ const scrollToServices = () => {
 
 .service-card {
   height: 100%;
-  transition: transform 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: $generic-border-radius;
+  box-shadow: $card-shadow;
+  overflow: hidden;
+  background: linear-gradient(135deg, $card-bg, $soft-bg);
 
   &:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba($primary, 0.2);
+  }
+
+  .q-card-section {
+    padding: 2rem;
+  }
+
+  .text-h6 {
+    color: $primary;
+    margin-bottom: 1rem;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -0.5rem;
+      left: 0;
+      width: 40px;
+      height: 3px;
+      background: linear-gradient(90deg, $primary, $secondary);
+      border-radius: 2px;
+    }
   }
 }
 
 .step-card {
-  padding: 1.5rem;
+  padding: 2rem;
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  border-radius: $generic-border-radius;
+  box-shadow: $card-shadow;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba($primary, 0.15);
+  }
 
   .step-number {
-    width: 36px;
-    height: 36px;
-    background: $primary;
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, $primary, $secondary);
     color: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 0.75rem;
-    font-size: 1.1rem;
+    margin: 0 auto 1rem;
+    font-size: 1.2rem;
     font-weight: bold;
+    box-shadow: 0 4px 15px rgba($primary, 0.3);
   }
 }
 
@@ -263,71 +310,62 @@ const scrollToServices = () => {
   display: flex;
   align-items: center;
   font-size: 1.1rem;
-  margin-bottom: 0.5rem;
-}
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  border-radius: $generic-border-radius;
+  transition: all 0.3s ease;
 
-h1.text-h2 {
-  font-size: 2.5rem;
-  line-height: 1.2;
-}
+  &:hover {
+    background: $soft-bg;
+    transform: translateX(5px);
+  }
 
-h2.text-h3 {
-  font-size: 2rem;
-  margin-bottom: 2rem;
-}
-
-section {
-  padding: 3rem 0;
-
-  &.services-section,
-  &.how-it-works,
-  &.therapist-section {
-    padding: 4rem 0;
+  .q-icon {
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    color: $secondary;
   }
 }
 
-// Responsive adjustments
+// Animations
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive styles remain the same but with enhanced transitions
 @media (max-width: 767px) {
   .hero-section {
     min-height: auto;
-    padding: 3rem 0;
+    padding: 4rem 0;
     text-align: center;
   }
 
-  section {
-    padding: 2rem 0;
-  }
-
+  .service-card,
   .step-card {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
   }
 
-  h1.text-h2 {
-    font-size: 2rem;
-  }
-
-  h2.text-h3 {
-    font-size: 1.75rem;
-  }
-
-  .q-img {
-    margin-top: 2rem;
-  }
-}
-
-.text-h6 {
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
-}
-
-.q-gutter-md {
-  margin-top: 1rem;
-}
-
-.q-btn {
-  margin-right: 1rem;
-  &:last-child {
-    margin-right: 0;
+  .feature-item {
+    justify-content: center;
   }
 }
 </style>
