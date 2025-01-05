@@ -115,7 +115,7 @@
     </q-page-container>
 
     <!-- Footer -->
-    <q-footer class="bg-white text-dark footer">
+    <q-footer class="bg-white text-dark absolute-bottom footer">
       <div class="container q-pa-lg">
         <div class="row q-col-gutter-lg">
           <!-- Company Info -->
@@ -348,10 +348,6 @@ const toggleDrawer = () => {
 
 .footer {
   border-top: 1px solid $grey-3;
-  position: relative;
-  width: 100%;
-  bottom: 0;
-  z-index: 1000;
 
   .social-btn {
     transition: all 0.3s ease;
