@@ -14,12 +14,12 @@
             </p>
             <div class="q-gutter-md">
               <q-btn
+                unelevated
                 color="white"
                 text-color="primary"
                 size="lg"
                 label="Hemen Başla"
                 to="/auth/register"
-                push
                 class="hero-btn"
               />
               <q-btn
@@ -28,7 +28,6 @@
                 size="lg"
                 label="Daha Fazla Bilgi"
                 @click="scrollToServices"
-                push
                 class="hero-btn"
               />
             </div>
@@ -227,9 +226,22 @@ const scrollToServices = () => {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     animation: fadeInUp 0.8s ease-out 0.4s both;
 
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    &.q-btn--unelevated {
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba($primary, 0.25);
+        background: white;
+      }
+    }
+
+    &.q-btn--outline {
+      border: 2px solid white;
+
+      &:hover {
+        transform: translateY(-3px);
+        background: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 30px rgba(255, 255, 255, 0.2);
+      }
     }
   }
 

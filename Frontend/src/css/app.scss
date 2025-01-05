@@ -1,1 +1,88 @@
 // app global css in SCSS form
+
+// Global styles
+.q-btn {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &.q-btn--flat:hover {
+    background: rgba($primary, 0.1);
+  }
+
+  &.q-btn--outline:hover {
+    border-color: $primary;
+    color: $primary;
+    background: rgba($primary, 0.05);
+  }
+
+  &.q-btn--unelevated {
+    background: linear-gradient(135deg, $primary, $secondary);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba($primary, 0.25);
+    }
+  }
+}
+
+// Special button styles
+.hero-btn {
+  font-weight: 600;
+  border-width: 2px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba($primary, 0.2);
+  }
+
+  &.q-btn--outline {
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+// Navigation button styles
+.nav-link {
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(135deg, $primary, $secondary);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+  }
+
+  &:hover::before {
+    width: 80%;
+  }
+}
+
+// Social media buttons
+.social-btn {
+  &:hover {
+    transform: translateY(-2px) rotate(8deg);
+    background: linear-gradient(135deg, $primary, $secondary);
+    color: white;
+  }
+}
+
+// Auth buttons
+.auth-cta {
+  background: linear-gradient(135deg, $primary, $secondary);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba($primary, 0.3);
+  }
+}

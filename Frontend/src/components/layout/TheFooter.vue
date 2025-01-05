@@ -9,10 +9,18 @@
             Yapay zeka destekli eşleştirme ile ruh sağlığı uzmanlarıyla sizi buluşturuyoruz.
           </p>
           <div class="row q-gutter-xs">
-            <q-btn flat round dense color="grey-8" icon="fab fa-facebook" class="social-btn" />
-            <q-btn flat round dense color="grey-8" icon="fab fa-twitter" class="social-btn" />
-            <q-btn flat round dense color="grey-8" icon="fab fa-instagram" class="social-btn" />
-            <q-btn flat round dense color="grey-8" icon="fab fa-linkedin" class="social-btn" />
+            <q-btn flat round dense class="social-btn">
+              <q-icon name="fab fa-facebook-f" />
+            </q-btn>
+            <q-btn flat round dense class="social-btn">
+              <q-icon name="fab fa-twitter" />
+            </q-btn>
+            <q-btn flat round dense class="social-btn">
+              <q-icon name="fab fa-instagram" />
+            </q-btn>
+            <q-btn flat round dense class="social-btn">
+              <q-icon name="fab fa-linkedin-in" />
+            </q-btn>
           </div>
         </div>
 
@@ -128,9 +136,16 @@
   border-top: 1px solid rgba($primary, 0.1);
 
   .social-btn {
+    width: 36px;
+    height: 36px;
+    color: $grey-8;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     background: $card-bg;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+    :deep(.q-icon) {
+      font-size: 1.2rem;
+    }
 
     &:hover {
       background: linear-gradient(135deg, $primary, $secondary);

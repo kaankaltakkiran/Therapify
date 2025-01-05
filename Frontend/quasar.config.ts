@@ -116,7 +116,10 @@ export default defineConfig((ctx) => {
       // directives: [],
 
       // Quasar plugins
-      plugins: [],
+      plugins: ['Notify'],
+
+      // Font Awesome icons
+      extras: ['fontawesome-v6'],
     },
 
     // animations: 'all', // --- includes all animations
