@@ -32,7 +32,7 @@
                 <q-icon name="phone" color="primary" size="sm" class="q-mr-sm" />
                 <span class="text-subtitle1 text-weight-medium">Telefon</span>
               </div>
-              <p class="text-body1 text-grey-8">+90 (555) 123-4567</p>
+              <a href="tel:+905551234567" class="text-body1 text-grey-8">+90 (555) 123-4567</a>
             </div>
 
             <!-- Email -->
@@ -41,7 +41,9 @@
                 <q-icon name="email" color="primary" size="sm" class="q-mr-sm" />
                 <span class="text-subtitle1 text-weight-medium">E-posta</span>
               </div>
-              <p class="text-body1 text-grey-8">destek@therapify.com</p>
+              <a href="mailto:destek@therapify.com" class="text-body1 text-grey-8 text-no-wrap"
+                >destek@therapify.com</a
+              >
             </div>
 
             <!-- Working Hours -->
