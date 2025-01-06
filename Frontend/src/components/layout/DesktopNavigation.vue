@@ -14,7 +14,7 @@
       @click="scrollToSection('therapists')"
       class="nav-link"
     />
-    <q-btn flat no-caps label="Hakkımızda" to="/about" class="nav-link" />
+    <q-btn flat no-caps label="Terapistlerimiz" to="/therapists" class="nav-link" />
     <q-btn flat no-caps label="İletişim" to="/contact" class="nav-link" />
 
     <!-- Language Selector -->

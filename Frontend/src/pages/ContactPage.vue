@@ -45,14 +45,14 @@
             </div>
 
             <!-- Working Hours -->
-            <div class="contact-item">
+            <!--     <div class="contact-item">
               <div class="row items-center q-mb-sm">
                 <q-icon name="schedule" color="primary" size="sm" class="q-mr-sm" />
                 <span class="text-subtitle1 text-weight-medium">Çalışma Saatleri</span>
               </div>
               <p class="text-body1 text-grey-8">Pazartesi - Cuma: 09:00 - 18:00</p>
               <p class="text-body1 text-grey-8">Cumartesi: 10:00 - 14:00</p>
-            </div>
+            </div> -->
           </div>
         </div>
 
