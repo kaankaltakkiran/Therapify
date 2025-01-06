@@ -4,11 +4,14 @@
     <section class="hero-section">
       <div class="container q-pa-md">
         <div class="row items-center">
-          <div class="col-12 col-md-6">
-            <h1 class="text-h2 text-weight-bold q-mb-md text-white">
+          <div class="col-12 col-md-6 text-center text-md-left">
+            <h1 class="text-h3 text-md-h2 text-weight-bold q-mb-md text-white">
               Ruhsal İyilik Yolculuğunuza Başlayın
             </h1>
-            <p class="text-h6 q-mb-lg text-white text-weight-medium" style="opacity: 0.95">
+            <p
+              class="text-body1 text-md-h6 q-mb-lg text-white text-weight-medium"
+              style="opacity: 0.95"
+            >
               Yapay zeka destekli eşleştirme sistemiyle, kişiselleştirilmiş ruh sağlığı desteği için
               uzman terapistlerle bağlantı kurun.
             </p>
@@ -17,23 +20,23 @@
                 unelevated
                 color="white"
                 text-color="primary"
-                size="lg"
+                size="md"
+                class="full-width-mobile hero-btn"
                 label="Hemen Başla"
                 to="/auth/register"
-                class="hero-btn"
               />
               <q-btn
                 outline
                 color="white"
-                size="lg"
+                size="md"
+                class="full-width-mobile hero-btn q-mt-sm"
                 label="Daha Fazla Bilgi"
                 @click="scrollToServices"
-                class="hero-btn"
               />
             </div>
           </div>
-          <div class="col-12 col-md-6">
-            <q-img src="/images/hero-illustration.svg" />
+          <div class="col-12 col-md-6 q-mt-md q-mt-md-none">
+            <q-img src="/images/hero-illustration.svg" class="hero-image" />
           </div>
         </div>
       </div>
@@ -179,16 +182,14 @@ const scrollToServices = () => {
 @use 'sass:color';
 
 .hero-section {
-  min-height: 70vh;
-  display: flex;
-  align-items: center;
+  min-height: auto;
+  padding: 4rem 0;
   background: linear-gradient(
     135deg,
     $gradient-start 0%,
     scale-color($gradient-start, $lightness: -15%) 100%
   );
   color: white;
-  padding: 2rem 0;
   position: relative;
   overflow: hidden;
 
@@ -212,11 +213,23 @@ const scrollToServices = () => {
   h1 {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     animation: fadeInUp 0.8s ease-out;
+    font-size: 2.5rem;
+    line-height: 1.2;
+
+    @media (max-width: 599px) {
+      font-size: 2rem;
+    }
   }
 
   p {
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     animation: fadeInUp 0.8s ease-out 0.2s both;
+    font-size: 1.1rem;
+    line-height: 1.5;
+
+    @media (max-width: 599px) {
+      font-size: 1rem;
+    }
   }
 
   .hero-btn {
@@ -225,6 +238,7 @@ const scrollToServices = () => {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     animation: fadeInUp 0.8s ease-out 0.4s both;
+    min-width: 150px;
 
     &.q-btn--unelevated {
       &:hover {
@@ -245,8 +259,10 @@ const scrollToServices = () => {
     }
   }
 
-  .q-img {
+  .hero-image {
     animation: float 6s ease-in-out infinite;
+    max-width: 100%;
+    height: auto;
   }
 }
 
@@ -363,21 +379,31 @@ const scrollToServices = () => {
   }
 }
 
-// Responsive styles remain the same but with enhanced transitions
+// Mobile specific styles
 @media (max-width: 767px) {
   .hero-section {
-    min-height: auto;
-    padding: 4rem 0;
+    padding: 2rem 0;
     text-align: center;
-  }
 
-  .service-card,
-  .step-card {
-    margin-bottom: 1.5rem;
-  }
+    .full-width-mobile {
+      width: 100%;
+      margin: 0.5rem 0;
+    }
 
-  .feature-item {
-    justify-content: center;
+    .hero-image {
+      margin-top: 2rem;
+      max-width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .q-gutter-md {
+      margin: -4px 0;
+
+      > * {
+        margin: 4px 0;
+      }
+    }
   }
 }
 </style>
