@@ -1,7 +1,19 @@
 <template>
   <div class="gt-sm row items-center nav-links">
-    <q-btn flat no-caps label="Nasıl Çalışır?" to="/#services" class="nav-link" />
-    <q-btn flat no-caps label="Terapistler İçin" to="/#therapists" class="nav-link" />
+    <q-btn
+      flat
+      no-caps
+      label="Nasıl Çalışır?"
+      @click="scrollToSection('services')"
+      class="nav-link"
+    />
+    <q-btn
+      flat
+      no-caps
+      label="Terapistler İçin"
+      @click="scrollToSection('therapists')"
+      class="nav-link"
+    />
     <q-btn flat no-caps label="Hakkımızda" to="/about" class="nav-link" />
     <q-btn flat no-caps label="İletişim" to="/contact" class="nav-link" />
 
@@ -46,6 +58,26 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const scrollToSection = async (sectionId: string) => {
+  // If we're not on the home page, navigate there first
+  if (router.currentRoute.value.path !== '/') {
+    await router.push('/')
+    // Wait for the navigation and DOM update
+    await new Promise((resolve) => setTimeout(resolve, 100))
+  }
+
+  const element = document.getElementById(sectionId)
+  if (element) {
+    element.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    })
+  }
+}
 
 interface Language {
   code: 'tr' | 'en'

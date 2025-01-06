@@ -127,7 +127,7 @@
     </section>
 
     <!-- For Therapists -->
-    <section class="therapist-section">
+    <section id="therapists" class="therapist-section">
       <div class="container q-pa-md">
         <div class="row items-center">
           <div class="col-12 col-md-6">
@@ -172,10 +172,33 @@
 </template>
 
 <script setup lang="ts">
-const scrollToServices = () => {
-  const element = document.getElementById('services')
-  element?.scrollIntoView({ behavior: 'smooth' })
+import { onMounted } from 'vue'
+
+const scrollToSection = (sectionId: string) => {
+  const element = document.getElementById(sectionId)
+  if (element) {
+    element.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    })
+  }
 }
+
+const scrollToServices = () => {
+  scrollToSection('services')
+}
+
+// Add mounted hook to handle initial hash navigation
+onMounted(() => {
+  // Check if there's a hash in the URL
+  if (window.location.hash) {
+    const sectionId = window.location.hash.slice(1)
+    // Small delay to ensure the page is fully loaded
+    setTimeout(() => {
+      scrollToSection(sectionId)
+    }, 100)
+  }
+})
 </script>
 
 <style lang="scss" scoped>

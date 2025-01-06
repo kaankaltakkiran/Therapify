@@ -32,10 +32,10 @@
     <!-- Mobile Navigation Drawer -->
     <q-drawer v-model="drawerOpen" side="right" bordered :width="250" class="bg-white mobile-nav">
       <q-list padding>
-        <q-item clickable v-ripple to="/#services" class="mobile-nav-item">
+        <q-item clickable v-ripple @click="scrollToSection('services')" class="mobile-nav-item">
           <q-item-section>Nasıl Çalışır?</q-item-section>
         </q-item>
-        <q-item clickable v-ripple to="/#therapists" class="mobile-nav-item">
+        <q-item clickable v-ripple @click="scrollToSection('therapists')" class="mobile-nav-item">
           <q-item-section>Terapistler İçin</q-item-section>
         </q-item>
         <q-item clickable v-ripple to="/about" class="mobile-nav-item">
@@ -58,6 +58,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 
 interface Language {
   code: 'tr' | 'en'
@@ -65,6 +66,7 @@ interface Language {
   flag: string
 }
 
+const router = useRouter()
 const drawerOpen = ref(false)
 const currentLangCode = ref<Language['code']>('tr')
 
@@ -95,6 +97,26 @@ const changeLanguage = (langCode: Language['code']) => {
 
 const toggleDrawer = () => {
   drawerOpen.value = !drawerOpen.value
+}
+
+const scrollToSection = async (sectionId: string) => {
+  // Close the drawer
+  drawerOpen.value = false
+
+  // If we're not on the home page, navigate there first
+  if (router.currentRoute.value.path !== '/') {
+    await router.push('/')
+    // Wait for the navigation and DOM update
+    await new Promise((resolve) => setTimeout(resolve, 100))
+  }
+
+  const element = document.getElementById(sectionId)
+  if (element) {
+    element.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    })
+  }
 }
 </script>
 
