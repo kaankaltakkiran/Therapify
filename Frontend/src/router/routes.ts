@@ -16,7 +16,23 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
-
+  {
+    path: '/admin',
+    component: () => import('layouts/AdminLayout.vue'),
+    children: [
+      /*   { path: '', component: () => import('pages/admin/DashboardPage.vue') },
+      { path: 'users', component: () => import('pages/admin/UsersPage.vue') },
+      { path: 'settings', component: () => import('pages/admin/SettingsPage.vue') }, */
+      {
+        path: 'therapist-applications',
+        component: () => import('pages/admin/TherapistApplicationsPage.vue'),
+      },
+    ],
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true,
+    },
+  },
   // Always leave this as last one,
   // but you can also remove it
   {
