@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS users (
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
+    address TEXT,
     phone_number VARCHAR(11),
     birth_of_date DATE,
     user_img VARCHAR(255),
