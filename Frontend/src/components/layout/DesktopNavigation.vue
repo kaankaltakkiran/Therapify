@@ -43,15 +43,8 @@
 
     <!-- Auth Buttons -->
     <div class="auth-buttons q-ml-md">
-      <q-btn flat no-caps label="Giriş" to="/auth/login" class="auth-link q-mr-sm" />
-      <q-btn
-        unelevated
-        no-caps
-        label="Kayıt Ol"
-        to="/auth/register"
-        class="auth-cta"
-        color="primary"
-      />
+      <q-btn flat no-caps label="Giriş" to="/login" class="auth-link q-mr-sm" />
+      <q-btn unelevated no-caps label="Kayıt Ol" to="/register" class="auth-cta" color="primary" />
     </div>
   </div>
 </template>
