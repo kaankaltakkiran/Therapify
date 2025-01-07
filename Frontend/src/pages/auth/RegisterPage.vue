@@ -167,7 +167,7 @@
               <!-- Login Link -->
               <div class="text-center q-mt-sm">
                 Zaten hesabınız var mı?
-                <router-link to="/auth/login" class="text-primary">Giriş Yap</router-link>
+                <router-link to="/login" class="text-primary">Giriş Yap</router-link>
               </div>
             </q-form>
           </q-card>
