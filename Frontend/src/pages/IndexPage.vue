@@ -161,7 +161,7 @@
               color="secondary"
               size="lg"
               label="Terapist Olarak Katıl"
-              to="/auth/register?type=therapist"
+              to="/therapist-register"
               push
             />
           </div>
