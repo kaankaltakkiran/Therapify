@@ -1,4 +1,5 @@
 <template>
+  <!-- Admin Kullanıcının Göreceği Layout -->
   <q-layout view="lHh LpR fFf">
     <!-- Header -->
     <q-header elevated class="bg-white text-dark">

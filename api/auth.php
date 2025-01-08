@@ -1,49 +1,47 @@
 <?php
-// CORS tanımları
-header("Access-Control-Allow-Origin: *"); // Herkese açık (tüm domainlerden erişim izni)
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS"); // Desteklenen HTTP metodları
-header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, Origin, Accept"); // Kullanılan header'lar
-header("Access-Control-Allow-Credentials: true"); // Kimlik doğrulama bilgileriyle erişime izin
-header("Access-Control-Max-Age: 86400"); // CORS önbellek süresi (24 saat)
+// CORS headers
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, Origin, Accept");
+header("Access-Control-Allow-Credentials: true");
+header("Access-Control-Max-Age: 86400");
 
-// JWT için gerekli sabitler
-define('JWT_SECRET_KEY', 'your-256-bit-secret'); // Güvenli bir secret key kullanın
-define('JWT_EXPIRE_TIME', 3600); // Token geçerlilik süresi (saniye cinsinden, 1 saat)
+// JWT constants
+define('JWT_SECRET_KEY', 'your-256-bit-secret'); // Use a secure secret key in production
+define('JWT_EXPIRE_TIME', 3600); // Token validity period (in seconds, 1 hour)
 
-// Preflight (OPTIONS) isteğine yanıt verin
+// Handle preflight requests
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     header("HTTP/1.1 200 OK");
     exit();
 }
 
-// Veritabanı baglantısı
+// Database connection
 require_once 'db_connection.php';
 
-// JWT fonksiyonları
+// JWT functions
 function generateJWT($user) {
-    $issuedAt = time(); // Token oluşturulma zamanı
-    $expire = $issuedAt + JWT_EXPIRE_TIME; // Token son geçerlilik süresi
+    $issuedAt = time();
+    $expire = $issuedAt + JWT_EXPIRE_TIME;
 
     $payload = [
-        'iat' => $issuedAt,  // Token oluşturulma zamanı
-        'exp' => $expire,    // Token son geçerlilik Süresi
-        'user_id' => $user['id'], // Kullanıcı kimligi
-        'username' => $user['username'], // Kullanıcı adı
-        'email' => $user['email'], // Kullanıcı e-postası
-        'user_role' => $user['user_role'] // Add user_role to JWT payload
+        'iat' => $issuedAt,
+        'exp' => $expire,
+        'user_id' => $user['id'],
+        'email' => $user['email'],
+        'user_role' => $user['user_role']
     ];
 
-    // JWT oluşturma (base64 ile)
-    $header = base64_encode(json_encode(['typ' => 'JWT', 'alg' => 'HS256'])); // JWT tipi ve algoritma
-    $payload = base64_encode(json_encode($payload)); // JWT payload (kullanıcı verileri)
-    $signature = base64_encode(hash_hmac('sha256', "$header.$payload", JWT_SECRET_KEY, true)); // JWT imzasi
+    $header = base64_encode(json_encode(['typ' => 'JWT', 'alg' => 'HS256']));
+    $payload = base64_encode(json_encode($payload));
+    $signature = base64_encode(hash_hmac('sha256', "$header.$payload", JWT_SECRET_KEY, true));
 
-    return "$header.$payload.$signature"; // JWT oluşturuldu
+    return "$header.$payload.$signature";
 }
 
 function verifyJWT($token) {
     try {
-        $tokenParts = explode('.', $token); // Token 3 parçaya ayırılıyor
+        $tokenParts = explode('.', $token);
         if (count($tokenParts) != 3) {
             return false;
         }
@@ -52,36 +50,34 @@ function verifyJWT($token) {
         $payload = base64_decode($tokenParts[1]);
         $signature = $tokenParts[2];
 
-        // Signature doğrulama
         $valid = base64_encode(hash_hmac('sha256', "$tokenParts[0].$tokenParts[1]", JWT_SECRET_KEY, true)) === $signature;
         if (!$valid) {
             return false;
         }
 
         $payload = json_decode($payload, true);
-        // Süre kontrolü
         if (isset($payload['exp']) && $payload['exp'] < time()) {
             return false;
         }
 
-        return $payload; // Token gecerliyse kullanıcı bilgilerini döndür
+        return $payload;
     } catch (Exception $e) {
         return false;
     }
 }
 
-// Gelen ham veriyi okuma
-$data = json_decode(file_get_contents("php://input"), true); // Ham JSON verisi
-$METHOD = $data['method'] ?? ''; // HTTP metodu(register,login,update,delete...vb)
+// Read raw input data
+$data = json_decode(file_get_contents("php://input"), true);
+$METHOD = $data['method'] ?? '';
 
-$response = ['success' => false]; // Default yanıt
+$response = ['success' => false];
 
-// Veritabanı bağlantısı
+// Database connection
 $db = new Database();
 $DB = $db->connection;
 
-// Token kontrolü gerektiren endpointler için
-$protected_methods = ['get-users', 'get-user', 'update-user', 'delete-user'];
+// Protected endpoints
+$protected_methods = ['get-profile', 'update-profile', 'delete-profile'];
 if (in_array($METHOD, $protected_methods)) {
     $headers = getallheaders();
     $token = isset($headers['Authorization']) ? str_replace('Bearer ', '', $headers['Authorization']) : null;
@@ -91,46 +87,33 @@ if (in_array($METHOD, $protected_methods)) {
         echo json_encode(['success' => false, 'error' => 'Unauthorized access']);
         exit();
     }
-    // Token geçerliyse kullanıcı bilgilerini data'ya ekle
     $data['user_id'] = $payload['user_id'];
 }
 
-// Metodlara göre işlemleri yönlendirme
+// Route methods
 switch ($METHOD) {
     case 'register':
         $response = registerUser($DB, $data);
+        break;
+
+    case 'therapist-register':
+        $response = registerTherapist($DB, $data);
         break;
 
     case 'login':
         $response = loginUser($DB, $data);
         break;
 
-    case 'get-users':
-        $response = getUsers($DB);
-        break;
-
-    case 'get-user':
-        $response = getUser($DB, $data);
-        break;
-
-    case 'update-user':
-        $response = updateUser($DB, $data);
-        break;
-
-    case 'delete-user':
-        $response = deleteUser($DB, $data);
-        break;
-
     default:
-        $response['error'] = "invalid method";
+        $response['error'] = "Invalid method";
 }
 
-// JSON formatında yanıt döndürme
+// Return JSON response
 header('Content-Type: application/json');
 echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 $db->closeConnection();
 
-// Kullanıcı kaydı oluşturma
+// User registration
 function registerUser($DB, $data) {
     $response = ['success' => false];
 
@@ -138,35 +121,40 @@ function registerUser($DB, $data) {
         // Begin transaction
         $DB->begin_transaction();
 
-        // kullanıcı önceden kayıt olmuş mu kontrol
-        $stmt = $DB->prepare("SELECT COUNT(*) as count FROM users WHERE email = ? OR username = ?");
-        $stmt->bind_param("ss", $data['email'], $data['username']);
+        // Check if email already exists
+        $stmt = $DB->prepare("SELECT COUNT(*) as count FROM users WHERE email = ?");
+        $stmt->bind_param("s", $data['email']);
         $stmt->execute();
-        $result = $stmt->get_result();
-        $count = $result->fetch_assoc()['count'];
+        $count = $stmt->get_result()->fetch_assoc()['count'];
 
         if ($count > 0) {
-            // Check which one is duplicate
-            $stmt = $DB->prepare("SELECT email, username FROM users WHERE email = ? OR username = ?");
-            $stmt->bind_param("ss", $data['email'], $data['username']);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $row = $result->fetch_assoc();
-
-            if ($row['email'] === $data['email']) {
-                $response['error'] = "This email is already in use";
-            } else {
-                $response['error'] = "This username is already in use";
-            }
-
+            $response['error'] = "This email is already in use";
             $DB->rollback();
             return $response;
         }
 
+        // Hash password
         $hash = password_hash($data['password'], PASSWORD_DEFAULT);
-        $stmt = $DB->prepare("INSERT INTO users (username, email, password, user_role) VALUES (?, ?, ?, ?)");
-        $userRole = $data['user_role'] ?? 'user'; // Default to 'user' if not specified
-        $stmt->bind_param("ssss", $data['username'], $data['email'], $hash, $userRole);
+
+        // Insert user
+        $stmt = $DB->prepare("
+            INSERT INTO users (
+                first_name, last_name, email, address, phone_number, 
+                birth_of_date, user_img, password, user_role
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'user')
+        ");
+
+        $stmt->bind_param(
+            "ssssssss",
+            $data['first_name'],
+            $data['last_name'],
+            $data['email'],
+            $data['address'],
+            $data['phone_number'],
+            $data['birth_of_date'],
+            $data['user_img'],
+            $hash
+        );
 
         if ($stmt->execute()) {
             $response['success'] = true;
@@ -185,12 +173,141 @@ function registerUser($DB, $data) {
     return $response;
 }
 
-// Kullanıcı giriş işlemi
+// Therapist registration
+function registerTherapist($DB, $data) {
+    $response = ['success' => false];
+
+    try {
+        // Begin transaction
+        $DB->begin_transaction();
+
+        // Check if email already exists
+        $stmt = $DB->prepare("SELECT COUNT(*) as count FROM users WHERE email = ?");
+        $stmt->bind_param("s", $data['email']);
+        $stmt->execute();
+        $count = $stmt->get_result()->fetch_assoc()['count'];
+
+        if ($count > 0) {
+            $response['error'] = "This email is already in use";
+            $DB->rollback();
+            return $response;
+        }
+
+        // Hash password
+        $hash = password_hash($data['password'], PASSWORD_DEFAULT);
+
+        // Insert user with therapist role
+        $stmt = $DB->prepare("
+            INSERT INTO users (
+                first_name, last_name, email, address, phone_number, 
+                birth_of_date, user_img, password, user_role
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'therapist')
+        ");
+
+        $stmt->bind_param(
+            "ssssssss",
+            $data['first_name'],
+            $data['last_name'],
+            $data['email'],
+            $data['address'],
+            $data['phone_number'],
+            $data['birth_of_date'],
+            $data['user_img'],
+            $hash
+        );
+
+        if (!$stmt->execute()) {
+            throw new Exception("Failed to create user account");
+        }
+
+        $userId = $stmt->insert_id;
+
+        // Create therapist application
+        $stmt = $DB->prepare("
+            INSERT INTO therapist_applications (
+                user_id, education, license_number, experience_years,
+                cv_file, diploma_file, license_file
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
+        ");
+
+        $stmt->bind_param(
+            "ississs",
+            $userId,
+            $data['education'],
+            $data['license_number'],
+            $data['experience_years'],
+            $data['cv_file'],
+            $data['diploma_file'],
+            $data['license_file']
+        );
+
+        if (!$stmt->execute()) {
+            throw new Exception("Failed to create therapist application");
+        }
+
+        // Create therapist details
+        $stmt = $DB->prepare("
+            INSERT INTO therapist_details (
+                user_id, title, about_text, session_fee, session_duration,
+                languages_spoken, video_session_available,
+                face_to_face_session_available, office_address
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ");
+
+        $languagesJson = json_encode($data['languages_spoken']);
+
+        $stmt->bind_param(
+            "issdisiss",
+            $userId,
+            $data['title'],
+            $data['about_text'],
+            $data['session_fee'],
+            $data['session_duration'],
+            $languagesJson,
+            $data['video_session_available'],
+            $data['face_to_face_session_available'],
+            $data['office_address']
+        );
+
+        if (!$stmt->execute()) {
+            throw new Exception("Failed to create therapist details");
+        }
+
+        // Insert specialties
+        $therapistDetailsId = $stmt->insert_id;
+        foreach ($data['specialties'] as $specialtyId) {
+            $stmt = $DB->prepare("
+                INSERT INTO therapist_specialties (therapist_id, specialty_id)
+                VALUES (?, ?)
+            ");
+            $stmt->bind_param("ii", $therapistDetailsId, $specialtyId);
+            if (!$stmt->execute()) {
+                throw new Exception("Failed to add specialty");
+            }
+        }
+
+        $response['success'] = true;
+        $response['message'] = "Therapist registration successful. Your application is pending review.";
+        $response['user_id'] = $userId;
+        $DB->commit();
+    } catch (Exception $e) {
+        $DB->rollback();
+        $response['error'] = "Registration failed: " . $e->getMessage();
+    }
+
+    return $response;
+}
+
+// User login
 function loginUser($DB, $data) {
     $response = ['success' => false];
 
     try {
-        $stmt = $DB->prepare("SELECT id, username, email, password, user_role FROM users WHERE email = ?");
+        $stmt = $DB->prepare("
+            SELECT id, first_name, last_name, email, password, user_role, user_img
+            FROM users 
+            WHERE email = ?
+        ");
         $stmt->bind_param("s", $data['email']);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -198,107 +315,54 @@ function loginUser($DB, $data) {
         if ($result->num_rows === 1) {
             $user = $result->fetch_assoc();
             if (password_verify($data['password'], $user['password'])) {
-                // Hassas bilgileri kaldır
+                // Remove sensitive data
                 unset($user['password']);
 
-                // JWT token oluştur
+                // Generate JWT token
                 $token = generateJWT($user);
+
+                // Get additional data based on user role
+                if ($user['user_role'] === 'therapist') {
+                    // Get therapist details
+                    $stmt = $DB->prepare("
+                        SELECT td.*, ta.application_status
+                        FROM therapist_details td
+                        LEFT JOIN therapist_applications ta ON ta.user_id = td.user_id
+                        WHERE td.user_id = ?
+                    ");
+                    $stmt->bind_param("i", $user['id']);
+                    $stmt->execute();
+                    $therapistDetails = $stmt->get_result()->fetch_assoc();
+                    
+                    if ($therapistDetails) {
+                        $user['therapist_details'] = $therapistDetails;
+                        
+                        // Get specialties
+                        $stmt = $DB->prepare("
+                            SELECT s.id, s.name
+                            FROM specialties s
+                            JOIN therapist_specialties ts ON ts.specialty_id = s.id
+                            WHERE ts.therapist_id = ?
+                        ");
+                        $stmt->bind_param("i", $therapistDetails['id']);
+                        $stmt->execute();
+                        $specialties = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+                        $user['therapist_details']['specialties'] = $specialties;
+                    }
+                }
 
                 $response['success'] = true;
                 $response['message'] = "Logged in successfully";
                 $response['token'] = $token;
                 $response['user'] = $user;
             } else {
-                $response['error'] = "Wrong password or email";
+                $response['error'] = "Invalid email or password";
             }
         } else {
             $response['error'] = "User not found";
         }
     } catch (Exception $e) {
-        $response['error'] = $e->getMessage();
-    }
-
-    return $response;
-}
-
-// Tüm kullanıcıları listeleme
-function getUsers($DB) {
-    $response = ['success' => false];
-
-    try {
-        $stmt = $DB->prepare("SELECT id, username, email FROM users");
-        $stmt->execute();
-        $users = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-
-        $response['success'] = true;
-        $response['users'] = $users;
-    } catch (Exception $e) {
-        $response['error'] = $e->getMessage();
-    }
-
-    return $response;
-}
-
-// Belirli bir kullanıcıyı getirme
-function getUser($DB, $data) {
-    $response = ['success' => false];
-
-    try {
-        $stmt = $DB->prepare("SELECT id, username, email FROM users WHERE id = ?");
-        $stmt->bind_param("i", $data['user_id']);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows === 1) {
-            $response['success'] = true;
-            $response['user'] = $result->fetch_assoc();
-        } else {
-            $response['error'] = "User not found";
-        }
-    } catch (Exception $e) {
-        $response['error'] = $e->getMessage();
-    }
-
-    return $response;
-}
-
-// Kullanıcı bilgilerini güncelleme
-function updateUser($DB, $data) {
-    $response = ['success' => false];
-
-    try {
-        $stmt = $DB->prepare("UPDATE users SET username = ?, email = ? WHERE id = ?");
-        $stmt->bind_param("ssi", $data['username'], $data['email'], $data['user_id']);
-
-        if ($stmt->execute()) {
-            $response['success'] = true;
-            $response['message'] = "User updated successfully";
-        } else {
-            $response['error'] = "User update failed";
-        }
-    } catch (Exception $e) {
-        $response['error'] = $e->getMessage();
-    }
-
-    return $response;
-}
-
-// Kullanıcıyı silme
-function deleteUser($DB, $data) {
-    $response = ['success' => false];
-
-    try {
-        $stmt = $DB->prepare("DELETE FROM users WHERE id = ?");
-        $stmt->bind_param("i", $data['user_id']);
-
-        if ($stmt->execute()) {
-            $response['success'] = true;
-            $response['message'] = "User deleted successfully";
-        } else {
-            $response['error'] = "User delete failed";
-        }
-    } catch (Exception $e) {
-        $response['error'] = $e->getMessage();
+        $response['error'] = "Login failed: " . $e->getMessage();
     }
 
     return $response;

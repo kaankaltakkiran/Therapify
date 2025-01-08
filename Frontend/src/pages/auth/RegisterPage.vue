@@ -100,16 +100,10 @@
                 v-model="form.birthDate"
                 label="Doğum Tarihi *"
                 outlined
-                mask="##/##/####"
+                type="date"
+                mask="####/##/##"
                 :rules="[(val: string) => !!val || 'Doğum tarihi zorunludur']"
               >
-                <template v-slot:append>
-                  <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                      <q-date v-model="form.birthDate" mask="DD/MM/YYYY" />
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
               </q-input>
 
               <q-input
@@ -181,10 +175,13 @@
 import { ref } from 'vue'
 import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from 'stores/auth'
 
 const $q = useQuasar()
 const router = useRouter()
+const authStore = useAuthStore()
 
+//Form bilgileri
 interface RegisterForm {
   firstName: string
   lastName: string
@@ -234,20 +231,65 @@ const onImageSelected = (file: File | null) => {
   }
 }
 
+//form submit islemi
 const onSubmit = async () => {
-  submitting.value = true
-  try {
-    // Here you would typically make an API call to register the user
-    await new Promise((resolve) => setTimeout(resolve, 1000)) // Simulating API call
-
+  // Check all required fields
+  if (!form.value.acceptTerms) {
     $q.notify({
-      type: 'positive',
-      message: 'Kayıt başarılı! Giriş yapabilirsiniz.',
+      type: 'negative',
+      message: 'You need to accept the license and terms first',
       position: 'top',
     })
+    return
+  }
 
-    // Redirect to login page
-    router.push('/auth/login')
+  // Validate email format
+  if (!isValidEmail(form.value.email)) {
+    $q.notify({
+      type: 'negative',
+      message: 'Geçerli bir e-posta adresi giriniz.',
+      position: 'top',
+    })
+    return
+  }
+
+  // Validate password match
+  if (form.value.password !== form.value.confirmPassword) {
+    $q.notify({
+      type: 'negative',
+      message: 'Şifreler eşleşmiyor.',
+      position: 'top',
+    })
+    return
+  }
+
+  submitting.value = true
+
+  try {
+    // Convert form data to match API format
+    const formData = {
+      first_name: form.value.firstName,
+      last_name: form.value.lastName,
+      email: form.value.email,
+      password: form.value.password,
+      address: form.value.address,
+      phone_number: form.value.phone,
+      birth_of_date: form.value.birthDate,
+    }
+
+    // Add user_img only if it exists
+    if (form.value.userImg) {
+      Object.assign(formData, {
+        user_img: await convertFileToBase64(form.value.userImg),
+      })
+    }
+    //pinia storedan register fonksiyonuna gonderecegimiz veriler
+    const response = await authStore.register(formData)
+
+    //işlem basarılıysa login sayfasına yonlendir
+    if (response) {
+      router.push('/login')
+    }
   } catch (error: unknown) {
     console.error('Registration error:', error)
     $q.notify({
@@ -258,6 +300,50 @@ const onSubmit = async () => {
   } finally {
     submitting.value = false
   }
+}
+
+// Add helper function to convert File to base64
+const convertFileToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    const img = new Image()
+
+    reader.onload = (e) => {
+      img.src = e.target?.result as string
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        const MAX_WIDTH = 800
+        const MAX_HEIGHT = 800
+        let width = img.width
+        let height = img.height
+
+        // Calculate new dimensions while maintaining aspect ratio
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width
+            width = MAX_WIDTH
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height
+            height = MAX_HEIGHT
+          }
+        }
+
+        canvas.width = width
+        canvas.height = height
+        const ctx = canvas.getContext('2d')
+        ctx?.drawImage(img, 0, 0, width, height)
+
+        // Convert to base64 with reduced quality
+        const base64String = canvas.toDataURL('image/jpeg', 0.7)
+        resolve(base64String)
+      }
+      img.onerror = reject
+    }
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
 }
 </script>
 

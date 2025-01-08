@@ -28,14 +28,14 @@ export default route(function () {
     routes,
     history: createHistory(process.env.VUE_ROUTER_BASE),
   })
-  //token ve kullanıcı bilgilerini localStorage'dan al
+
   Router.beforeEach((to, from, next) => {
     const token = localStorage.getItem('token')
     const user = localStorage.getItem('user')
       ? JSON.parse(localStorage.getItem('user') as string)
       : null
 
-    // token kontrolü
+    // Check for protected route
     if (to.matched.some((record) => record.meta.requiresAuth)) {
       if (!token || !user) {
         next({
@@ -45,7 +45,7 @@ export default route(function () {
         return
       }
 
-      // admin route
+      // Check for admin route
       if (to.matched.some((record) => record.meta.requiresAdmin)) {
         if (user.user_role !== 'admin') {
           next({ path: '/' })
@@ -53,7 +53,7 @@ export default route(function () {
         }
       }
 
-      // terapist route
+      // Check for therapist route
       if (to.matched.some((record) => record.meta.requiresTherapist)) {
         if (user.user_role !== 'therapist') {
           next({ path: '/' })
@@ -62,7 +62,7 @@ export default route(function () {
       }
     }
 
-    // login olduktan sonra login sayfasına yonlendir
+    // Check for guest route (login, register)
     if (to.matched.some((record) => record.meta.requiresGuest)) {
       if (token && user) {
         next({ path: '/' })

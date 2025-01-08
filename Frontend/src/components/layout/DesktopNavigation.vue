@@ -42,18 +42,42 @@
     </q-btn-dropdown>
 
     <!-- Auth Buttons -->
-    <div class="auth-buttons q-ml-md">
+    <div v-if="!isAuthenticated" class="auth-buttons q-ml-md">
       <q-btn flat no-caps label="Giriş" to="/login" class="auth-link q-mr-sm" />
       <q-btn unelevated no-caps label="Kayıt Ol" to="/register" class="auth-cta" color="primary" />
     </div>
+    <q-btn
+      flat
+      @click="handleLogout"
+      v-if="isAuthenticated"
+      no-caps
+      label="Çıkış Yap"
+      class="nav-link"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from 'stores/auth'
+import { storeToRefs } from 'pinia'
+import { Notify } from 'quasar'
 
 const router = useRouter()
+const authStore = useAuthStore()
+//tokene sahip kullanıcı var mı
+const { isAuthenticated } = storeToRefs(authStore)
+
+// Logout işlemi pinia storedaki fonksiyon
+const handleLogout = () => {
+  Notify.create({
+    color: 'info',
+    message: 'çıkış yapıldı',
+    position: 'top-right',
+  })
+  authStore.logout()
+}
 
 const scrollToSection = async (sectionId: string) => {
   // If we're not on the home page, navigate there first

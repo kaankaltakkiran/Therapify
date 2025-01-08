@@ -51,7 +51,6 @@
 
               <!-- Remember Me & Forgot Password -->
               <div class="row items-center justify-between q-mt-sm">
-                <q-checkbox v-model="form.rememberMe" label="Beni Hatırla" />
                 <router-link to="/auth/forgot-password" class="text-primary">
                   Şifremi Unuttum
                 </router-link>
@@ -84,14 +83,16 @@
 import { ref } from 'vue'
 import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from 'stores/auth'
 
 const $q = useQuasar()
 const router = useRouter()
+const authStore = useAuthStore()
 
+//form elamanları
 interface LoginForm {
   email: string
   password: string
-  rememberMe: boolean
 }
 
 const showPassword = ref(false)
@@ -100,7 +101,6 @@ const submitting = ref(false)
 const form = ref<LoginForm>({
   email: '',
   password: '',
-  rememberMe: false,
 })
 
 const isValidEmail = (email: string) => {
@@ -111,23 +111,19 @@ const isValidEmail = (email: string) => {
 
 const onSubmit = async () => {
   submitting.value = true
+  //pinia storedan login fonksiyonuna gonderecegimiz veriler
   try {
-    // Here you would typically make an API call to authenticate the user
-    await new Promise((resolve) => setTimeout(resolve, 1000)) // Simulating API call
+    const response = await authStore.login(form.value.email, form.value.password)
 
-    $q.notify({
-      type: 'positive',
-      message: 'Giriş başarılı!',
-      position: 'top',
-    })
-
-    // Redirect to dashboard or home page
-    router.push('/')
+    // işlem basarılıysa login sayfasına yonlendir
+    if (response) {
+      router.push('/')
+    }
   } catch (error: unknown) {
-    console.error('Login error:', error)
+    console.error('Registration error:', error)
     $q.notify({
       type: 'negative',
-      message: 'Giriş başarısız. Lütfen bilgilerinizi kontrol edip tekrar deneyiniz.',
+      message: 'Kayıt sırasında bir hata oluştu. Lütfen tekrar deneyiniz.',
       position: 'top',
     })
   } finally {

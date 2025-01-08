@@ -21,14 +21,7 @@
     </q-header>
 
     <!-- Mobile Drawer -->
-    <q-drawer
-      v-model="drawerOpen"
-      side="right"
-      overlay
-      bordered
-      :width="250"
-      class="bg-white"
-    >
+    <q-drawer v-model="drawerOpen" side="right" overlay bordered :width="250" class="bg-white">
       <q-scroll-area class="fit">
         <q-list padding>
           <q-item clickable v-ripple @click="scrollToSection('services')" class="mobile-nav-item">
@@ -44,11 +37,20 @@
             <q-item-section>İletişim</q-item-section>
           </q-item>
           <q-separator class="q-my-md" />
-          <q-item clickable v-ripple to="/auth/login" class="mobile-nav-item">
+          <q-item v-if="!isAuthenticated" clickable v-ripple to="/login" class="mobile-nav-item">
             <q-item-section>Giriş</q-item-section>
           </q-item>
-          <q-item clickable v-ripple to="/auth/register" class="mobile-nav-item">
+          <q-item v-if="!isAuthenticated" clickable v-ripple to="/register" class="mobile-nav-item">
             <q-item-section>Kayıt Ol</q-item-section>
+          </q-item>
+          <q-item
+            @click="handleLogout"
+            v-if="isAuthenticated"
+            clickable
+            v-ripple
+            class="mobile-nav-item"
+          >
+            <q-item-section>Çıkış Yap</q-item-section>
           </q-item>
         </q-list>
       </q-scroll-area>
@@ -69,8 +71,23 @@ import { ref } from 'vue'
 import DesktopNavigation from 'components/layout/DesktopNavigation.vue'
 import MobileNavigation from 'components/layout/MobileNavigation.vue'
 import TheFooter from 'components/layout/TheFooter.vue'
+import { useAuthStore } from 'stores/auth'
+import { storeToRefs } from 'pinia'
+import { Notify } from 'quasar'
 
 const drawerOpen = ref(false)
+const authStore = useAuthStore()
+const { isAuthenticated } = storeToRefs(authStore)
+
+const handleLogout = () => {
+  drawerOpen.value = !drawerOpen.value
+  Notify.create({
+    color: 'info',
+    message: 'çıkış yapıldı',
+    position: 'top-right',
+  })
+  authStore.logout()
+}
 
 const toggleDrawer = () => {
   drawerOpen.value = !drawerOpen.value
