@@ -46,14 +46,37 @@
       <q-btn flat no-caps label="Giriş" to="/login" class="auth-link q-mr-sm" />
       <q-btn unelevated no-caps label="Kayıt Ol" to="/register" class="auth-cta" color="primary" />
     </div>
-    <q-btn
-      flat
-      @click="handleLogout"
-      v-if="isAuthenticated"
-      no-caps
-      label="Çıkış Yap"
-      class="nav-link"
-    />
+    <!-- Profile Dropdown -->
+    <q-btn-dropdown
+      v-if="isAuthenticated && user"
+      class="glossy q-ml-md"
+      color="secondary"
+      :label="'welcome ' + user.first_name"
+    >
+      <div class="row no-wrap q-pa-md">
+        <div class="column items-center">
+          <div class="text-h6 q-mb-md">Profile</div>
+          <q-avatar size="72px">
+            <img :src="user.user_img || 'https://cdn.quasar.dev/img/boy-avatar.png'" />
+          </q-avatar>
+          <div class="text-subtitle1 q-mt-md q-mb-xs">
+            {{ user.first_name }} {{ user.last_name }}
+          </div>
+          <div class="text-caption text-grey">{{ user.email }}</div>
+          <div v-if="user.user_role" class="text-caption text-primary q-mb-md">
+            {{ user.user_role }}
+          </div>
+          <q-btn
+            color="negative"
+            label="Çıkış Yap"
+            push
+            size="sm"
+            v-close-popup
+            @click="handleLogout"
+          />
+        </div>
+      </div>
+    </q-btn-dropdown>
   </div>
 </template>
 
@@ -67,16 +90,16 @@ import { Notify } from 'quasar'
 const router = useRouter()
 const authStore = useAuthStore()
 //tokene sahip kullanıcı var mı
-const { isAuthenticated } = storeToRefs(authStore)
+const { isAuthenticated, user } = storeToRefs(authStore)
 
 // Logout işlemi pinia storedaki fonksiyon
-const handleLogout = () => {
+const handleLogout = async () => {
   Notify.create({
     color: 'info',
     message: 'çıkış yapıldı',
     position: 'top-right',
   })
-  authStore.logout()
+  await authStore.logout()
 }
 
 const scrollToSection = async (sectionId: string) => {
