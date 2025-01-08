@@ -11,9 +11,9 @@ CREATE TABLE IF NOT EXISTS users (
     last_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     address TEXT NOT NULL,
-    phone_number VARCHAR(11) NOT NULL,
+    phone_number VARCHAR(15) NOT NULL,
     birth_of_date DATE NOT NULL,
-    user_img VARCHAR(255) NOT NULL,
+    user_img mediumtext NOT NULL,
     password VARCHAR(255) NOT NULL,
     user_role ENUM('admin', 'user', 'therapist') NOT NULL DEFAULT 'user',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
