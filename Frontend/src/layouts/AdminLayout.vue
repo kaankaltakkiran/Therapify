@@ -19,7 +19,7 @@
           <template v-slot:label>
             <div class="row items-center no-wrap">
               <q-avatar size="32px">
-                <img src="https://cdn.quasar.dev/img/avatar.png" />
+                <img :src="admin.user_img" />
               </q-avatar>
               <div class="text-subtitle1 q-ml-sm">{{ admin.name }}</div>
             </div>
@@ -149,10 +149,13 @@ const pendingApplicationsCount = ref(5)
 const userStr = sessionStorage.getItem('user')
 const userData = userStr ? JSON.parse(userStr) : null
 
+//console.log(userData)
+
 const admin = ref({
-  name: userData?.name || 'Admin User',
+  name: userData?.first_name + ' ' + userData?.last_name || 'Admin User',
   email: userData?.email || 'admin@therapify.com',
   user_role: userData?.user_role || 'admin',
+  user_img: userData?.user_img || 'https://cdn.quasar.dev/img/avatar.png',
 })
 
 // Methods
