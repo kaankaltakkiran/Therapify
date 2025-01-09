@@ -69,6 +69,14 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/AdminLayout.vue'),
     meta: { requiresAuth: true, requiresAdmin: true },
     children: [
+      {
+        path: '',
+        redirect: '/admin/therapist-applications',
+      },
+      {
+        path: 'therapist-applications',
+        component: () => import('pages/admin/TherapistApplicationsPage.vue'),
+      },
       /*    {
         path: 'overview',
         component: () => import('pages/admin/OverviewPage.vue'),
@@ -76,12 +84,8 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'users',
         component: () => import('pages/admin/UsersPage.vue'),
-      }, */
-      {
-        path: 'therapist-applications',
-        component: () => import('pages/admin/TherapistApplicationsPage.vue'),
       },
-      /*    {
+      {
         path: 'settings',
         component: () => import('pages/admin/SettingsPage.vue'),
       }, */

@@ -28,14 +28,14 @@ export default route(function () {
     routes,
     history: createHistory(process.env.VUE_ROUTER_BASE),
   })
-  //token ve kullanıcı bilgilerini localStorage'dan al
+  //token ve kullanıcı bilgilerini sessionStorage'dan al
   Router.beforeEach((to, from, next) => {
-    const token = localStorage.getItem('token')
-    const user = localStorage.getItem('user')
-      ? JSON.parse(localStorage.getItem('user') as string)
+    const token = sessionStorage.getItem('token')
+    const user = sessionStorage.getItem('user')
+      ? JSON.parse(sessionStorage.getItem('user') as string)
       : null
 
-    // token kontrolü
+    // token kontrolü
     if (to.matched.some((record) => record.meta.requiresAuth)) {
       if (!token || !user) {
         next({
@@ -48,9 +48,12 @@ export default route(function () {
       // admin route
       if (to.matched.some((record) => record.meta.requiresAdmin)) {
         if (user.user_role !== 'admin') {
+          console.log('Access denied: Admin role required')
           next({ path: '/' })
           return
         }
+        next() // Allow access if user is admin
+        return
       }
 
       // terapist route

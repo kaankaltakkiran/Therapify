@@ -135,21 +135,25 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
+import { useAuthStore } from 'stores/auth'
 
-const $q = useQuasar()
 const router = useRouter()
+const $q = useQuasar()
+const authStore = useAuthStore()
 
 // State
 const leftDrawerOpen = ref(false)
-const admin = ref({
-  id: 1,
-  name: 'Admin User',
-  email: 'admin@therapify.com',
-  role: 'admin',
-})
-
-// Mock data for pending applications count
 const pendingApplicationsCount = ref(5)
+
+// Get admin user data from sessionStorage
+const userStr = sessionStorage.getItem('user')
+const userData = userStr ? JSON.parse(userStr) : null
+
+const admin = ref({
+  name: userData?.name || 'Admin User',
+  email: userData?.email || 'admin@therapify.com',
+  user_role: userData?.user_role || 'admin',
+})
 
 // Methods
 const toggleLeftDrawer = () => {
@@ -166,11 +170,9 @@ const onSettings = () => {
 
 const onLogout = async () => {
   try {
-    // Here you would typically make an API call to logout
-    await new Promise((resolve) => setTimeout(resolve, 500)) // Simulating API call
+    await authStore.logout()
 
-    // Clear auth state and redirect to login
-    router.push('/login')
+    router.push('/')
 
     $q.notify({
       type: 'positive',
