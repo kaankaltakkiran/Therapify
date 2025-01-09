@@ -56,7 +56,7 @@
           <q-td key="user" :props="props">
             <div class="row items-center">
               <q-avatar size="32px">
-                <img :src="props.row.user.user_img" />
+                <img :src="getFileUrl(props.row.user.user_img)" />
               </q-avatar>
               <div class="q-ml-sm">
                 {{ props.row.user.first_name }} {{ props.row.user.last_name }}
@@ -138,7 +138,7 @@
                   <div class="text-h6 q-mb-md">Kişisel Bilgiler</div>
                   <div class="row items-center q-mb-md">
                     <q-avatar size="72px">
-                      <img :src="selectedApplication.user.user_img" />
+                      <img :src="getFileUrl(selectedApplication.user.user_img)" />
                     </q-avatar>
                     <div class="q-ml-md">
                       <div class="text-subtitle1">
@@ -183,7 +183,7 @@
                           icon="description"
                           :label="'CV'"
                           class="full-width"
-                          :href="selectedApplication.cv_file"
+                          :href="getFileUrl(selectedApplication.cv_file)"
                           target="_blank"
                         />
                         <q-btn
@@ -192,7 +192,7 @@
                           icon="school"
                           label="Diploma"
                           class="full-width"
-                          :href="selectedApplication.diploma_file"
+                          :href="getFileUrl(selectedApplication.diploma_file)"
                           target="_blank"
                         />
                         <q-btn
@@ -201,7 +201,7 @@
                           icon="badge"
                           label="Lisans Belgesi"
                           class="full-width"
-                          :href="selectedApplication.license_file"
+                          :href="getFileUrl(selectedApplication.license_file)"
                           target="_blank"
                         />
                       </div>
@@ -532,6 +532,28 @@ const handleReject = async () => {
   } finally {
     submitting.value = false
   }
+}
+
+const getFileUrl = (path: string) => {
+  if (!path) return ''
+
+  // Extract just the filename
+  const filename = path.split('/').pop()
+
+  // Extract the type from the path
+  let type = ''
+  if (path.includes('cv')) {
+    type = 'cv'
+  } else if (path.includes('diploma')) {
+    type = 'diploma'
+  } else if (path.includes('license')) {
+    type = 'license'
+  } else if (path.includes('profile_images') || path.includes('user_img')) {
+    type = 'profile_images'
+  }
+
+  // Return the simple URL format
+  return `http://localhost/uploads/${type}/${filename}`
 }
 
 // Computed
