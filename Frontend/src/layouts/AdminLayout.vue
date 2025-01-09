@@ -132,24 +132,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted, watch, onUnmounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useAuthStore } from 'stores/auth'
+import { api } from 'src/boot/axios'
 
 const router = useRouter()
+const route = useRoute()
 const $q = useQuasar()
 const authStore = useAuthStore()
 
 // State
 const leftDrawerOpen = ref(false)
-const pendingApplicationsCount = ref(5)
+const pendingApplicationsCount = ref(0)
 
 // Get admin user data from sessionStorage
 const userStr = sessionStorage.getItem('user')
 const userData = userStr ? JSON.parse(userStr) : null
-
-//console.log(userData)
 
 const admin = ref({
   name: userData?.first_name + ' ' + userData?.last_name || 'Admin User',
@@ -159,6 +159,43 @@ const admin = ref({
 })
 
 // Methods
+const fetchPendingApplicationsCount = async () => {
+  try {
+    const response = await api.post('/admin.php', {
+      method: 'get-pending-count',
+    })
+
+    if (response.data.success) {
+      pendingApplicationsCount.value = response.data.pendingCount
+    }
+  } catch (error) {
+    console.error('Error fetching pending applications count:', error)
+  }
+}
+
+// Watch for route changes to update count when returning to admin
+watch(
+  () => route.path,
+  (newPath) => {
+    // Update count when navigating to admin pages
+    if (newPath.startsWith('/admin')) {
+      fetchPendingApplicationsCount()
+    }
+  },
+)
+
+// Fetch pending count on mount and set up interval to refresh
+onMounted(() => {
+  fetchPendingApplicationsCount()
+  // Refresh count every minute
+  const interval = setInterval(fetchPendingApplicationsCount, 60000)
+
+  // Clean up interval on component unmount
+  onUnmounted(() => {
+    clearInterval(interval)
+  })
+})
+
 const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }

@@ -35,6 +35,9 @@ switch ($METHOD) {
     case 'update-application-status':
         $response = updateApplicationStatus($DB, $data);
         break;
+    case 'get-pending-count':
+        $response = getPendingApplicationsCount($DB);
+        break;
     default:
         $response['error'] = "Invalid method: " . $METHOD;
         $response['success'] = false;
@@ -47,6 +50,16 @@ function getTherapistApplications($DB) {
     $response = ['success' => false];
 
     try {
+        // Get pending count first
+        $countStmt = $DB->prepare("
+            SELECT COUNT(*) as pending_count 
+            FROM therapist_applications 
+            WHERE application_status = 'pending'
+        ");
+        $countStmt->execute();
+        $countResult = $countStmt->get_result();
+        $pendingCount = $countResult->fetch_assoc()['pending_count'];
+
         $stmt = $DB->prepare("
             SELECT 
                 ta.*,
@@ -95,6 +108,7 @@ function getTherapistApplications($DB) {
 
         $response['success'] = true;
         $response['applications'] = $applications;
+        $response['pendingCount'] = $pendingCount;
     } catch (Exception $e) {
         $response['error'] = "Failed to fetch applications: " . $e->getMessage();
     }
@@ -154,6 +168,30 @@ function updateApplicationStatus($DB, $data) {
     } catch (Exception $e) {
         $DB->rollback();
         $response['error'] = "Failed to update application status: " . $e->getMessage();
+    }
+
+    return $response;
+}
+
+// Get pending applications count
+function getPendingApplicationsCount($DB) {
+    $response = ['success' => false];
+
+    try {
+        $stmt = $DB->prepare("
+            SELECT COUNT(*) as pending_count 
+            FROM therapist_applications 
+            WHERE application_status = 'pending'
+        ");
+        
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $count = $result->fetch_assoc()['pending_count'];
+
+        $response['success'] = true;
+        $response['pendingCount'] = $count;
+    } catch (Exception $e) {
+        $response['error'] = "Failed to fetch pending count: " . $e->getMessage();
     }
 
     return $response;
