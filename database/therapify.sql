@@ -1,133 +1,87 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
--- Host: localhost
--- Generation Time: Aug 15, 2023
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Create Database
+CREATE DATABASE IF NOT EXISTS Therapify;
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
+-- Use the database
+USE Therapify;
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+-- Create Users Table
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    address TEXT,
+    phone_number VARCHAR(20),
+    birth_of_date DATE,
+    user_img VARCHAR(255),
+    user_role ENUM('user', 'therapist', 'admin') NOT NULL DEFAULT 'user',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 
---
--- Database: `Therapify`
---
+-- Create Therapist Applications Table
+CREATE TABLE IF NOT EXISTS therapist_applications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    education TEXT NOT NULL,
+    license_number VARCHAR(255) NOT NULL,
+    experience_years INT NOT NULL,
+    cv_file VARCHAR(255) NOT NULL,
+    diploma_file VARCHAR(255) NOT NULL,
+    license_file VARCHAR(255) NOT NULL,
+    application_status ENUM('pending', 'approved', 'rejected') NOT NULL DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
 
--- --------------------------------------------------------
+-- Create Therapist Details Table
+CREATE TABLE IF NOT EXISTS therapist_details (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    about_text TEXT NOT NULL,
+    session_fee DECIMAL(10,2) NOT NULL,
+    session_duration INT NOT NULL,
+    languages_spoken JSON NOT NULL,
+    video_session_available BOOLEAN DEFAULT TRUE,
+    face_to_face_session_available BOOLEAN DEFAULT TRUE,
+    office_address TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
 
---
--- Table structure for table `users`
---
+-- Create Specialties Table
+CREATE TABLE IF NOT EXISTS specialties (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 
-CREATE TABLE `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(255) NOT NULL,
-  `last_name` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL UNIQUE,
-  `password` varchar(255) NOT NULL,
-  `address` text,
-  `phone_number` varchar(20),
-  `birth_of_date` date,
-  `user_img` varchar(255),
-  `user_role` enum('user', 'therapist', 'admin') NOT NULL DEFAULT 'user',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- Create Therapist-Specialty Relation Table
+CREATE TABLE IF NOT EXISTS therapist_specialties (
+    therapist_id INT NOT NULL,
+    specialty_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (therapist_id, specialty_id),
+    FOREIGN KEY (therapist_id) REFERENCES therapist_details(id) ON DELETE CASCADE,
+    FOREIGN KEY (specialty_id) REFERENCES specialties(id) ON DELETE CASCADE
+);
 
---
--- Table structure for table `therapist_applications`
---
-
-CREATE TABLE `therapist_applications` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `education` text NOT NULL,
-  `license_number` varchar(255) NOT NULL,
-  `experience_years` int NOT NULL,
-  `cv_file` varchar(255) NOT NULL,
-  `diploma_file` varchar(255) NOT NULL,
-  `license_file` varchar(255) NOT NULL,
-  `application_status` enum('pending', 'approved', 'rejected') NOT NULL DEFAULT 'pending',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Table structure for table `therapist_details`
---
-
-CREATE TABLE `therapist_details` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `about_text` text NOT NULL,
-  `session_fee` decimal(10,2) NOT NULL,
-  `session_duration` int NOT NULL,
-  `languages_spoken` json NOT NULL,
-  `video_session_available` boolean NOT NULL DEFAULT true,
-  `face_to_face_session_available` boolean NOT NULL DEFAULT true,
-  `office_address` text,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Table structure for table `specialties`
---
-
-CREATE TABLE `specialties` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL UNIQUE,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Table structure for table `therapist_specialties`
---
-
-CREATE TABLE `therapist_specialties` (
-  `therapist_id` int(11) NOT NULL,
-  `specialty_id` int(11) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`therapist_id`, `specialty_id`),
-  FOREIGN KEY (`therapist_id`) REFERENCES `therapist_details`(`id`) ON DELETE CASCADE,
-  FOREIGN KEY (`specialty_id`) REFERENCES `specialties`(`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Initial data for specialties
---
-
-INSERT INTO `specialties` (`name`) VALUES
-('Klinik Psikoloji'),
-('Aile Terapisi'),
-('Çift Terapisi'),
-('Çocuk ve Ergen'),
-('Depresyon'),
-('Anksiyete'),
-('Travma Sonrası Stres Bozukluğu'),
-('Obsesif Kompulsif Bozukluk'),
-('Yeme Bozuklukları'),
-('Bağımlılık'),
-('Cinsel Terapi'),
-('Oyun Terapisi');
-
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */; 
+-- Insert Initial Data into Specialties
+INSERT INTO specialties (name) VALUES
+    ('Klinik Psikoloji'),
+    ('Aile Terapisi'),
+    ('Çift Terapisi'),
+    ('Çocuk ve Ergen'),
+    ('Depresyon'),
+    ('Anksiyete'),
+    ('Travma Sonrası Stres Bozukluğu'),
+    ('Obsesif Kompulsif Bozukluk'),
+    ('Yeme Bozuklukları'),
+    ('Bağımlılık'),
+    ('Cinsel Terapi'),
+    ('Oyun Terapisi');
