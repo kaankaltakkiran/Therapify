@@ -52,6 +52,28 @@
                   />
 
                   <q-input
+                    v-model="form.password"
+                    label="Şifre *"
+                    type="password"
+                    outlined
+                    :rules="[
+                      (val: string) => !!val || 'Şifre alanı zorunludur',
+                      (val: string) => val.length >= 6 || '�ifre en az 6 karakter olmalıdır',
+                    ]"
+                  />
+
+                  <q-input
+                    v-model="form.confirmPassword"
+                    label="Şifre Tekrar *"
+                    type="password"
+                    outlined
+                    :rules="[
+                      (val: string) => !!val || 'Şifre tekrar alanı zorunludur',
+                      (val: string) => val === form.password || 'Şifreler eşleşmiyor',
+                    ]"
+                  />
+
+                  <q-input
                     v-model="form.phone"
                     label="Telefon *"
                     outlined
@@ -67,16 +89,10 @@
                     v-model="form.birthDate"
                     label="Doğum Tarihi *"
                     outlined
-                    mask="##/##/####"
+                    type="date"
+                    mask="####/##/##"
                     :rules="[(val: string) => !!val || 'Doğum tarihi zorunludur']"
                   >
-                    <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                          <q-date v-model="form.birthDate" mask="DD/MM/YYYY" />
-                        </q-popup-proxy>
-                      </q-icon>
-                    </template>
                   </q-input>
 
                   <q-input
@@ -331,6 +347,7 @@
 import { ref } from 'vue'
 import { useQuasar, QStepper, QForm } from 'quasar'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from 'src/stores/auth'
 
 const $q = useQuasar()
 const router = useRouter()
@@ -382,6 +399,8 @@ interface TherapistForm {
   firstName: string
   lastName: string
   email: string
+  password: string
+  confirmPassword: string
   phone: string
   birthDate: string
   address: string
@@ -438,6 +457,8 @@ const form = ref<TherapistForm>({
   firstName: '',
   lastName: '',
   email: '',
+  password: '',
+  confirmPassword: '',
   phone: '',
   birthDate: '',
   address: '',
@@ -505,17 +526,56 @@ const onSubmit = async () => {
 
   submitting.value = true
   try {
-    // Here you would typically make an API call to submit the therapist application
-    await new Promise((resolve) => setTimeout(resolve, 1000)) // Simulating API call
+    const authStore = useAuthStore()
+    const formData = new FormData()
 
-    $q.notify({
-      type: 'positive',
-      message: 'Başvurunuz başarıyla alındı! En kısa sürede size dönüş yapacağız.',
-      position: 'top',
-    })
+    // Add method identifier
+    formData.append('method', 'therapist-register')
 
-    // Redirect to home page
-    router.push('/')
+    // Personal Information
+    formData.append('first_name', form.value.firstName)
+    formData.append('last_name', form.value.lastName)
+    formData.append('email', form.value.email)
+    formData.append('password', form.value.password)
+    formData.append('phone_number', form.value.phone)
+    formData.append('birth_of_date', form.value.birthDate)
+    formData.append('address', form.value.address)
+    if (form.value.userImg) {
+      formData.append('user_img', form.value.userImg)
+    }
+
+    // Professional Information
+    formData.append('title', form.value.title)
+    formData.append('license_number', form.value.licenseNumber)
+    formData.append('experience_years', form.value.experienceYears.toString())
+    formData.append('education', form.value.education)
+    formData.append('specialties', JSON.stringify(form.value.specialties))
+    formData.append('about_text', form.value.aboutText)
+    formData.append('session_fee', form.value.sessionFee.toString())
+    formData.append('session_duration', form.value.sessionDuration.toString())
+    formData.append('languages_spoken', JSON.stringify(form.value.languagesSpoken))
+    formData.append('office_address', form.value.officeAddress)
+    formData.append('video_session_available', form.value.videoSessionAvailable ? '1' : '0')
+    formData.append(
+      'face_to_face_session_available',
+      form.value.faceToFaceSessionAvailable ? '1' : '0',
+    )
+
+    // Documents
+    if (form.value.cvFile) {
+      formData.append('cv_file', form.value.cvFile)
+    }
+    if (form.value.diplomaFile) {
+      formData.append('diploma_file', form.value.diplomaFile)
+    }
+    if (form.value.licenseFile) {
+      formData.append('license_file', form.value.licenseFile)
+    }
+
+    const success = await authStore.therapistRegister(formData)
+    if (success) {
+      router.push('/')
+    }
   } catch (error: unknown) {
     console.error('Application error:', error)
     $q.notify({

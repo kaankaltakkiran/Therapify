@@ -65,6 +65,42 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
+    async therapistRegister(formData: FormData) {
+      try {
+        formData.set('method', 'therapist-register')
+
+        const response = await api.post<AuthResponse>('/auth.php', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+
+        if (response.data.success) {
+          Notify.create({
+            color: 'positive',
+            message: response.data.message || 'Registration successful!',
+            position: 'top-right',
+          })
+          return true
+        }
+
+        Notify.create({
+          color: 'negative',
+          message: response.data.error || 'Registration failed',
+          position: 'top-right',
+        })
+        return false
+      } catch (error) {
+        console.error('Therapist Register error:', error)
+        Notify.create({
+          color: 'negative',
+          message: 'Error registering',
+          position: 'top-right',
+        })
+        return false
+      }
+    },
+
     //register işlemi
     async register(userData: {
       first_name: string

@@ -149,10 +149,10 @@ function registerUser($DB, $data) {
 
         // Insert user
         $stmt = $DB->prepare("
-            INSERT INTO users (
-                first_name, last_name, email, address, phone_number, 
-                birth_of_date, user_img, password, user_role
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'user')
+        INSERT INTO users (
+            first_name, last_name, email, address, phone_number,
+            birth_of_date, user_img, password, user_role
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'user')
         ");
 
         $stmt->bind_param(
@@ -242,10 +242,10 @@ function registerTherapist($DB, $data) {
 
         // Insert user with therapist role
         $stmt = $DB->prepare("
-            INSERT INTO users (
-                first_name, last_name, email, address, phone_number, 
-                birth_of_date, user_img, password, user_role
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'therapist')
+        INSERT INTO users (
+            first_name, last_name, email, address, phone_number,
+            birth_of_date, user_img, password, user_role
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'therapist')
         ");
 
         // Hash the provided password
@@ -271,10 +271,10 @@ function registerTherapist($DB, $data) {
 
         // Create therapist application
         $stmt = $DB->prepare("
-            INSERT INTO therapist_applications (
-                user_id, education, license_number, experience_years,
-                cv_file, diploma_file, license_file, application_status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')
+        INSERT INTO therapist_applications (
+            user_id, education, license_number, experience_years,
+            cv_file, diploma_file, license_file, application_status
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')
         ");
 
         $stmt->bind_param(
@@ -294,11 +294,11 @@ function registerTherapist($DB, $data) {
 
         // Create therapist details
         $stmt = $DB->prepare("
-            INSERT INTO therapist_details (
-                user_id, title, about_text, session_fee, session_duration,
-                languages_spoken, video_session_available,
-                face_to_face_session_available, office_address
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO therapist_details (
+            user_id, title, about_text, session_fee, session_duration,
+            languages_spoken, video_session_available,
+            face_to_face_session_available, office_address
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
 
         $languagesSpoken = json_decode($data['languages_spoken'], true);
@@ -330,15 +330,15 @@ function registerTherapist($DB, $data) {
         foreach ($specialties as $specialty) {
             // First, ensure the specialty exists in the specialties table
             $stmt = $DB->prepare("
-                INSERT IGNORE INTO specialties (name)
-                VALUES (?)
+            INSERT IGNORE INTO specialties (name)
+            VALUES (?)
             ");
             $stmt->bind_param("s", $specialty);
             $stmt->execute();
 
             // Get the specialty ID
             $stmt = $DB->prepare("
-                SELECT id FROM specialties WHERE name = ?
+            SELECT id FROM specialties WHERE name = ?
             ");
             $stmt->bind_param("s", $specialty);
             $stmt->execute();
@@ -346,8 +346,8 @@ function registerTherapist($DB, $data) {
 
             // Insert into therapist_specialties using therapist_details.id
             $stmt = $DB->prepare("
-                INSERT INTO therapist_specialties (therapist_id, specialty_id)
-                VALUES (?, ?)
+            INSERT INTO therapist_specialties (therapist_id, specialty_id)
+            VALUES (?, ?)
             ");
             $stmt->bind_param("ii", $therapistDetailsId, $specialtyId);
             if (!$stmt->execute()) {
@@ -377,9 +377,9 @@ function loginUser($DB, $data) {
 
     try {
         $stmt = $DB->prepare("
-            SELECT id, first_name, last_name, email, password, user_role, user_img
-            FROM users 
-            WHERE email = ?
+        SELECT id, first_name, last_name, email, password, user_role, user_img
+        FROM users
+        WHERE email = ?
         ");
         $stmt->bind_param("s", $data['email']);
         $stmt->execute();
@@ -398,24 +398,24 @@ function loginUser($DB, $data) {
                 if ($user['user_role'] === 'therapist') {
                     // Get therapist details
                     $stmt = $DB->prepare("
-                        SELECT td.*, ta.application_status
-                        FROM therapist_details td
-                        LEFT JOIN therapist_applications ta ON ta.user_id = td.user_id
-                        WHERE td.user_id = ?
+                    SELECT td.*, ta.application_status
+                    FROM therapist_details td
+                    LEFT JOIN therapist_applications ta ON ta.user_id = td.user_id
+                    WHERE td.user_id = ?
                     ");
                     $stmt->bind_param("i", $user['id']);
                     $stmt->execute();
                     $therapistDetails = $stmt->get_result()->fetch_assoc();
-                    
+
                     if ($therapistDetails) {
                         $user['therapist_details'] = $therapistDetails;
-                        
+
                         // Get specialties
                         $stmt = $DB->prepare("
-                            SELECT s.id, s.name
-                            FROM specialties s
-                            JOIN therapist_specialties ts ON ts.specialty_id = s.id
-                            WHERE ts.therapist_id = ?
+                        SELECT s.id, s.name
+                        FROM specialties s
+                        JOIN therapist_specialties ts ON ts.specialty_id = s.id
+                        WHERE ts.therapist_id = ?
                         ");
                         $stmt->bind_param("i", $therapistDetails['id']);
                         $stmt->execute();
