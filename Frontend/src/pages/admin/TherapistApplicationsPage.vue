@@ -287,8 +287,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useQuasar } from 'quasar'
+import { api } from 'src/boot/axios'
 
 const $q = useQuasar()
 
@@ -327,6 +328,7 @@ const rejectDialog = ref(false)
 const selectedApplication = ref<TherapistApplication | null>(null)
 const rejectNotes = ref('')
 const submitting = ref(false)
+const applications = ref<TherapistApplication[]>([])
 
 // Table configuration
 const initialPagination = {
@@ -389,102 +391,6 @@ const columns = [
   },
 ]
 
-// Sample data (replace with API call)
-const applications = ref<TherapistApplication[]>([
-  {
-    id: 1,
-    user_id: 1,
-    user: {
-      id: 1,
-      first_name: 'Ahmet',
-      last_name: 'Yılmaz',
-      email: 'ahmet@example.com',
-      address: 'İstanbul, Türkiye',
-      phone_number: '(555) 123-4567',
-      user_img: 'https://cdn.quasar.dev/img/avatar.png',
-    },
-    education: 'İstanbul Üniversitesi Psikoloji Bölümü',
-    license_number: 'PSK123456',
-    experience_years: 5,
-    cv_file: '/documents/cv.pdf',
-    diploma_file: '/documents/diploma.pdf',
-    license_file: '/documents/license.pdf',
-    application_status: 'pending',
-    admin_notes: null,
-    created_at: '2024-01-15',
-    updated_at: '2024-01-15',
-  },
-  {
-    id: 2,
-    user_id: 2,
-    user: {
-      id: 2,
-      first_name: 'Zeynep',
-      last_name: 'Kaya',
-      email: 'zeynep@example.com',
-      address: 'Ankara, Türkiye',
-      phone_number: '(555) 987-6543',
-      user_img: 'https://cdn.quasar.dev/img/avatar2.jpg',
-    },
-    education: 'Hacettepe Üniversitesi Psikoloji Bölümü',
-    license_number: 'PSK789012',
-    experience_years: 3,
-    cv_file: '/documents/cv2.pdf',
-    diploma_file: '/documents/diploma2.pdf',
-    license_file: '/documents/license2.pdf',
-    application_status: 'pending',
-    admin_notes: null,
-    created_at: '2024-01-16',
-    updated_at: '2024-01-16',
-  },
-  {
-    id: 3,
-    user_id: 3,
-    user: {
-      id: 3,
-      first_name: 'Mehmet',
-      last_name: 'Demir',
-      email: 'mehmet@example.com',
-      address: 'İzmir, Türkiye',
-      phone_number: '(555) 456-7890',
-      user_img: 'https://cdn.quasar.dev/img/avatar3.jpg',
-    },
-    education: 'Ege Üniversitesi Psikoloji Bölümü',
-    license_number: 'PSK345678',
-    experience_years: 7,
-    cv_file: '/documents/cv3.pdf',
-    diploma_file: '/documents/diploma3.pdf',
-    license_file: '/documents/license3.pdf',
-    application_status: 'approved',
-    admin_notes: 'Başvuru onaylandı.',
-    created_at: '2024-01-14',
-    updated_at: '2024-01-15',
-  },
-  {
-    id: 4,
-    user_id: 4,
-    user: {
-      id: 4,
-      first_name: 'Ayşe',
-      last_name: 'Şahin',
-      email: 'ayse@example.com',
-      address: 'Bursa, Türkiye',
-      phone_number: '(555) 234-5678',
-      user_img: 'https://cdn.quasar.dev/img/avatar4.jpg',
-    },
-    education: 'Uludağ Üniversitesi Psikoloji Bölümü',
-    license_number: 'PSK901234',
-    experience_years: 2,
-    cv_file: '/documents/cv4.pdf',
-    diploma_file: '/documents/diploma4.pdf',
-    license_file: '/documents/license4.pdf',
-    application_status: 'rejected',
-    admin_notes: 'Eksik belge.',
-    created_at: '2024-01-13',
-    updated_at: '2024-01-14',
-  },
-])
-
 // Status options
 const statusOptions = [
   { label: 'Bekliyor', value: 'pending' },
@@ -526,6 +432,77 @@ const openRejectDialog = (application: TherapistApplication) => {
   rejectDialog.value = true
 }
 
+const fetchApplications = async () => {
+  loading.value = true
+  try {
+    const response = await api.post('/admin.php', {
+      method: 'get-therapist-applications',
+    })
+    console.log(response.data)
+
+    if (response.data.success) {
+      applications.value = response.data.applications
+    } else {
+      throw new Error(response.data.error || 'Failed to fetch applications')
+    }
+  } catch (error) {
+    console.error('Fetch error:', error)
+    $q.notify({
+      type: 'negative',
+      message: error instanceof Error ? error.message : 'Failed to fetch applications',
+      position: 'top',
+    })
+  } finally {
+    loading.value = false
+  }
+}
+
+const updateApplicationStatus = async (
+  application: TherapistApplication,
+  status: 'approved' | 'rejected',
+  notes: string = '',
+) => {
+  try {
+    const response = await api.post('/admin.php', {
+      method: 'update-application-status',
+      application_id: application.id,
+      status,
+      admin_notes: notes,
+    })
+
+    if (response.data.success) {
+      // Update local state
+      const index = applications.value.findIndex((app) => app.id === application.id)
+      if (index !== -1) {
+        applications.value[index] = {
+          ...application,
+          application_status: status,
+          admin_notes: notes,
+          updated_at: new Date().toISOString(),
+        }
+      }
+
+      $q.notify({
+        type: 'positive',
+        message: `Başvuru ${status === 'approved' ? 'onaylandı' : 'reddedildi'}`,
+        position: 'top',
+      })
+
+      rejectDialog.value = false
+      viewDialog.value = false
+    } else {
+      throw new Error(response.data.error || 'Failed to update application status')
+    }
+  } catch (error) {
+    console.error('Update error:', error)
+    $q.notify({
+      type: 'negative',
+      message: error instanceof Error ? error.message : 'Failed to update application status',
+      position: 'top',
+    })
+  }
+}
+
 const confirmApprove = (application: TherapistApplication) => {
   $q.dialog({
     title: 'Onay',
@@ -533,37 +510,7 @@ const confirmApprove = (application: TherapistApplication) => {
     cancel: true,
     persistent: true,
   }).onOk(async () => {
-    try {
-      // Here you would typically make an API call to approve the application
-      await new Promise((resolve) => setTimeout(resolve, 1000)) // Simulating API call
-
-      // Update local state
-      if (application) {
-        application.application_status = 'approved'
-        application.updated_at = new Date().toISOString()
-
-        // Update the application in the list
-        const index = applications.value.findIndex((app) => app.id === application.id)
-        if (index !== -1) {
-          applications.value[index] = { ...application }
-        }
-      }
-
-      $q.notify({
-        type: 'positive',
-        message: 'Başvuru onaylandı',
-        position: 'top',
-      })
-
-      viewDialog.value = false
-    } catch (error: unknown) {
-      console.error('Approve error:', error)
-      $q.notify({
-        type: 'negative',
-        message: 'Bir hata oluştu. Lütfen tekrar deneyiniz.',
-        position: 'top',
-      })
-    }
+    await updateApplicationStatus(application, 'approved')
   })
 }
 
@@ -579,37 +526,9 @@ const handleReject = async () => {
 
   submitting.value = true
   try {
-    // Here you would typically make an API call to reject the application
-    await new Promise((resolve) => setTimeout(resolve, 1000)) // Simulating API call
-
-    // Update local state
     if (selectedApplication.value) {
-      selectedApplication.value.application_status = 'rejected'
-      selectedApplication.value.admin_notes = rejectNotes.value
-      selectedApplication.value.updated_at = new Date().toISOString()
-
-      // Update the application in the list
-      const index = applications.value.findIndex((app) => app.id === selectedApplication.value?.id)
-      if (index !== -1) {
-        applications.value[index] = { ...selectedApplication.value }
-      }
+      await updateApplicationStatus(selectedApplication.value, 'rejected', rejectNotes.value)
     }
-
-    $q.notify({
-      type: 'positive',
-      message: 'Başvuru reddedildi',
-      position: 'top',
-    })
-
-    rejectDialog.value = false
-    viewDialog.value = false
-  } catch (error: unknown) {
-    console.error('Reject error:', error)
-    $q.notify({
-      type: 'negative',
-      message: 'Bir hata oluştu. Lütfen tekrar deneyiniz.',
-      position: 'top',
-    })
   } finally {
     submitting.value = false
   }
@@ -638,6 +557,11 @@ const filteredApplications = computed(() => {
   }
 
   return filtered
+})
+
+// Fetch applications on mount
+onMounted(() => {
+  fetchApplications()
 })
 </script>
 
