@@ -10,15 +10,6 @@ header("Access-Control-Max-Age: 86400");
 define('JWT_SECRET_KEY', 'your-256-bit-secret'); // Use a secure secret key in production
 define('JWT_EXPIRE_TIME', 3600); // Token validity period (in seconds, 1 hour)
 
-// Constants for file uploads
-define('UPLOAD_BASE_PATH', '/srv/http/uploads');
-define('UPLOAD_BASE_URL', '/uploads'); // This will be the public URL path
-
-// Function to get public URL for uploaded files
-function getPublicPath($serverPath) {
-    return str_replace(UPLOAD_BASE_PATH, UPLOAD_BASE_URL, $serverPath);
-}
-
 // Handle preflight requests
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     header("HTTP/1.1 200 OK");
@@ -153,28 +144,15 @@ function registerUser($DB, $data) {
             return $response;
         }
 
-        // Handle profile image upload
-        $userImgPath = '';
-        if (isset($_FILES['user_img'])) {
-            $allowedImageTypes = ['image/jpeg', 'image/png'];
-            try {
-                $userImgPath = uploadFile($_FILES['user_img'], 'profile_images', $allowedImageTypes);
-            } catch (Exception $e) {
-                $response['error'] = "Profile image upload failed: " . $e->getMessage();
-                $DB->rollback();
-                return $response;
-            }
-        }
-
         // Hash password
         $hash = password_hash($data['password'], PASSWORD_DEFAULT);
 
         // Insert user
         $stmt = $DB->prepare("
-            INSERT INTO users (
-                first_name, last_name, email, address, phone_number, 
-                birth_of_date, user_img, password, user_role
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'user')
+        INSERT INTO users (
+            first_name, last_name, email, address, phone_number,
+            birth_of_date, user_img, password, user_role
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'user')
         ");
 
         $stmt->bind_param(
@@ -185,7 +163,7 @@ function registerUser($DB, $data) {
             $data['address'],
             $data['phone_number'],
             $data['birth_of_date'],
-            $userImgPath,
+            $data['user_img'],
             $hash
         );
 
@@ -204,44 +182,6 @@ function registerUser($DB, $data) {
     }
 
     return $response;
-}
-
-// File upload handling functions
-function uploadFile($file, $subDir, $allowedTypes = []) {
-    try {
-        $targetDir = UPLOAD_BASE_PATH . '/' . $subDir;
-        
-        // Create directory if it doesn't exist
-        if (!file_exists($targetDir)) {
-            mkdir($targetDir, 0777, true);
-        }
-
-        // Generate unique filename
-        $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $fileName = uniqid() . '_' . time() . '.' . $fileExtension;
-        $targetPath = $targetDir . '/' . $fileName;
-
-        // Check file type if specified
-        if (!empty($allowedTypes)) {
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $mimeType = finfo_file($finfo, $file['tmp_name']);
-            finfo_close($finfo);
-
-            if (!in_array($mimeType, $allowedTypes)) {
-                throw new Exception("Invalid file type. Allowed types: " . implode(', ', $allowedTypes));
-            }
-        }
-
-        // Move uploaded file
-        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-            return getPublicPath($targetPath); // Return the public URL path
-        } else {
-            throw new Exception("Failed to move uploaded file");
-        }
-    } catch (Exception $e) {
-        error_log("File upload error: " . $e->getMessage());
-        throw $e;
-    }
 }
 
 // Therapist registration
@@ -265,43 +205,51 @@ function registerTherapist($DB, $data) {
         }
 
         // Handle file uploads
-        $allowedImageTypes = ['image/jpeg', 'image/png'];
-        $allowedDocTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-
-        // Upload profile image
+        $uploadDir = '../uploads/';
         $userImgPath = '';
-        if (isset($_FILES['user_img'])) {
-            $userImgPath = uploadFile($_FILES['user_img'], 'profile_images', $allowedImageTypes);
-        }
-
-        // Upload CV
         $cvFilePath = '';
-        if (isset($_FILES['cv_file'])) {
-            $cvFilePath = uploadFile($_FILES['cv_file'], 'cv', $allowedDocTypes);
-        }
-
-        // Upload diploma
         $diplomaFilePath = '';
-        if (isset($_FILES['diploma_file'])) {
-            $diplomaFilePath = uploadFile($_FILES['diploma_file'], 'diploma', array_merge($allowedImageTypes, $allowedDocTypes));
-        }
-
-        // Upload license
         $licenseFilePath = '';
-        if (isset($_FILES['license_file'])) {
-            $licenseFilePath = uploadFile($_FILES['license_file'], 'license', array_merge($allowedImageTypes, $allowedDocTypes));
+
+        // Create uploads directory if it doesn't exist
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
         }
 
-        // Hash password
-        $hash = password_hash($data['password'], PASSWORD_DEFAULT);
+        // Handle user image upload
+        if (isset($_FILES['user_img'])) {
+            $userImgPath = $uploadDir . uniqid() . '_' . basename($_FILES['user_img']['name']);
+            move_uploaded_file($_FILES['user_img']['tmp_name'], $userImgPath);
+        }
 
-        // Insert user
+        // Handle CV upload
+        if (isset($_FILES['cv_file'])) {
+            $cvFilePath = $uploadDir . uniqid() . '_' . basename($_FILES['cv_file']['name']);
+            move_uploaded_file($_FILES['cv_file']['tmp_name'], $cvFilePath);
+        }
+
+        // Handle diploma upload
+        if (isset($_FILES['diploma_file'])) {
+            $diplomaFilePath = $uploadDir . uniqid() . '_' . basename($_FILES['diploma_file']['name']);
+            move_uploaded_file($_FILES['diploma_file']['tmp_name'], $diplomaFilePath);
+        }
+
+        // Handle license upload
+        if (isset($_FILES['license_file'])) {
+            $licenseFilePath = $uploadDir . uniqid() . '_' . basename($_FILES['license_file']['name']);
+            move_uploaded_file($_FILES['license_file']['tmp_name'], $licenseFilePath);
+        }
+
+        // Insert user with therapist role
         $stmt = $DB->prepare("
-            INSERT INTO users (
-                first_name, last_name, email, address, phone_number, 
-                birth_of_date, user_img, password, user_role
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'therapist')
+        INSERT INTO users (
+            first_name, last_name, email, address, phone_number,
+            birth_of_date, user_img, password, user_role
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'therapist')
         ");
+
+        // Hash the provided password
+        $hash = password_hash($data['password'], PASSWORD_DEFAULT);
 
         $stmt->bind_param(
             "ssssssss",
@@ -323,10 +271,10 @@ function registerTherapist($DB, $data) {
 
         // Create therapist application
         $stmt = $DB->prepare("
-            INSERT INTO therapist_applications (
-                user_id, education, license_number, experience_years,
-                cv_file, diploma_file, license_file, application_status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')
+        INSERT INTO therapist_applications (
+            user_id, education, license_number, experience_years,
+            cv_file, diploma_file, license_file, application_status
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')
         ");
 
         $stmt->bind_param(
@@ -346,11 +294,11 @@ function registerTherapist($DB, $data) {
 
         // Create therapist details
         $stmt = $DB->prepare("
-            INSERT INTO therapist_details (
-                user_id, title, about_text, session_fee, session_duration,
-                languages_spoken, video_session_available,
-                face_to_face_session_available, office_address
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO therapist_details (
+            user_id, title, about_text, session_fee, session_duration,
+            languages_spoken, video_session_available,
+            face_to_face_session_available, office_address
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
 
         $languagesSpoken = json_decode($data['languages_spoken'], true);
@@ -382,15 +330,15 @@ function registerTherapist($DB, $data) {
         foreach ($specialties as $specialty) {
             // First, ensure the specialty exists in the specialties table
             $stmt = $DB->prepare("
-                INSERT IGNORE INTO specialties (name)
-                VALUES (?)
+            INSERT IGNORE INTO specialties (name)
+            VALUES (?)
             ");
             $stmt->bind_param("s", $specialty);
             $stmt->execute();
 
             // Get the specialty ID
             $stmt = $DB->prepare("
-                SELECT id FROM specialties WHERE name = ?
+            SELECT id FROM specialties WHERE name = ?
             ");
             $stmt->bind_param("s", $specialty);
             $stmt->execute();
@@ -398,8 +346,8 @@ function registerTherapist($DB, $data) {
 
             // Insert into therapist_specialties using therapist_details.id
             $stmt = $DB->prepare("
-                INSERT INTO therapist_specialties (therapist_id, specialty_id)
-                VALUES (?, ?)
+            INSERT INTO therapist_specialties (therapist_id, specialty_id)
+            VALUES (?, ?)
             ");
             $stmt->bind_param("ii", $therapistDetailsId, $specialtyId);
             if (!$stmt->execute()) {
@@ -429,9 +377,9 @@ function loginUser($DB, $data) {
 
     try {
         $stmt = $DB->prepare("
-            SELECT id, first_name, last_name, email, password, user_role, user_img
-            FROM users 
-            WHERE email = ?
+        SELECT id, first_name, last_name, email, password, user_role, user_img
+        FROM users
+        WHERE email = ?
         ");
         $stmt->bind_param("s", $data['email']);
         $stmt->execute();
@@ -450,24 +398,24 @@ function loginUser($DB, $data) {
                 if ($user['user_role'] === 'therapist') {
                     // Get therapist details
                     $stmt = $DB->prepare("
-                        SELECT td.*, ta.application_status
-                        FROM therapist_details td
-                        LEFT JOIN therapist_applications ta ON ta.user_id = td.user_id
-                        WHERE td.user_id = ?
+                    SELECT td.*, ta.application_status
+                    FROM therapist_details td
+                    LEFT JOIN therapist_applications ta ON ta.user_id = td.user_id
+                    WHERE td.user_id = ?
                     ");
                     $stmt->bind_param("i", $user['id']);
                     $stmt->execute();
                     $therapistDetails = $stmt->get_result()->fetch_assoc();
-                    
+
                     if ($therapistDetails) {
                         $user['therapist_details'] = $therapistDetails;
-                        
+
                         // Get specialties
                         $stmt = $DB->prepare("
-                            SELECT s.id, s.name
-                            FROM specialties s
-                            JOIN therapist_specialties ts ON ts.specialty_id = s.id
-                            WHERE ts.therapist_id = ?
+                        SELECT s.id, s.name
+                        FROM specialties s
+                        JOIN therapist_specialties ts ON ts.specialty_id = s.id
+                        WHERE ts.therapist_id = ?
                         ");
                         $stmt->bind_param("i", $therapistDetails['id']);
                         $stmt->execute();

@@ -58,7 +58,7 @@
                     outlined
                     :rules="[
                       (val: string) => !!val || 'Şifre alanı zorunludur',
-                      (val: string) => val.length >= 6 || '�ifre en az 6 karakter olmalıdır',
+                      (val: string) => val.length >= 6 || 'Şifre en az 6 karakter olmalıdır',
                     ]"
                   />
 
@@ -246,8 +246,17 @@
                         label="Profil Fotoğrafı *"
                         outlined
                         accept=".jpg,.jpeg,.png"
-                        :rules="[(val: File | null) => !!val || 'Profil fotoğrafı zorunludur']"
+                        :rules="[
+                          (val: File | null) => !!val || 'Profil fotoğrafı zorunludur',
+                          (val: File | null) =>
+                            !val || val.size <= 5242880 || 'Dosya boyutu 5MB\'dan küçük olmalıdır',
+                          (val: File | null) =>
+                            !val ||
+                            validateFileType(val, ['image/jpeg', 'image/png']) ||
+                            'Sadece JPG ve PNG formatları kabul edilir',
+                        ]"
                         @update:model-value="onImageSelected"
+                        @rejected="onFileRejected"
                       >
                         <template v-slot:prepend>
                           <q-icon name="photo_camera" />
@@ -265,7 +274,20 @@
                     label="Özgeçmiş (CV) *"
                     outlined
                     accept=".pdf,.doc,.docx"
-                    :rules="[(val: File | null) => !!val || 'CV yüklemesi zorunludur']"
+                    :rules="[
+                      (val: File | null) => !!val || 'CV yüklemesi zorunludur',
+                      (val: File | null) =>
+                        !val || val.size <= 10485760 || 'Dosya boyutu 10MB\'dan küçük olmalıdır',
+                      (val: File | null) =>
+                        !val ||
+                        validateFileType(val, [
+                          'application/pdf',
+                          'application/msword',
+                          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                        ]) ||
+                        'Sadece PDF ve DOC formatları kabul edilir',
+                    ]"
+                    @rejected="onFileRejected"
                   >
                     <template v-slot:prepend>
                       <q-icon name="description" />
@@ -278,7 +300,16 @@
                     label="Diploma *"
                     outlined
                     accept=".pdf,.jpg,.jpeg,.png"
-                    :rules="[(val: File | null) => !!val || 'Diploma yüklemesi zorunludur']"
+                    :rules="[
+                      (val: File | null) => !!val || 'Diploma yüklemesi zorunludur',
+                      (val: File | null) =>
+                        !val || val.size <= 10485760 || 'Dosya boyutu 10MB\'dan küçük olmalıdır',
+                      (val: File | null) =>
+                        !val ||
+                        validateFileType(val, ['application/pdf', 'image/jpeg', 'image/png']) ||
+                        'Sadece PDF, JPG ve PNG formatları kabul edilir',
+                    ]"
+                    @rejected="onFileRejected"
                   >
                     <template v-slot:prepend>
                       <q-icon name="school" />
@@ -291,7 +322,16 @@
                     label="Lisans Belgesi *"
                     outlined
                     accept=".pdf,.jpg,.jpeg,.png"
-                    :rules="[(val: File | null) => !!val || 'Lisans belgesi yüklemesi zorunludur']"
+                    :rules="[
+                      (val: File | null) => !!val || 'Lisans belgesi yüklemesi zorunludur',
+                      (val: File | null) =>
+                        !val || val.size <= 10485760 || 'Dosya boyutu 10MB\'dan küçük olmalıdır',
+                      (val: File | null) =>
+                        !val ||
+                        validateFileType(val, ['application/pdf', 'image/jpeg', 'image/png']) ||
+                        'Sadece PDF, JPG ve PNG formatları kabul edilir',
+                    ]"
+                    @rejected="onFileRejected"
                   >
                     <template v-slot:prepend>
                       <q-icon name="badge" />
@@ -346,6 +386,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useQuasar, QStepper, QForm } from 'quasar'
+import type { QRejectedEntry } from 'quasar'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from 'src/stores/auth'
 
@@ -500,6 +541,22 @@ const onImageSelected = (file: File | null) => {
   }
 }
 
+// File validation function
+const validateFileType = (file: File, allowedTypes: string[]): boolean => {
+  return allowedTypes.includes(file.type)
+}
+
+// File rejection handler
+const onFileRejected = (rejectedEntries: QRejectedEntry[]) => {
+  rejectedEntries.forEach((entry) => {
+    $q.notify({
+      type: 'negative',
+      message: `${entry.file.name}: ${entry.failedPropValidation ? 'Geçersiz dosya formatı veya boyutu' : entry.failedPropValidation}`,
+      position: 'top',
+    })
+  })
+}
+
 const onSubmit = async () => {
   const isCurrentStepValid = await validateStep(step.value)
 
@@ -540,7 +597,9 @@ const onSubmit = async () => {
     formData.append('phone_number', form.value.phone)
     formData.append('birth_of_date', form.value.birthDate)
     formData.append('address', form.value.address)
-    if (form.value.userImg) {
+
+    // File uploads with validation
+    if (form.value.userImg && validateFileType(form.value.userImg, ['image/jpeg', 'image/png'])) {
       formData.append('user_img', form.value.userImg)
     }
 
@@ -561,14 +620,29 @@ const onSubmit = async () => {
       form.value.faceToFaceSessionAvailable ? '1' : '0',
     )
 
-    // Documents
-    if (form.value.cvFile) {
+    // Documents with validation
+    if (
+      form.value.cvFile &&
+      validateFileType(form.value.cvFile, [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      ])
+    ) {
       formData.append('cv_file', form.value.cvFile)
     }
-    if (form.value.diplomaFile) {
+
+    if (
+      form.value.diplomaFile &&
+      validateFileType(form.value.diplomaFile, ['application/pdf', 'image/jpeg', 'image/png'])
+    ) {
       formData.append('diploma_file', form.value.diplomaFile)
     }
-    if (form.value.licenseFile) {
+
+    if (
+      form.value.licenseFile &&
+      validateFileType(form.value.licenseFile, ['application/pdf', 'image/jpeg', 'image/png'])
+    ) {
       formData.append('license_file', form.value.licenseFile)
     }
 

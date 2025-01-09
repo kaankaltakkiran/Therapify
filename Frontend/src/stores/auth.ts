@@ -73,6 +73,14 @@ export const useAuthStore = defineStore('auth', {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
+          timeout: 30000, // 30 seconds timeout for file uploads
+          onUploadProgress: (progressEvent) => {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / (progressEvent.total ?? progressEvent.loaded),
+            )
+            // You could emit this progress if needed
+            console.log('Upload Progress:', percentCompleted + '%')
+          },
         })
 
         if (response.data.success) {
@@ -90,13 +98,38 @@ export const useAuthStore = defineStore('auth', {
           position: 'top-right',
         })
         return false
-      } catch (error) {
+      } catch (error: unknown) {
         console.error('Therapist Register error:', error)
-        Notify.create({
-          color: 'negative',
-          message: 'Error registering',
-          position: 'top-right',
-        })
+
+        // Handle specific error types
+        if (error instanceof Error) {
+          if (error.message.includes('timeout')) {
+            Notify.create({
+              color: 'negative',
+              message:
+                'Dosya yükleme zaman aşımına uğradı. Lütfen daha küçük dosyalar yüklemeyi deneyin.',
+              position: 'top-right',
+            })
+          } else if (error.message.includes('Network Error')) {
+            Notify.create({
+              color: 'negative',
+              message: 'Ağ hatası. İnternet bağlantınızı kontrol edin.',
+              position: 'top-right',
+            })
+          } else {
+            Notify.create({
+              color: 'negative',
+              message: 'Kayıt sırasında bir hata oluştu: ' + error.message,
+              position: 'top-right',
+            })
+          }
+        } else {
+          Notify.create({
+            color: 'negative',
+            message: 'Beklenmeyen bir hata oluştu',
+            position: 'top-right',
+          })
+        }
         return false
       }
     },
