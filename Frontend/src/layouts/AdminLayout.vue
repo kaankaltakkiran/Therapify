@@ -73,11 +73,11 @@
           </q-item>
 
           <!-- Users -->
-          <q-item clickable v-ripple to="/admin/users">
+          <q-item clickable v-ripple to="/admin/therapists">
             <q-item-section avatar>
               <q-icon name="people" />
             </q-item-section>
-            <q-item-section>Kullanıcılar</q-item-section>
+            <q-item-section>Terapistler</q-item-section>
           </q-item>
 
           <!-- Therapist Applications -->
@@ -103,7 +103,7 @@
           </q-item>
 
           <!-- System Stats -->
-          <q-expansion-item
+          <!--   <q-expansion-item
             icon="trending_up"
             label="Sistem İstatistikleri"
             caption="Performans ve kullanım"
@@ -119,7 +119,7 @@
                 <q-item-section>Gelir İstatistikleri</q-item-section>
               </q-item>
             </q-list>
-          </q-expansion-item>
+          </q-expansion-item> -->
         </q-list>
       </q-scroll-area>
     </q-drawer>

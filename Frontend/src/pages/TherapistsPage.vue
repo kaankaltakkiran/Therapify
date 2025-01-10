@@ -107,7 +107,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { api } from 'src/boot/axios'
 
 interface Therapist {
   id: number
@@ -117,16 +118,38 @@ interface Therapist {
   rating: number
   description: string
   tags: string[]
+  title: string
+  session_fee: number
+  session_duration: number
+  languages_spoken: string[]
+  video_session_available: boolean
+  face_to_face_session_available: boolean
+  office_address: string | null
+  specialties: Array<{ id: number; name: string }>
 }
 
-interface Rating {
-  label: string
-  value: number
+interface TherapistResponse {
+  id: number
+  first_name: string
+  last_name: string
+  user_img: string | null
+  title: string
+  about_text: string
+  session_fee: number
+  session_duration: number
+  languages_spoken: string
+  video_session_available: boolean
+  face_to_face_session_available: boolean
+  office_address: string | null
+  application_status: string
+  specialties: Array<{ id: number; name: string }>
+  rating: number
 }
 
 const search = ref('')
 const selectedSpecialty = ref<string | null>(null)
 const selectedRating = ref<number | null>(null)
+const loading = ref(false)
 
 const specialties = [
   'Klinik Psikoloji',
@@ -137,45 +160,57 @@ const specialties = [
   'Anksiyete',
 ]
 
-const ratings: Rating[] = [
+const ratings: { label: string; value: number }[] = [
   { label: '4 ve üzeri ★★★★☆', value: 4 },
   { label: '3 ve üzeri ★★★☆☆', value: 3 },
   { label: 'Tümü', value: 0 },
 ]
 
-// Sample therapist data
-const therapists = ref<Therapist[]>([
-  {
-    id: 1,
-    name: 'Dr. Ayşe Yılmaz',
-    image: 'https://cdn.quasar.dev/img/mountains.jpg', // Replace with actual therapist image
-    specialty: 'Klinik Psikoloji',
-    rating: 2.8,
-    description:
-      '10 yıllık deneyimle, depresyon, anksiyete ve stres yönetimi konularında uzmanlaşmış klinik psikolog.',
-    tags: ['Depresyon', 'Anksiyete', 'Stres Yönetimi'],
-  },
-  {
-    id: 2,
-    name: 'Dr. Mehmet Demir',
-    image: 'https://cdn.quasar.dev/img/parallax2.jpg', // Replace with actual therapist image
-    specialty: 'Aile Terapisi',
-    rating: 4.9,
-    description:
-      'Aile içi iletişim, evlilik sorunları ve ebeveynlik konularında 15 yıllık deneyime sahip uzman.',
-    tags: ['Aile Terapisi', 'Evlilik', 'Ebeveynlik'],
-  },
-  {
-    id: 3,
-    name: 'Uzm. Psk. Zeynep Kaya',
-    image: 'https://cdn.quasar.dev/img/parallax1.jpg', // Replace with actual therapist image
-    specialty: 'Çocuk ve Ergen',
-    rating: 4.7,
-    description:
-      'Çocuk ve ergenlerde davranış bozuklukları, öğrenme güçlükleri konularında uzmanlaşmış psikolog.',
-    tags: ['Çocuk Psikolojisi', 'Ergen Terapisi', 'Öğrenme Güçlükleri'],
-  },
-])
+const therapists = ref<Therapist[]>([])
+
+// Fetch therapists from API
+const fetchTherapists = async () => {
+  loading.value = true
+  try {
+    const response = await api.post('/therapist.php', {
+      method: 'get-approved-therapists',
+    })
+
+    if (response.data.success) {
+      therapists.value = response.data.therapists.map((therapist: TherapistResponse) => ({
+        id: therapist.id,
+        name: `${therapist.title} ${therapist.first_name} ${therapist.last_name}`,
+        image: therapist.user_img ? getFileUrl(therapist.user_img) : '/images/default-avatar.png',
+        specialty: therapist.specialties[0]?.name || '',
+        rating: therapist.rating || 0,
+        description: therapist.about_text,
+        tags: therapist.specialties.map((s) => s.name),
+        title: therapist.title,
+        session_fee: therapist.session_fee,
+        session_duration: therapist.session_duration,
+        languages_spoken: JSON.parse(therapist.languages_spoken),
+        video_session_available: therapist.video_session_available,
+        face_to_face_session_available: therapist.face_to_face_session_available,
+        office_address: therapist.office_address,
+        specialties: therapist.specialties,
+      }))
+    }
+  } catch (error) {
+    console.error('Error fetching therapists:', error)
+  } finally {
+    loading.value = false
+  }
+}
+
+const getFileUrl = (path: string) => {
+  if (!path) return '/images/default-avatar.png'
+
+  // Extract just the filename
+  const filename = path.split('/').pop()
+
+  // Return the simple URL format
+  return `http://localhost/uploads/profile_images/${filename}`
+}
 
 const filteredTherapists = computed(() => {
   return therapists.value.filter((therapist) => {
@@ -187,12 +222,18 @@ const filteredTherapists = computed(() => {
       therapist.tags.some((tag) => tag.toLowerCase().includes(search.value.toLowerCase()))
 
     const matchesSpecialty =
-      !selectedSpecialty.value || therapist.specialty === selectedSpecialty.value
+      !selectedSpecialty.value ||
+      therapist.specialties.some((s) => s.name === selectedSpecialty.value)
 
     const matchesRating = !selectedRating.value || therapist.rating >= selectedRating.value
 
     return matchesSearch && matchesSpecialty && matchesRating
   })
+})
+
+// Fetch therapists on mount
+onMounted(() => {
+  fetchTherapists()
 })
 </script>
 

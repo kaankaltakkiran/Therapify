@@ -52,26 +52,26 @@ function getTherapistApplications($DB) {
     try {
         // Get pending count first
         $countStmt = $DB->prepare("
-            SELECT COUNT(*) as pending_count 
-            FROM therapist_applications 
-            WHERE application_status = 'pending'
+        SELECT COUNT(*) as pending_count
+        FROM therapist_applications
+        WHERE application_status = 'pending'
         ");
         $countStmt->execute();
         $countResult = $countStmt->get_result();
         $pendingCount = $countResult->fetch_assoc()['pending_count'];
 
         $stmt = $DB->prepare("
-            SELECT 
-                ta.*,
-                u.first_name,
-                u.last_name,
-                u.email,
-                u.address,
-                u.phone_number,
-                u.user_img
-            FROM therapist_applications ta
-            JOIN users u ON u.id = ta.user_id
-            ORDER BY ta.created_at DESC
+        SELECT
+        ta.*,
+        u.first_name,
+        u.last_name,
+        u.email,
+        u.address,
+        u.phone_number,
+        u.user_img
+        FROM therapist_applications ta
+        JOIN users u ON u.id = ta.user_id
+        ORDER BY ta.created_at DESC
         ");
 
         $stmt->execute();
@@ -82,7 +82,7 @@ function getTherapistApplications($DB) {
         foreach ($applications as &$application) {
             // Convert file paths to URLs
             $baseUrl = "http://" . $_SERVER['HTTP_HOST'] . "/Therapify/";
-            
+
             $application['cv_file'] = $baseUrl . $application['cv_file'];
             $application['diploma_file'] = $baseUrl . $application['diploma_file'];
             $application['license_file'] = $baseUrl . $application['license_file'];
@@ -128,26 +128,11 @@ function updateApplicationStatus($DB, $data) {
     try {
         $DB->begin_transaction();
 
-        // Get application details first
-        $stmt = $DB->prepare("
-            SELECT ta.*, u.user_role
-            FROM therapist_applications ta
-            JOIN users u ON u.id = ta.user_id
-            WHERE ta.id = ?
-        ");
-        $stmt->bind_param("i", $data['application_id']);
-        $stmt->execute();
-        $application = $stmt->get_result()->fetch_assoc();
-
-        if (!$application) {
-            throw new Exception("Application not found");
-        }
-
         // Update application status
         $stmt = $DB->prepare("
-            UPDATE therapist_applications 
-            SET application_status = ?, admin_notes = ?, updated_at = NOW()
-            WHERE id = ?
+        UPDATE therapist_applications
+        SET application_status = ?, admin_notes = ?, updated_at = NOW()
+        WHERE id = ?
         ");
 
         $stmt->bind_param(
@@ -161,44 +146,19 @@ function updateApplicationStatus($DB, $data) {
             throw new Exception("Failed to update application status");
         }
 
-        // If approved, update user role to therapist and ensure therapist details exist
+        // If approved, update user role to therapist
         if ($data['status'] === 'approved') {
-            // Update user role if not already a therapist
-            if ($application['user_role'] !== 'therapist') {
-                $stmt = $DB->prepare("
-                    UPDATE users 
-                    SET user_role = 'therapist'
-                    WHERE id = ?
-                ");
-                $stmt->bind_param("i", $application['user_id']);
-                
-                if (!$stmt->execute()) {
-                    throw new Exception("Failed to update user role");
-                }
-            }
-
-            // Check if therapist details already exist
             $stmt = $DB->prepare("
-                SELECT id FROM therapist_details WHERE user_id = ?
+            UPDATE users u
+            JOIN therapist_applications ta ON ta.user_id = u.id
+            SET u.user_role = 'therapist'
+            WHERE ta.id = ?
             ");
-            $stmt->bind_param("i", $application['user_id']);
-            $stmt->execute();
-            $existingDetails = $stmt->get_result()->fetch_assoc();
 
-            // If no details exist, create them with default values
-            if (!$existingDetails) {
-                $stmt = $DB->prepare("
-                    INSERT INTO therapist_details (
-                        user_id, title, about_text, session_fee,
-                        session_duration, languages_spoken,
-                        video_session_available, face_to_face_session_available
-                    ) VALUES (?, '', '', 0, 50, '[]', 1, 1)
-                ");
-                $stmt->bind_param("i", $application['user_id']);
-                
-                if (!$stmt->execute()) {
-                    throw new Exception("Failed to create therapist details");
-                }
+            $stmt->bind_param("i", $data['application_id']);
+
+            if (!$stmt->execute()) {
+                throw new Exception("Failed to update user role");
             }
         }
 
@@ -219,11 +179,11 @@ function getPendingApplicationsCount($DB) {
 
     try {
         $stmt = $DB->prepare("
-            SELECT COUNT(*) as pending_count 
-            FROM therapist_applications 
-            WHERE application_status = 'pending'
+        SELECT COUNT(*) as pending_count
+        FROM therapist_applications
+        WHERE application_status = 'pending'
         ");
-        
+
         $stmt->execute();
         $result = $stmt->get_result();
         $count = $result->fetch_assoc()['pending_count'];
@@ -235,4 +195,4 @@ function getPendingApplicationsCount($DB) {
     }
 
     return $response;
-} 
+}

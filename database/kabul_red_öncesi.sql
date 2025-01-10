@@ -33,7 +33,6 @@ CREATE TABLE `therapist_applications` (
   `diploma_file` varchar(255) NOT NULL,
   `license_file` varchar(255) NOT NULL,
   `application_status` enum('pending','approved','rejected') NOT NULL DEFAULT 'pending',
-  `admin_notes` text DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),

@@ -288,35 +288,34 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useQuasar } from 'quasar'
+import { useQuasar, Dialog } from 'quasar'
 import { api } from 'src/boot/axios'
 
 const $q = useQuasar()
+Dialog.create = Dialog.create || $q.dialog // Ensure Dialog.create exists
 
-interface User {
-  id: number
-  first_name: string
-  last_name: string
-  email: string
-  address: string
-  phone_number: string
-  user_img: string
-}
-
+//TherapistApplication interface
 interface TherapistApplication {
   id: number
   user_id: number
-  user: User
   education: string
   license_number: string
   experience_years: number
   cv_file: string
   diploma_file: string
   license_file: string
-  application_status: 'pending' | 'approved' | 'rejected'
+  application_status: string
   admin_notes: string | null
   created_at: string
   updated_at: string
+  user: {
+    first_name: string
+    last_name: string
+    email: string
+    phone_number: string
+    address: string
+    user_img: string
+  }
 }
 
 // State
@@ -338,6 +337,7 @@ const initialPagination = {
   rowsPerPage: 10,
 }
 
+//Table columns
 const columns = [
   {
     name: 'user',
@@ -432,6 +432,9 @@ const openRejectDialog = (application: TherapistApplication) => {
   rejectDialog.value = true
 }
 
+//Data fetching
+// adimn.php?method=get-therapist-applications
+//adimn.php=therapist başvurularını getirir
 const fetchApplications = async () => {
   loading.value = true
   try {
@@ -457,6 +460,7 @@ const fetchApplications = async () => {
   }
 }
 
+//Başvuruyu onaylama veya reddetme
 const updateApplicationStatus = async (
   application: TherapistApplication,
   status: 'approved' | 'rejected',
@@ -482,10 +486,15 @@ const updateApplicationStatus = async (
         }
       }
 
+      // Show success message
       $q.notify({
         type: 'positive',
-        message: `Başvuru ${status === 'approved' ? 'onaylandı' : 'reddedildi'}`,
+        message:
+          status === 'approved'
+            ? 'Başvuru onaylandı. Terapist artık platformda listelenecek.'
+            : 'Başvuru reddedildi.',
         position: 'top',
+        timeout: 3000,
       })
 
       rejectDialog.value = false
@@ -504,13 +513,46 @@ const updateApplicationStatus = async (
 }
 
 const confirmApprove = (application: TherapistApplication) => {
-  $q.dialog({
-    title: 'Onay',
-    message: 'Bu başvuruyu onaylamak istediğinizden emin misiniz?',
-    cancel: true,
+  Dialog.create({
+    title: 'Başvuruyu Onayla',
+    message:
+      'Bu başvuruyu onaylamak istediğinize emin misiniz? Onaylanan terapist platformda listelenecektir.',
     persistent: true,
+    ok: {
+      label: 'Onayla',
+      color: 'positive',
+    },
+    cancel: {
+      label: 'İptal',
+      color: 'negative',
+    },
   }).onOk(async () => {
-    await updateApplicationStatus(application, 'approved')
+    try {
+      const response = await api.post('/admin.php', {
+        method: 'update-application-status',
+        application_id: application.id,
+        status: 'approved',
+        admin_notes: '',
+      })
+
+      if (response.data.success) {
+        $q.notify({
+          type: 'positive',
+          message: 'Başvuru başarıyla onaylandı. Terapist artık platformda listelenecek.',
+          timeout: 3000,
+        })
+        fetchApplications()
+      } else {
+        throw new Error(response.data.message || 'Başvuru onaylanırken bir hata oluştu.')
+      }
+    } catch (error: unknown) {
+      console.error('Error approving application:', error)
+      $q.notify({
+        type: 'negative',
+        message: error instanceof Error ? error.message : 'Başvuru onaylanırken bir hata oluştu.',
+        timeout: 3000,
+      })
+    }
   })
 }
 
@@ -534,6 +576,7 @@ const handleReject = async () => {
   }
 }
 
+//Kullanıcınin yüklediği dosyaların url'sini getirme
 const getFileUrl = (path: string) => {
   if (!path) return ''
 
