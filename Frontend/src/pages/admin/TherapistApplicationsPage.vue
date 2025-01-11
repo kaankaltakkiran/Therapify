@@ -114,6 +114,28 @@
               >
                 <q-tooltip>Reddet</q-tooltip>
               </q-btn>
+              <q-btn
+                v-if="props.row.application_status === 'approved'"
+                flat
+                round
+                color="negative"
+                icon="close"
+                size="sm"
+                @click="openRejectDialog(props.row)"
+              >
+                <q-tooltip>Onayı İptal Et</q-tooltip>
+              </q-btn>
+              <q-btn
+                v-if="props.row.application_status === 'rejected'"
+                flat
+                round
+                color="positive"
+                icon="check"
+                size="sm"
+                @click="confirmApprove(props.row)"
+              >
+                <q-tooltip>Reddi İptal Et</q-tooltip>
+              </q-btn>
             </div>
           </q-td>
         </q-tr>
@@ -233,21 +255,34 @@
                   </template>
 
                   <!-- Action Buttons -->
-                  <div
-                    v-if="selectedApplication.application_status === 'pending'"
-                    class="row q-gutter-sm q-mt-lg"
-                  >
+                  <div class="row q-gutter-sm q-mt-lg">
                     <q-btn
+                      v-if="selectedApplication.application_status === 'pending'"
                       color="positive"
                       icon="check_circle"
                       label="Onayla"
                       @click="confirmApprove(selectedApplication)"
                     />
                     <q-btn
+                      v-if="selectedApplication.application_status === 'pending'"
                       color="negative"
                       icon="cancel"
                       label="Reddet"
                       @click="openRejectDialog(selectedApplication)"
+                    />
+                    <q-btn
+                      v-if="selectedApplication.application_status === 'approved'"
+                      color="negative"
+                      icon="close"
+                      label="Onayı İptal Et"
+                      @click="openRejectDialog(selectedApplication)"
+                    />
+                    <q-btn
+                      v-if="selectedApplication.application_status === 'rejected'"
+                      color="positive"
+                      icon="check"
+                      label="Reddi İptal Et"
+                      @click="confirmApprove(selectedApplication)"
                     />
                   </div>
                 </q-card-section>
@@ -540,8 +575,11 @@ const confirmApprove = (application: TherapistApplication) => {
           type: 'positive',
           message: 'Başvuru başarıyla onaylandı. Terapist artık platformda listelenecek.',
           timeout: 3000,
+          position: 'top',
         })
         fetchApplications()
+        //Başvuruyu kapat
+        viewDialog.value = false
       } else {
         throw new Error(response.data.message || 'Başvuru onaylanırken bir hata oluştu.')
       }
