@@ -141,6 +141,9 @@ function registerUser($DB, $data) {
         // Begin transaction
         $DB->begin_transaction();
 
+        // Store current auto-increment value
+        $DB->query("SET @users_auto_increment = (SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA='Therapify' AND TABLE_NAME='users')");
+
         // Check if email already exists
         $stmt = $DB->prepare("SELECT COUNT(*) as count FROM users WHERE email = ?");
         $stmt->bind_param("s", $data['email']);
@@ -150,6 +153,8 @@ function registerUser($DB, $data) {
         if ($count > 0) {
             $response['error'] = "This email is already in use";
             $DB->rollback();
+            // Reset auto-increment value
+            $DB->query("ALTER TABLE users AUTO_INCREMENT = @users_auto_increment");
             return $response;
         }
 
@@ -200,6 +205,8 @@ function registerUser($DB, $data) {
         }
     } catch (Exception $e) {
         $DB->rollback();
+        // Reset auto-increment value
+        $DB->query("ALTER TABLE users AUTO_INCREMENT = @users_auto_increment");
         $response['error'] = "Database error: " . $e->getMessage();
     }
 
@@ -252,6 +259,11 @@ function registerTherapist($DB, $data) {
         // Begin transaction
         $DB->begin_transaction();
 
+        // Store current auto-increment values
+        $DB->query("SET @users_auto_increment = (SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA='Therapify' AND TABLE_NAME='users')");
+        $DB->query("SET @therapist_details_auto_increment = (SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA='Therapify' AND TABLE_NAME='therapist_details')");
+        $DB->query("SET @therapist_applications_auto_increment = (SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA='Therapify' AND TABLE_NAME='therapist_applications')");
+
         // Check if email already exists
         $stmt = $DB->prepare("SELECT COUNT(*) as count FROM users WHERE email = ?");
         $stmt->bind_param("s", $data['email']);
@@ -261,6 +273,10 @@ function registerTherapist($DB, $data) {
         if ($count > 0) {
             $response['error'] = "This email is already in use";
             $DB->rollback();
+            // Reset auto-increment values
+            $DB->query("ALTER TABLE users AUTO_INCREMENT = @users_auto_increment");
+            $DB->query("ALTER TABLE therapist_details AUTO_INCREMENT = @therapist_details_auto_increment");
+            $DB->query("ALTER TABLE therapist_applications AUTO_INCREMENT = @therapist_applications_auto_increment");
             return $response;
         }
 
@@ -321,6 +337,68 @@ function registerTherapist($DB, $data) {
 
         $userId = $stmt->insert_id;
 
+        // Insert therapist details
+        $stmt = $DB->prepare("
+            INSERT INTO therapist_details (
+                user_id, title, about_text, session_fee,
+                session_duration, languages_spoken,
+                video_session_available, face_to_face_session_available,
+                office_address
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ");
+
+        $stmt->bind_param(
+            "issiisiii",
+            $userId,
+            $data['title'],
+            $data['about_text'],
+            $data['session_fee'],
+            $data['session_duration'],
+            $data['languages_spoken'],
+            $data['video_session_available'],
+            $data['face_to_face_session_available'],
+            $data['office_address']
+        );
+
+        if (!$stmt->execute()) {
+            throw new Exception("Failed to insert therapist details");
+        }
+
+        // Get the therapist_details id
+        $therapistDetailsId = $DB->insert_id;
+
+        // Insert therapist specialties
+        $specialties = json_decode($data['specialties'], true);
+        
+        // First check if specialties exist
+        $checkStmt = $DB->prepare("SELECT id FROM specialties WHERE name = ?");
+        $insertSpecialtyStmt = $DB->prepare("INSERT INTO specialties (name) VALUES (?)");
+        $insertTherapistSpecialtyStmt = $DB->prepare("INSERT INTO therapist_specialties (therapist_id, specialty_id) VALUES (?, ?)");
+
+        foreach ($specialties as $specialty) {
+            // Check if specialty exists
+            $checkStmt->bind_param("s", $specialty);
+            $checkStmt->execute();
+            $result = $checkStmt->get_result();
+            
+            if ($result->num_rows === 0) {
+                // Specialty doesn't exist, create it
+                $insertSpecialtyStmt->bind_param("s", $specialty);
+                if (!$insertSpecialtyStmt->execute()) {
+                    throw new Exception("Failed to create specialty: " . $specialty);
+                }
+                $specialtyId = $DB->insert_id;
+            } else {
+                $specialtyId = $result->fetch_assoc()['id'];
+            }
+
+            // Insert the therapist-specialty relationship
+            $insertTherapistSpecialtyStmt->bind_param("ii", $therapistDetailsId, $specialtyId);
+            if (!$insertTherapistSpecialtyStmt->execute()) {
+                throw new Exception("Failed to insert specialty relationship: " . $specialty);
+            }
+        }
+
         // Create therapist application
         $stmt = $DB->prepare("
             INSERT INTO therapist_applications (
@@ -344,69 +422,6 @@ function registerTherapist($DB, $data) {
             throw new Exception("Failed to create therapist application");
         }
 
-        // Create therapist details
-        $stmt = $DB->prepare("
-            INSERT INTO therapist_details (
-                user_id, title, about_text, session_fee, session_duration,
-                languages_spoken, video_session_available,
-                face_to_face_session_available, office_address
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ");
-
-        $languagesSpoken = json_decode($data['languages_spoken'], true);
-        $languagesJson = json_encode($languagesSpoken);
-        $videoSession = $data['video_session_available'] === '1';
-        $faceToFaceSession = $data['face_to_face_session_available'] === '1';
-
-        $stmt->bind_param(
-            "issdisiss",
-            $userId,
-            $data['title'],
-            $data['about_text'],
-            $data['session_fee'],
-            $data['session_duration'],
-            $languagesJson,
-            $videoSession,
-            $faceToFaceSession,
-            $data['office_address']
-        );
-
-        if (!$stmt->execute()) {
-            throw new Exception("Failed to create therapist details");
-        }
-
-        $therapistDetailsId = $stmt->insert_id;
-
-        // Insert specialties
-        $specialties = json_decode($data['specialties'], true);
-        foreach ($specialties as $specialty) {
-            // First, ensure the specialty exists in the specialties table
-            $stmt = $DB->prepare("
-                INSERT IGNORE INTO specialties (name)
-                VALUES (?)
-            ");
-            $stmt->bind_param("s", $specialty);
-            $stmt->execute();
-
-            // Get the specialty ID
-            $stmt = $DB->prepare("
-                SELECT id FROM specialties WHERE name = ?
-            ");
-            $stmt->bind_param("s", $specialty);
-            $stmt->execute();
-            $specialtyId = $stmt->get_result()->fetch_assoc()['id'];
-
-            // Insert into therapist_specialties using therapist_details.id
-            $stmt = $DB->prepare("
-                INSERT INTO therapist_specialties (therapist_id, specialty_id)
-                VALUES (?, ?)
-            ");
-            $stmt->bind_param("ii", $therapistDetailsId, $specialtyId);
-            if (!$stmt->execute()) {
-                throw new Exception("Failed to add specialty");
-            }
-        }
-
         // Send welcome email with temporary password
         // TODO: Implement email sending functionality
         // mail($data['email'], "Welcome to Therapify", "Your temporary password is: " . $tempPassword);
@@ -417,6 +432,10 @@ function registerTherapist($DB, $data) {
         $DB->commit();
     } catch (Exception $e) {
         $DB->rollback();
+        // Reset auto-increment values
+        $DB->query("ALTER TABLE users AUTO_INCREMENT = @users_auto_increment");
+        $DB->query("ALTER TABLE therapist_details AUTO_INCREMENT = @therapist_details_auto_increment");
+        $DB->query("ALTER TABLE therapist_applications AUTO_INCREMENT = @therapist_applications_auto_increment");
         $response['error'] = "Registration failed: " . $e->getMessage();
     }
 

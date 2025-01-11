@@ -81,14 +81,14 @@
 
               <div class="row items-center q-gutter-x-md">
                 <q-chip
-                  v-for="tag in therapist.tags"
-                  :key="tag"
+                  v-for="specialty in therapist.specialties"
+                  :key="specialty.id"
                   outline
                   color="primary"
                   text-color="primary"
                   size="sm"
                 >
-                  {{ tag }}
+                  {{ specialty.name }}
                 </q-chip>
               </div>
             </q-card-section>
@@ -117,7 +117,6 @@ interface Therapist {
   specialty: string
   rating: number
   description: string
-  tags: string[]
   title: string
   session_fee: number
   session_duration: number
@@ -184,7 +183,6 @@ const fetchTherapists = async () => {
         specialty: therapist.specialties[0]?.name || '',
         rating: therapist.rating || 0,
         description: therapist.about_text,
-        tags: therapist.specialties.map((s) => s.name),
         title: therapist.title,
         session_fee: therapist.session_fee,
         session_duration: therapist.session_duration,
@@ -192,7 +190,7 @@ const fetchTherapists = async () => {
         video_session_available: therapist.video_session_available,
         face_to_face_session_available: therapist.face_to_face_session_available,
         office_address: therapist.office_address,
-        specialties: therapist.specialties,
+        specialties: therapist.specialties
       }))
     }
   } catch (error) {
@@ -219,7 +217,7 @@ const filteredTherapists = computed(() => {
       therapist.name.toLowerCase().includes(search.value.toLowerCase()) ||
       therapist.specialty.toLowerCase().includes(search.value.toLowerCase()) ||
       therapist.description.toLowerCase().includes(search.value.toLowerCase()) ||
-      therapist.tags.some((tag) => tag.toLowerCase().includes(search.value.toLowerCase()))
+      therapist.specialties.some((specialty) => specialty.name.toLowerCase().includes(search.value.toLowerCase()))
 
     const matchesSpecialty =
       !selectedSpecialty.value ||

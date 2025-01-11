@@ -194,6 +194,19 @@
                       <div class="text-body2 q-mb-md">
                         {{ selectedApplication.experience_years }} yıl
                       </div>
+
+                      <div class="text-caption q-mb-sm">Uzmanlık Alanları</div>
+                      <div class="row q-gutter-x-xs q-mb-md">
+                        <q-chip
+                          v-for="specialty in selectedApplication.specialties"
+                          :key="specialty.id"
+                          color="primary"
+                          text-color="white"
+                          size="sm"
+                        >
+                          {{ specialty.name }}
+                        </q-chip>
+                      </div>
                     </div>
 
                     <div class="col-12 col-md-6">
@@ -343,6 +356,7 @@ interface TherapistApplication {
   admin_notes: string | null
   created_at: string
   updated_at: string
+  specialties: Array<{ id: number; name: string }>
   user: {
     first_name: string
     last_name: string

@@ -80,6 +80,20 @@ function getTherapistApplications($DB) {
 
         // Format the response
         foreach ($applications as &$application) {
+            // Get specialties for this application
+            $specialtiesStmt = $DB->prepare("
+                SELECT s.id, s.name
+                FROM specialties s
+                JOIN therapist_specialties ts ON ts.specialty_id = s.id
+                JOIN therapist_details td ON td.id = ts.therapist_id
+                WHERE td.user_id = ?
+            ");
+            
+            $specialtiesStmt->bind_param("i", $application['user_id']);
+            $specialtiesStmt->execute();
+            $specialtiesResult = $specialtiesStmt->get_result();
+            $application['specialties'] = $specialtiesResult->fetch_all(MYSQLI_ASSOC);
+
             // Convert file paths to URLs
             $baseUrl = "http://" . $_SERVER['HTTP_HOST'] . "/Therapify/";
             

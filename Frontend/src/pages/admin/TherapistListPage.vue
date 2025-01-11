@@ -52,6 +52,19 @@
             </div>
           </q-td>
           <q-td key="title" :props="props">{{ props.row.title }}</q-td>
+     <!--      <q-td key="specialties" :props="props">
+            <div class="row q-gutter-x-xs">
+              <q-chip
+                v-for="specialty in props.row.specialties"
+                :key="specialty.id"
+                color="primary"
+                text-color="white"
+                size="sm"
+              >
+                {{ specialty.name }}
+              </q-chip>
+            </div>
+          </q-td> -->
           <q-td key="session_fee" :props="props">{{ props.row.session_fee }} ₺</q-td>
           <q-td key="session_duration" :props="props">{{ props.row.session_duration }} dakika</q-td>
           <q-td key="languages" :props="props">
@@ -151,6 +164,19 @@
                           </q-chip>
                         </div>
                       </div>
+
+                      <div class="text-caption q-mb-sm">Uzmanlık Alanları</div>
+                      <div class="row q-gutter-x-xs q-mb-md">
+                        <q-chip
+                          v-for="specialty in selectedTherapist.specialties"
+                          :key="specialty.id"
+                          color="primary"
+                          text-color="white"
+                          size="sm"
+                        >
+                          {{ specialty.name }}
+                        </q-chip>
+                      </div>
                     </div>
 
                     <div class="col-12 col-md-6">
@@ -222,6 +248,7 @@ interface Therapist {
   video_session_available: boolean
   face_to_face_session_available: boolean
   office_address: string | null
+  specialties: Array<{ id: number; name: string }>
 }
 
 const $q = useQuasar()
@@ -247,6 +274,15 @@ const columns: QTableColumn[] = [
     field: 'title',
     sortable: true,
   },
+ /*  {
+    name: 'specialties',
+    align: 'left',
+    label: 'Uzmanlık Alanları',
+    field: 'specialties',
+    format: (val: Array<{ id: number; name: string }>) => (
+      val.map(specialty => specialty.name).join(', ')
+    ),
+  }, */
   {
     name: 'session_fee',
     align: 'left',
