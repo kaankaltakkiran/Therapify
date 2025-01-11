@@ -55,7 +55,7 @@
                 <div class="column items-center">
                   <div class="text-h6 q-mb-md">Profile</div>
                   <q-avatar size="72px">
-                    <img :src="user.user_img || 'https://cdn.quasar.dev/img/boy-avatar.png'" />
+                    <img :src="getFileUrl(user.user_img)" />
                   </q-avatar>
                   <div class="text-subtitle1 q-mt-md q-mb-xs">
                     {{ user.first_name }} {{ user.last_name }}
@@ -98,6 +98,19 @@ import TheFooter from 'components/layout/TheFooter.vue'
 import { useAuthStore } from 'stores/auth'
 import { storeToRefs } from 'pinia'
 import { Notify } from 'quasar'
+
+const getFileUrl = (path: string | undefined) => {
+  if (!path) return 'https://cdn.quasar.dev/img/boy-avatar.png'
+  
+  // Check if the path is a base64 image
+  if (path.startsWith('data:image')) {
+    return path
+  }
+  
+  // Handle file path images
+  const filename = path.split('/').pop()
+  return `http://localhost/uploads/profile_images/${filename}`
+}
 
 const drawerOpen = ref(false)
 const authStore = useAuthStore()
