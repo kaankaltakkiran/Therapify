@@ -1,0 +1,303 @@
+{
+  "info": {
+    "name": "Therapify API",
+    "description": "API collection for Therapify platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "description": "User authentication endpoints",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost/Therapify/api/auth.php",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"method\": \"login\",\n    \"email\": \"admin@therapify.com\",\n    \"password\": \"admin123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Login with email and password to get JWT token"
+          }
+        },
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost/Therapify/api/auth.php",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "method",
+                  "value": "register",
+                  "type": "text"
+                },
+                {
+                  "key": "first_name",
+                  "value": "John",
+                  "type": "text"
+                },
+                {
+                  "key": "last_name",
+                  "value": "Doe",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "john@example.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "password123",
+                  "type": "text"
+                },
+                {
+                  "key": "address",
+                  "value": "123 Main St",
+                  "type": "text"
+                },
+                {
+                  "key": "phone_number",
+                  "value": "+1234567890",
+                  "type": "text"
+                },
+                {
+                  "key": "birth_of_date",
+                  "value": "1990-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "user_img",
+                  "type": "file",
+                  "src": "profile.jpg"
+                }
+              ]
+            },
+            "description": "Register a new user with profile details"
+          }
+        },
+        {
+          "name": "Register Therapist",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost/Therapify/api/auth.php",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "method",
+                  "value": "therapist-register",
+                  "type": "text"
+                },
+                {
+                  "key": "first_name",
+                  "value": "Jane",
+                  "type": "text"
+                },
+                {
+                  "key": "last_name",
+                  "value": "Smith",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "jane@example.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "password123",
+                  "type": "text"
+                },
+                {
+                  "key": "address",
+                  "value": "456 Oak St",
+                  "type": "text"
+                },
+                {
+                  "key": "phone_number",
+                  "value": "+1234567891",
+                  "type": "text"
+                },
+                {
+                  "key": "birth_of_date",
+                  "value": "1985-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "title",
+                  "value": "Dr.",
+                  "type": "text"
+                },
+                {
+                  "key": "about_text",
+                  "value": "Experienced therapist specializing in cognitive behavioral therapy",
+                  "type": "text"
+                },
+                {
+                  "key": "session_fee",
+                  "value": "100",
+                  "type": "text"
+                },
+                {
+                  "key": "session_duration",
+                  "value": "50",
+                  "type": "text"
+                },
+                {
+                  "key": "languages_spoken",
+                  "value": "[\"English\", \"Spanish\"]",
+                  "type": "text"
+                },
+                {
+                  "key": "video_session_available",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "face_to_face_session_available",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "office_address",
+                  "value": "789 Pine St",
+                  "type": "text"
+                },
+                {
+                  "key": "education",
+                  "value": "Ph.D. in Psychology",
+                  "type": "text"
+                },
+                {
+                  "key": "license_number",
+                  "value": "PSY12345",
+                  "type": "text"
+                },
+                {
+                  "key": "experience_years",
+                  "value": "10",
+                  "type": "text"
+                },
+                {
+                  "key": "specialties",
+                  "value": "[\"Anxiety\", \"Depression\", \"Couples Therapy\"]",
+                  "type": "text"
+                },
+                {
+                  "key": "user_img",
+                  "type": "file",
+                  "src": "profile.jpg"
+                },
+                {
+                  "key": "cv_file",
+                  "type": "file",
+                  "src": "cv.pdf"
+                },
+                {
+                  "key": "diploma_file",
+                  "type": "file",
+                  "src": "diploma.pdf"
+                },
+                {
+                  "key": "license_file",
+                  "type": "file",
+                  "src": "license.pdf"
+                }
+              ]
+            },
+            "description": "Register a new therapist with professional details and required documents"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "description": "Admin management endpoints",
+      "item": [
+        {
+          "name": "Get Therapist Applications",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost/Therapify/api/admin.php",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"method\": \"get-therapist-applications\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Get list of all therapist applications"
+          }
+        },
+        {
+          "name": "Update Application Status",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost/Therapify/api/admin.php",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"method\": \"update-application-status\",\n    \"application_id\": 1,\n    \"status\": \"approved\",\n    \"admin_notes\": \"Application approved after document verification\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Update therapist application status (approve/reject)"
+          }
+        },
+        {
+          "name": "Get Pending Applications Count",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost/Therapify/api/admin.php",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"method\": \"get-pending-count\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Get count of pending therapist applications"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Therapist",
+      "description": "Therapist management endpoints",
+      "item": [
+        {
+          "name": "Get Approved Therapists",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost/Therapify/api/therapist.php",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"method\": \"get-approved-therapists\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Get list of all approved therapists"
+          }
+        }
+      ]
+    }
+  ]
+} 
