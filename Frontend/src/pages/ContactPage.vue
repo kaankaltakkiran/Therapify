@@ -143,11 +143,12 @@
           </q-card>
         </div>
       </div>
+      
 
       <!-- Map -->
       <div class="map-container q-mt-xl">
         <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d192698.6296691816!2d28.871754966796865!3d41.005495599999994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14caa7040068086b%3A0xe1ccfe98bc01b0d0!2zxLBzdGFuYnVs!5e0!3m2!1str!2str!4v1648226528092!5m2!1str!2str"
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3124.4172358700284!2d27.11795127581679!3d38.45492777269051!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14bbd9ef9caa5795%3A0x272693f512cecf50!2zS2FyxZ_EsXlha2EgxLBza2VsZXNp!5e0!3m2!1str!2str!4v1736678038493!5m2!1str!2str"
           width="100%"
           height="450"
           style="border: 0"
