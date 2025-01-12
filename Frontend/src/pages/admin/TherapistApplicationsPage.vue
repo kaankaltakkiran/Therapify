@@ -1,4 +1,5 @@
 <template>
+  <!--Terapist Onaylama Sayfası-->
   <q-page class="q-pa-md">
     <div class="row items-center q-mb-lg">
       <div class="text-h5 q-mr-md">Terapist Başvuruları</div>

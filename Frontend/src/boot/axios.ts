@@ -13,7 +13,7 @@ declare module 'vue' {
 
 const api = axios.create({ baseURL: 'http://localhost/Therapify' })
 
-// Request interceptor for API calls
+// api control
 api.interceptors.request.use(
   (config) => {
     const authStore = useAuthStore()

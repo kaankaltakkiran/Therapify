@@ -30,9 +30,9 @@
           <q-item clickable v-ripple @click="scrollToSection('therapists')" class="mobile-nav-item">
             <q-item-section>Terapistler İçin</q-item-section>
           </q-item>
-          <q-item clickable v-ripple to="/therapists" class="mobile-nav-item">
+      <!--     <q-item clickable v-ripple to="/therapists" class="mobile-nav-item">
             <q-item-section>Terapistlerimiz</q-item-section>
-          </q-item>
+          </q-item> -->
           <q-item clickable v-ripple to="/contact" class="mobile-nav-item">
             <q-item-section>İletişim</q-item-section>
           </q-item>
