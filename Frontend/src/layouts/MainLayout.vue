@@ -24,36 +24,35 @@
     <q-drawer v-model="drawerOpen" side="right" overlay bordered :width="250" class="bg-white">
       <q-scroll-area class="fit">
         <q-list padding>
-          <q-item clickable v-ripple @click="scrollToSection('services')" class="mobile-nav-item">
+          <q-item clickable v-ripple to="/" exact class="mobile-nav-item">
+            <q-item-section>Ana Sayfa</q-item-section>
+          </q-item>
+          <q-item clickable v-ripple @click="navigateAndScroll('services')" class="mobile-nav-item">
             <q-item-section>Nasıl Çalışır?</q-item-section>
           </q-item>
-          <q-item clickable v-ripple @click="scrollToSection('therapists')" class="mobile-nav-item">
+          <q-item clickable v-ripple @click="navigateAndScroll('therapists')" class="mobile-nav-item">
             <q-item-section>Terapistler İçin</q-item-section>
           </q-item>
-      <!--     <q-item clickable v-ripple to="/therapists" class="mobile-nav-item">
-            <q-item-section>Terapistlerimiz</q-item-section>
-          </q-item> -->
-          <q-item clickable v-ripple to="/contact" class="mobile-nav-item">
+          <q-item clickable v-ripple to="/contact" exact class="mobile-nav-item">
             <q-item-section>İletişim</q-item-section>
           </q-item>
           <q-separator class="q-my-md" />
-          <q-item v-if="!isAuthenticated" clickable v-ripple to="/login" class="mobile-nav-item">
+          <q-item v-if="!isAuthenticated" clickable v-ripple to="/login" exact class="mobile-nav-item">
             <q-item-section>Giriş</q-item-section>
           </q-item>
-          <q-item v-if="!isAuthenticated" clickable v-ripple to="/register" class="mobile-nav-item">
+          <q-item v-if="!isAuthenticated" clickable v-ripple to="/register" exact class="mobile-nav-item">
             <q-item-section>Kayıt Ol</q-item-section>
           </q-item>
-          <q-item>
+          <q-item v-if="isAuthenticated && user">
             <!-- Profile Dropdown -->
             <q-btn-dropdown
-              v-if="isAuthenticated && user"
-              class="glossy q-ml-md"
+              class="glossy full-width"
               color="secondary"
-              :label="'welcome ' + user.first_name"
+              :label="'Hoşgeldin ' + user.first_name"
             >
               <div class="row no-wrap q-pa-md">
                 <div class="column items-center">
-                  <div class="text-h6 q-mb-md">Profile</div>
+                  <div class="text-h6 q-mb-md">Profil</div>
                   <q-avatar size="72px">
                     <img :src="getFileUrl(user.user_img)" />
                   </q-avatar>
@@ -119,7 +118,7 @@ const { isAuthenticated, user } = storeToRefs(authStore)
 const router = useRouter()
 
 const handleLogout = async () => {
-  drawerOpen.value = !drawerOpen.value
+  drawerOpen.value = false
   Notify.create({
     color: 'info',
     message: 'çıkış yapıldı',
@@ -132,25 +131,22 @@ const toggleDrawer = () => {
   drawerOpen.value = !drawerOpen.value
 }
 
-const scrollToSection = async (sectionId: string) => {
-  // Check if we're not on the home page
-  if (window.location.pathname !== '/') {
-    // Navigate to home page first
+const navigateAndScroll = async (sectionId: string) => {
+  drawerOpen.value = false // Close drawer first
+  
+  if (router.currentRoute.value.path !== '/') {
     await router.push('/')
-    // Wait for the page to load
+    // Wait for navigation and DOM update
     setTimeout(() => {
       const element = document.getElementById(sectionId)
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' })
-        drawerOpen.value = false
       }
     }, 100)
   } else {
-    // If already on home page, just scroll
     const element = document.getElementById(sectionId)
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' })
-      drawerOpen.value = false
     }
   }
 }
@@ -196,6 +192,23 @@ const scrollToSection = async (sectionId: string) => {
       font-size: 1.8rem;
       line-height: 1;
     }
+  }
+}
+
+.mobile-nav-item {
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  margin: 4px 0;
+
+  &:hover {
+    background: linear-gradient(135deg, rgba($primary, 0.1), rgba($secondary, 0.1));
+    color: $primary;
+  }
+
+  &.q-router-link-exact-active {
+    background: linear-gradient(135deg, rgba($primary, 0.1), rgba($secondary, 0.1));
+    color: $primary;
+    font-weight: 500;
   }
 }
 
