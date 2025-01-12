@@ -98,6 +98,7 @@ import TheFooter from 'components/layout/TheFooter.vue'
 import { useAuthStore } from 'stores/auth'
 import { storeToRefs } from 'pinia'
 import { Notify } from 'quasar'
+import { useRouter } from 'vue-router'
 
 const getFileUrl = (path: string | undefined) => {
   if (!path) return 'https://cdn.quasar.dev/img/boy-avatar.png'
@@ -115,6 +116,7 @@ const getFileUrl = (path: string | undefined) => {
 const drawerOpen = ref(false)
 const authStore = useAuthStore()
 const { isAuthenticated, user } = storeToRefs(authStore)
+const router = useRouter()
 
 const handleLogout = async () => {
   drawerOpen.value = !drawerOpen.value
@@ -130,11 +132,26 @@ const toggleDrawer = () => {
   drawerOpen.value = !drawerOpen.value
 }
 
-const scrollToSection = (sectionId: string) => {
-  const element = document.getElementById(sectionId)
-  if (element) {
-    element.scrollIntoView({ behavior: 'smooth' })
-    drawerOpen.value = false
+const scrollToSection = async (sectionId: string) => {
+  // Check if we're not on the home page
+  if (window.location.pathname !== '/') {
+    // Navigate to home page first
+    await router.push('/')
+    // Wait for the page to load
+    setTimeout(() => {
+      const element = document.getElementById(sectionId)
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' })
+        drawerOpen.value = false
+      }
+    }, 100)
+  } else {
+    // If already on home page, just scroll
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+      drawerOpen.value = false
+    }
   }
 }
 </script>
