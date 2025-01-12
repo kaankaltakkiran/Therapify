@@ -38,6 +38,15 @@ switch ($METHOD) {
     case 'get-pending-count':
         $response = getPendingApplicationsCount($DB);
         break;
+    case 'submit-contact':
+        $response = submitContactForm($data);
+        break;
+    case 'get-contact-messages':
+        $response = getContactMessages();
+        break;
+    case 'update-contact-status':
+        $response = updateContactMessageStatus($data['messageId'], $data['status']);
+        break;
     default:
         $response['error'] = "Invalid method: " . $METHOD;
         $response['success'] = false;
@@ -249,4 +258,96 @@ function getPendingApplicationsCount($DB) {
     }
 
     return $response;
+}
+
+// Handle contact form submissions
+function submitContactForm($data) {
+    global $DB;
+    
+    try {
+        $stmt = $DB->prepare("
+            INSERT INTO contact_messages (first_name, last_name, email, message)
+            VALUES (?, ?, ?, ?)
+        ");
+        
+        $stmt->bind_param("ssss", 
+            $data['firstName'],
+            $data['lastName'],
+            $data['email'],
+            $data['message']
+        );
+        
+        if ($stmt->execute()) {
+            return [
+                'success' => true,
+                'message' => 'Mesajınız başarıyla gönderildi.'
+            ];
+        } else {
+            throw new Exception('Mesaj gönderilirken bir hata oluştu.');
+        }
+    } catch (Exception $e) {
+        return [
+            'success' => false,
+            'message' => $e->getMessage()
+        ];
+    }
+}
+
+// Get all contact messages
+function getContactMessages() {
+    global $DB;
+    
+    try {
+        $stmt = $DB->prepare("
+            SELECT * FROM contact_messages 
+            ORDER BY created_at DESC
+        ");
+        
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $messages = [];
+        
+        while ($row = $result->fetch_assoc()) {
+            $messages[] = $row;
+        }
+        
+        return [
+            'success' => true,
+            'messages' => $messages
+        ];
+    } catch (Exception $e) {
+        return [
+            'success' => false,
+            'message' => $e->getMessage()
+        ];
+    }
+}
+
+// Update contact message status
+function updateContactMessageStatus($messageId, $status) {
+    global $DB;
+    
+    try {
+        $stmt = $DB->prepare("
+            UPDATE contact_messages 
+            SET status = ?
+            WHERE id = ?
+        ");
+        
+        $stmt->bind_param("si", $status, $messageId);
+        
+        if ($stmt->execute()) {
+            return [
+                'success' => true,
+                'message' => 'Mesaj durumu güncellendi.'
+            ];
+        } else {
+            throw new Exception('Mesaj durumu güncellenirken bir hata oluştu.');
+        }
+    } catch (Exception $e) {
+        return [
+            'success' => false,
+            'message' => $e->getMessage()
+        ];
+    }
 } 

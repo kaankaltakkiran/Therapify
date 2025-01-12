@@ -68,16 +68,30 @@
                   <q-input
                     v-model="form.firstName"
                     label="Ad"
-                    :rules="[(val) => !!val || 'Ad alanı zorunludur']"
+                    :rules="[
+                      val => !!val || 'Ad alanı zorunludur',
+                      val => val.length >= 2 || 'Ad en az 2 karakter olmalıdır'
+                    ]"
                     outlined
+                    lazy-rules
+                    error-message="Ad alanı zorunludur"
+                    hide-bottom-space
+                    class="form-input"
                   />
                 </div>
                 <div class="col-12 col-md-6">
                   <q-input
                     v-model="form.lastName"
                     label="Soyad"
-                    :rules="[(val) => !!val || 'Soyad alanı zorunludur']"
+                    :rules="[
+                      val => !!val || 'Soyad alanı zorunludur',
+                      val => val.length >= 2 || 'Soyad en az 2 karakter olmalıdır'
+                    ]"
                     outlined
+                    lazy-rules
+                    error-message="Soyad alanı zorunludur"
+                    hide-bottom-space
+                    class="form-input"
                   />
                 </div>
               </div>
@@ -87,19 +101,30 @@
                 label="E-posta"
                 type="email"
                 :rules="[
-                  (val) => !!val || 'E-posta alanı zorunludur',
-                  (val) => isValidEmail(val) || 'Geçerli bir e-posta adresi giriniz',
+                  val => !!val || 'E-posta alanı zorunludur',
+                  val => isValidEmail(val) || 'Geçerli bir e-posta adresi giriniz'
                 ]"
                 outlined
+                lazy-rules
+                error-message="Geçerli bir e-posta adresi giriniz"
+                hide-bottom-space
+                class="form-input"
               />
 
               <q-input
                 v-model="form.message"
                 label="Mesajınız"
                 type="textarea"
-                :rules="[(val) => !!val || 'Mesaj alanı zorunludur']"
+                :rules="[
+                  val => !!val || 'Mesaj alanı zorunludur',
+                  val => val.length >= 10 || 'Mesaj en az 10 karakter olmalıdır'
+                ]"
                 outlined
                 autogrow
+                lazy-rules
+                error-message="Mesaj alanı zorunludur"
+                hide-bottom-space
+                class="form-input"
               />
 
               <div class="row justify-end">
@@ -108,7 +133,10 @@
                   color="primary"
                   label="Gönder"
                   :loading="submitting"
-                  class="q-mt-md"
+                  class="q-mt-md submit-button"
+                  unelevated
+                  size="lg"
+                  padding="sm xl"
                 />
               </div>
             </q-form>
@@ -135,6 +163,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useQuasar } from 'quasar'
+import { api } from 'src/boot/axios'
 
 const $q = useQuasar()
 
@@ -163,24 +192,34 @@ const isValidEmail = (email: string) => {
 const onSubmit = async () => {
   submitting.value = true
   try {
-    // Here you would typically make an API call to send the form data
-    await new Promise((resolve) => setTimeout(resolve, 1000)) // Simulating API call
-    $q.notify({
-      type: 'positive',
-      message: 'Mesajınız başarıyla gönderildi. En kısa sürede size dönüş yapacağız.',
-      position: 'top',
+    const { data } = await api.post('/admin.php', {
+      method: 'submit-contact',
+      firstName: form.value.firstName,
+      lastName: form.value.lastName,
+      email: form.value.email,
+      message: form.value.message
     })
-    // Reset form
-    form.value = {
-      firstName: '',
-      lastName: '',
-      email: '',
-      message: '',
+
+    if (data.success) {
+      $q.notify({
+        type: 'positive',
+        message: data.message,
+        position: 'top',
+      })
+      // Reset form
+      form.value = {
+        firstName: '',
+        lastName: '',
+        email: '',
+        message: '',
+      }
+    } else {
+      throw new Error(data.message)
     }
-  } catch {
+  } catch (error: unknown) {
     $q.notify({
       type: 'negative',
-      message: 'Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.',
+      message: error instanceof Error ? error.message : 'Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.',
       position: 'top',
     })
   } finally {
@@ -255,6 +294,42 @@ const onSubmit = async () => {
 
   .contact-info {
     margin-bottom: 2rem;
+  }
+}
+
+.form-input {
+  .q-field__control {
+    height: 56px;
+    transition: all 0.3s ease;
+  }
+
+  &.q-field--textarea .q-field__control {
+    height: auto;
+    min-height: 120px;
+  }
+
+  &.q-field--error {
+    .q-field__control {
+      border-color: $negative;
+    }
+  }
+
+  &.q-field--focused {
+    .q-field__control {
+      border-color: $primary;
+      box-shadow: 0 0 0 1px $primary;
+    }
+  }
+}
+
+.submit-button {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba($primary, 0.2);
   }
 }
 </style>
