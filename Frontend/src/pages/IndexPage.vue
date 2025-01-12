@@ -22,8 +22,8 @@
                 text-color="primary"
                 size="md"
                 class="full-width-mobile hero-btn"
-                label="Hemen Başla"
-                to="/auth/register"
+                label="Aramıza Katıl"
+                to="/register"
               />
               <q-btn
                 outline

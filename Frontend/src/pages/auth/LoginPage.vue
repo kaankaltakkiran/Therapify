@@ -51,7 +51,7 @@
 
               <!-- Remember Me & Forgot Password -->
               <div class="row items-center justify-between q-mt-sm">
-                <router-link to="/auth/forgot-password" class="text-primary">
+                <router-link to="/forgot-password" class="text-primary">
                   Şifremi Unuttum
                 </router-link>
               </div>

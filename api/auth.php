@@ -123,6 +123,76 @@ switch ($METHOD) {
         $response = loginUser($DB, $data);
         break;
 
+    case 'update-password':
+        $response = updatePassword($DB, $data);
+        break;
+
+    case 'forgot-password':
+        $email = $data->email;
+        
+        // Check if email exists
+        $stmt = $DB->prepare("SELECT id FROM users WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows === 0) {
+            echo json_encode([
+                'success' => false,
+                'error' => 'Bu e-posta adresi ile kayıtlı bir kullanıcı bulunamadı.'
+            ]);
+            exit;
+        }
+        
+        // Generate reset token
+        $token = bin2hex(random_bytes(32));
+        $expiry = date('Y-m-d H:i:s', strtotime('+1 hour'));
+        
+        // Save reset token
+        $stmt = $DB->prepare("UPDATE users SET reset_token = ?, reset_token_expiry = ? WHERE email = ?");
+        $stmt->bind_param("sss", $token, $expiry, $email);
+        $stmt->execute();
+        
+        // Return success response with token
+        echo json_encode([
+            'success' => true,
+            'message' => 'Şifre sıfırlama bağlantısı oluşturuldu.',
+            'token' => $token
+        ]);
+        break;
+
+    case 'reset-password':
+        $token = $data->token;
+        $password = $data->password;
+        
+        // Verify token and check expiry
+        $stmt = $DB->prepare("SELECT id FROM users WHERE reset_token = ? AND reset_token_expiry > NOW()");
+        $stmt->bind_param("s", $token);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows === 0) {
+            echo json_encode([
+                'success' => false,
+                'error' => 'Geçersiz veya süresi dolmuş sıfırlama bağlantısı.'
+            ]);
+            exit;
+        }
+        
+        // Hash new password
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        
+        // Update password and clear reset token
+        $stmt = $DB->prepare("UPDATE users SET password = ?, reset_token = NULL, reset_token_expiry = NULL WHERE reset_token = ?");
+        $stmt->bind_param("ss", $hashedPassword, $token);
+        $stmt->execute();
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'Şifreniz başarıyla güncellendi.'
+        ]);
+        break;
+
     default:
         $response['error'] = "Invalid method: " . $METHOD;
         $response['success'] = false;
@@ -507,6 +577,56 @@ function loginUser($DB, $data) {
         }
     } catch (Exception $e) {
         $response['error'] = "Login failed: " . $e->getMessage();
+    }
+
+    return $response;
+}
+
+function updatePassword($DB, $data) {
+    $response = ['success' => false];
+
+    if (!isset($data['email']) || !isset($data['old_password']) || !isset($data['new_password'])) {
+        $response['error'] = 'Eksik bilgi gönderildi.';
+        return $response;
+    }
+
+    try {
+        // Get user by email
+        $stmt = $DB->prepare("SELECT id, password FROM users WHERE email = ?");
+        $stmt->bind_param("s", $data['email']);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows === 0) {
+            $response['error'] = 'Kullanıcı bulunamadı.';
+            return $response;
+        }
+
+        $user = $result->fetch_assoc();
+
+        // Verify old password
+        if (!password_verify($data['old_password'], $user['password'])) {
+            $response['error'] = 'Mevcut şifre yanlış.';
+            return $response;
+        }
+
+        // Hash new password
+        $newHashedPassword = password_hash($data['new_password'], PASSWORD_DEFAULT);
+
+        // Update password
+        $stmt = $DB->prepare("UPDATE users SET password = ? WHERE id = ?");
+        $stmt->bind_param("si", $newHashedPassword, $user['id']);
+        $stmt->execute();
+
+        if ($stmt->affected_rows > 0) {
+            $response['success'] = true;
+            $response['message'] = 'Şifreniz başarıyla güncellendi.';
+        } else {
+            $response['error'] = 'Şifre güncellenirken bir hata oluştu.';
+        }
+
+    } catch (Exception $e) {
+        $response['error'] = 'Bir hata oluştu: ' . $e->getMessage();
     }
 
     return $response;
