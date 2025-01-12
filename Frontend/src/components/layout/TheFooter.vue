@@ -79,14 +79,11 @@
         <div class="col-12 col-md-2">
           <div class="text-subtitle2 q-mb-sm">Destek</div>
           <q-list dense padding class="q-pa-none">
-            <q-item clickable v-ripple to="/help" class="q-pa-xs">
+            <q-item clickable v-ripple to="/contact" class="q-pa-xs">
               <q-item-section class="text-body2">Yardım Merkezi</q-item-section>
             </q-item>
             <q-item clickable v-ripple to="/privacy" class="q-pa-xs">
               <q-item-section class="text-body2">Gizlilik Politikası</q-item-section>
-            </q-item>
-            <q-item clickable v-ripple to="/terms" class="q-pa-xs">
-              <q-item-section class="text-body2">Kullanım Koşulları</q-item-section>
             </q-item>
             <q-item clickable v-ripple to="/faq" class="q-pa-xs">
               <q-item-section class="text-body2">SSS</q-item-section>

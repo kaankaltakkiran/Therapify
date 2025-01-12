@@ -3,6 +3,13 @@
     <q-btn
       flat
       no-caps
+      label="Ana Sayfa"
+      to="/"
+      class="nav-link"
+    />
+    <q-btn
+      flat
+      no-caps
       label="Nasıl Çalışır?"
       @click="scrollToSection('services')"
       class="nav-link"

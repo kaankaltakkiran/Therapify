@@ -38,6 +38,15 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/auth/ForgotPasswordPage.vue'),
         meta: { requiresGuest: true },
       },
+      {
+        path: 'faq',
+        component: () => import('pages/FaqPage.vue'),
+        meta: { requiresGuest: true },
+      },
+      {
+        path: 'privacy',
+        component: () => import('pages/PrivacyPage.vue'),
+      },
     ],
   },
   {
