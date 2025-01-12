@@ -102,6 +102,19 @@
             <q-item-section>Site Ayarları</q-item-section>
           </q-item>
 
+          <!-- Support Messages -->
+          <q-item clickable v-ripple to="/admin/support-messages" active-class="active-link">
+            <q-item-section avatar>
+              <q-icon name="support_agent" />
+            </q-item-section>
+            <q-item-section>
+              Destek Talepleri
+              <q-badge v-if="unreadMessagesCount > 0" color="red" floating>
+                {{ unreadMessagesCount }}
+              </q-badge>
+            </q-item-section>
+          </q-item>
+
           <!-- System Stats -->
           <!--   <q-expansion-item
             icon="trending_up"
@@ -146,6 +159,7 @@ const authStore = useAuthStore()
 // State
 const leftDrawerOpen = ref(false)
 const pendingApplicationsCount = ref(0)
+const unreadMessagesCount = ref(0)
 
 // Get admin user data from sessionStorage
 const userStr = sessionStorage.getItem('user')
@@ -173,6 +187,20 @@ const fetchPendingApplicationsCount = async () => {
   }
 }
 
+const fetchUnreadMessagesCount = async () => {
+  try {
+    const response = await api.post('/admin.php', {
+      method: 'get-unread-messages-count',
+    })
+
+    if (response.data.success) {
+      unreadMessagesCount.value = response.data.unreadCount
+    }
+  } catch (error) {
+    console.error('Error fetching unread messages count:', error)
+  }
+}
+
 // Watch for route changes to update count when returning to admin
 watch(
   () => route.path,
@@ -187,12 +215,25 @@ watch(
 // Fetch pending count on mount and set up interval to refresh
 onMounted(() => {
   fetchPendingApplicationsCount()
-  // Refresh count every minute
-  const interval = setInterval(fetchPendingApplicationsCount, 60000)
+  fetchUnreadMessagesCount()
+  
+  // Add event listener for unread count updates
+  window.addEventListener('update-unread-count', () => {
+    fetchUnreadMessagesCount()
+  })
+  
+  // Refresh counts every minute
+  const interval = setInterval(() => {
+    fetchPendingApplicationsCount()
+    fetchUnreadMessagesCount()
+  }, 60000)
 
-  // Clean up interval on component unmount
+  // Clean up interval and event listener on component unmount
   onUnmounted(() => {
     clearInterval(interval)
+    window.removeEventListener('update-unread-count', () => {
+      fetchUnreadMessagesCount()
+    })
   })
 })
 

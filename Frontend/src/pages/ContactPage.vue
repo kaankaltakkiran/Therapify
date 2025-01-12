@@ -190,37 +190,37 @@ const isValidEmail = (email: string) => {
 }
 
 const onSubmit = async () => {
-  submitting.value = true
   try {
-    const { data } = await api.post('/admin.php', {
+    submitting.value = true
+    const response = await api.post('/admin.php', {
       method: 'submit-contact',
-      firstName: form.value.firstName,
-      lastName: form.value.lastName,
+      first_name: form.value.firstName,
+      last_name: form.value.lastName,
       email: form.value.email,
       message: form.value.message
     })
 
-    if (data.success) {
+    if (response.data.success) {
       $q.notify({
         type: 'positive',
-        message: data.message,
-        position: 'top',
+        message: 'Mesajınız başarıyla gönderildi. En kısa sürede size dönüş yapacağız.',
+        position: 'top'
       })
       // Reset form
       form.value = {
         firstName: '',
         lastName: '',
         email: '',
-        message: '',
+        message: ''
       }
     } else {
-      throw new Error(data.message)
+      throw new Error(response.data.message || 'Mesaj gönderilirken bir hata oluştu')
     }
   } catch (error: unknown) {
     $q.notify({
       type: 'negative',
       message: error instanceof Error ? error.message : 'Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.',
-      position: 'top',
+      position: 'top'
     })
   } finally {
     submitting.value = false

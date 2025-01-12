@@ -39,13 +39,16 @@ switch ($METHOD) {
         $response = getPendingApplicationsCount($DB);
         break;
     case 'submit-contact':
-        $response = submitContactForm($data);
+        $response = submitContact($data);
         break;
     case 'get-contact-messages':
         $response = getContactMessages();
         break;
     case 'update-contact-status':
         $response = updateContactMessageStatus($data['messageId'], $data['status']);
+        break;
+    case 'get-unread-messages-count':
+        $response = getUnreadMessagesCount();
         break;
     default:
         $response['error'] = "Invalid method: " . $METHOD;
@@ -260,9 +263,17 @@ function getPendingApplicationsCount($DB) {
     return $response;
 }
 
-// Handle contact form submissions
-function submitContactForm($data) {
+// Submit contact form
+function submitContact($data) {
     global $DB;
+    
+    // Validate required fields
+    if (empty($data['first_name']) || empty($data['last_name']) || empty($data['email']) || empty($data['message'])) {
+        return array(
+            'success' => false,
+            'message' => 'Tüm alanları doldurunuz'
+        );
+    }
     
     try {
         $stmt = $DB->prepare("
@@ -270,26 +281,26 @@ function submitContactForm($data) {
             VALUES (?, ?, ?, ?)
         ");
         
-        $stmt->bind_param("ssss", 
-            $data['firstName'],
-            $data['lastName'],
+        $stmt->bind_param('ssss', 
+            $data['first_name'],
+            $data['last_name'],
             $data['email'],
             $data['message']
         );
         
         if ($stmt->execute()) {
-            return [
+            return array(
                 'success' => true,
-                'message' => 'Mesajınız başarıyla gönderildi.'
-            ];
+                'message' => 'Mesajınız başarıyla gönderildi'
+            );
         } else {
-            throw new Exception('Mesaj gönderilirken bir hata oluştu.');
+            throw new Exception('Mesaj kaydedilirken bir hata oluştu');
         }
     } catch (Exception $e) {
-        return [
+        return array(
             'success' => false,
-            'message' => $e->getMessage()
-        ];
+            'message' => 'Mesaj gönderilirken bir hata oluştu: ' . $e->getMessage()
+        );
     }
 }
 
@@ -344,6 +355,33 @@ function updateContactMessageStatus($messageId, $status) {
         } else {
             throw new Exception('Mesaj durumu güncellenirken bir hata oluştu.');
         }
+    } catch (Exception $e) {
+        return [
+            'success' => false,
+            'message' => $e->getMessage()
+        ];
+    }
+}
+
+// Get unread messages count
+function getUnreadMessagesCount() {
+    global $DB;
+    
+    try {
+        $stmt = $DB->prepare("
+            SELECT COUNT(*) as unread_count 
+            FROM contact_messages 
+            WHERE status = 'new'
+        ");
+        
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $count = $result->fetch_assoc()['unread_count'];
+        
+        return [
+            'success' => true,
+            'unreadCount' => $count
+        ];
     } catch (Exception $e) {
         return [
             'success' => false,

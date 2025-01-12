@@ -49,6 +49,10 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/admin/TherapistApplicationsPage.vue'),
       },
       {
+        path: 'support-messages',
+        component: () => import('pages/admin/SupportMessagesPage.vue')
+      },
+      {
         path: 'therapists',
         component: () => import('pages/admin/TherapistListPage.vue'),
       },
