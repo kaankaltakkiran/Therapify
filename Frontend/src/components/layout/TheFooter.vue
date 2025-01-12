@@ -9,16 +9,48 @@
             Yapay zeka destekli eşleştirme ile ruh sağlığı uzmanlarıyla sizi buluşturuyoruz.
           </p>
           <div class="row q-gutter-xs">
-            <q-btn flat round dense class="social-btn">
-              <q-icon name="fab fa-facebook-f" />
+            <q-btn
+              type="a"
+              href="https://github.com/kaankaltakkiran/Therapify"
+              target="_blank"
+              flat
+              round
+              dense
+              class="social-btn"
+            >
+              <q-icon name="fab fa-github" />
             </q-btn>
-            <q-btn flat round dense class="social-btn">
+            <q-btn
+              type="a"
+              href="https://x.com/Kaankiran18"
+              target="_blank"
+              flat
+              round
+              dense
+              class="social-btn"
+            >
               <q-icon name="fab fa-twitter" />
             </q-btn>
-            <q-btn flat round dense class="social-btn">
+            <q-btn
+              type="a"
+              href="https://www.instagram.com/kaan_k.kiran/?hl=tr"
+              target="_blank"
+              flat
+              round
+              dense
+              class="social-btn"
+            >
               <q-icon name="fab fa-instagram" />
             </q-btn>
-            <q-btn flat round dense class="social-btn">
+            <q-btn
+              type="a"
+              href="https://www.linkedin.com/in/durdu-kaan-kaltakk%C4%B1ran-aba776223/"
+              target="_blank"
+              flat
+              round
+              dense
+              class="social-btn"
+            >
               <q-icon name="fab fa-linkedin-in" />
             </q-btn>
           </div>
@@ -28,17 +60,17 @@
         <div class="col-12 col-md-2">
           <div class="text-subtitle2 q-mb-sm">Hızlı Bağlantılar</div>
           <q-list dense padding class="q-pa-none">
-            <q-item clickable v-ripple to="/about" class="q-pa-xs">
+         <!--    <q-item clickable v-ripple to="/about" class="q-pa-xs">
               <q-item-section class="text-body2">Hakkımızda</q-item-section>
-            </q-item>
+            </q-item> -->
             <q-item clickable v-ripple to="/contact" class="q-pa-xs">
               <q-item-section class="text-body2">İletişim</q-item-section>
             </q-item>
-            <q-item clickable v-ripple to="/blog" class="q-pa-xs">
-              <q-item-section class="text-body2">Blog</q-item-section>
+            <q-item clickable v-ripple to="/register" class="q-pa-xs">
+              <q-item-section class="text-body2">Kayıt Ol</q-item-section>
             </q-item>
-            <q-item clickable v-ripple to="/careers" class="q-pa-xs">
-              <q-item-section class="text-body2">Kariyer</q-item-section>
+            <q-item clickable v-ripple to="/login" class="q-pa-xs">
+              <q-item-section class="text-body2">Giriş Yap</q-item-section>
             </q-item>
           </q-list>
         </div>
