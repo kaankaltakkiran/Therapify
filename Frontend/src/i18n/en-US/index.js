@@ -119,7 +119,28 @@ export default {
 	"Bizimle iletişime geçebilirsiniz.": `You can contact us.`,
 	"İletişime Geç": `Contact Us`,
 
+	// Login Page
+	"Giriş Yap": `Sign in`,
+	"Hesabınıza giriş yapın": `Log in to your account`,
+	"Şifre": `Password`,
+	"Şifremi Unuttum": `Forgot Password`,
+	"Hesabınız yok mu?" : `Don't you have an account? `,
 
+	// Forgot Password
+	"Şifre Güncelleme": `Password Update`,
+	"Şifrenizi güncellemek için lütfen aşağıdaki bilgileri doldurun.": `Please fill in the information below to update your password.`,
+	"Mevcut Şifre": `Current Password`,
+	"Yeni Şifre": `New Password`,
+	"Yeni Şifre (Tekrar)": `New Password (Again)`,
+	"Şifreyi Güncelle": `Update Password`,
+	"Giriş Sayfasına Dön": `Back to Home Page`,
+	"Şifre Güncellendi!": `Password Updated!`,
+	"Şifreniz başarıyla güncellendi. Yeni şifrenizle giriş yapabilirsiniz.": `Your password has been successfully updated. You can log in with your new password.`,
 
-
+	// Register Page
+	"Doğum Tarihi": `Date of Birth`,
+	"Profil Fotoğrafı": `Profile Photo`,
+	"JPG veya PNG formatında, maksimum 5MB": `JPG or PNG format, maximum 5MB`,
+	"Kullanım koşullarını ve gizlilik politikasını kabul ediyorum *": `I agree to the terms of use and privacy policy*`,
+	"Zaten hesabınız var mı?": `Do you already have an account?`,
 }

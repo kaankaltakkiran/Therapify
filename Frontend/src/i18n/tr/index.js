@@ -135,7 +135,30 @@ export default {
 `,
 	"İletişime Geç": `İletişime Geç`,
 
+	// Login Page
+	"Giriş Yap": `Giriş Yap`,
+	"Hesabınıza giriş yapın": `Hesabınıza giriş yapın`,
+	"Şifre": `Şifre`,
+	"Şifremi Unuttum": `Şifremi Unuttum
+`,
+	"Hesabınız yok mu?" : `Hesabınız yok mu? `,
 
+	// Forgot Password
+	"Şifre Güncelleme": `Şifre Güncelleme`,
+	"Şifrenizi güncellemek için lütfen aşağıdaki bilgileri doldurun.": `Şifrenizi güncellemek için lütfen aşağıdaki bilgileri doldurun.
+`,
+	"Mevcut Şifre": `Mevcut Şifre`,
+	"Yeni Şifre": `Yeni Şifre`,
+	"Yeni Şifre (Tekrar)": `Yeni Şifre (Tekrar)`,
+	"Şifreyi Güncelle": `Şifreyi Güncelle`,
+	"Giriş Sayfasına Dön": `Giriş Sayfasına Dön`,
+	"Şifre Güncellendi!": `Şifre Güncellendi!`,
+	"Şifreniz başarıyla güncellendi. Yeni şifrenizle giriş yapabilirsiniz.": `Şifreniz başarıyla güncellendi. Yeni şifrenizle giriş yapabilirsiniz.`,
 
-
+	// Register Page
+	"Doğum Tarihi": `Doğum Tarihi`,
+	"Profil Fotoğrafı": `Profil Fotoğrafı`,
+	"JPG veya PNG formatında, maksimum 5MB": `JPG veya PNG formatında, maksimum 5MB`,
+	"Kullanım koşullarını ve gizlilik politikasını kabul ediyorum *": `Kullanım koşullarını ve gizlilik politikasını kabul ediyorum *`,
+	"Zaten hesabınız var mı?": `Zaten hesabınız var mı?`,
 }

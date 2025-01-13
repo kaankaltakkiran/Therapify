@@ -9,7 +9,7 @@
               <router-link to="/" class="logo-link">
                 <h4 class="text-h4 logo-text q-mb-md">Therapify</h4>
               </router-link>
-              <h5 class="text-h5 text-weight-medium q-mb-sm">Giriş Yap</h5>
+              <h5 class="text-h5 text-weight-medium q-mb-sm">{{ $t('Giriş Yap') }}</h5>
               <p class="text-grey-8">Hesabınıza giriş yapın</p>
             </div>
 
@@ -17,7 +17,7 @@
             <q-form @submit="onSubmit" class="q-gutter-md">
               <q-input
                 v-model="form.email"
-                label="E-posta"
+                :label="$t('E-posta')"
                 type="email"
                 outlined
                 :rules="[
@@ -32,7 +32,7 @@
 
               <q-input
                 v-model="form.password"
-                label="Şifre"
+                :label="$t('Şifre')"
                 :type="showPassword ? 'text' : 'password'"
                 outlined
                 :rules="[(val: string) => !!val || 'Şifre alanı zorunludur']"
@@ -52,7 +52,7 @@
               <!-- Remember Me & Forgot Password -->
               <div class="row items-center justify-between q-mt-sm">
                 <router-link to="/forgot-password" class="text-primary">
-                  Şifremi Unuttum
+                  {{ $t('Şifremi Unuttum') }}
                 </router-link>
               </div>
 
@@ -63,13 +63,13 @@
                 class="full-width q-mt-lg"
                 size="lg"
                 :loading="submitting"
-                label="Giriş Yap"
+                :label="$t('Giriş Yap')"
               />
 
               <!-- Register Link -->
               <div class="text-center q-mt-sm">
-                Hesabınız yok mu?
-                <router-link to="/register" class="text-primary">Kayıt Ol</router-link>
+               {{ $t('Hesabınız yok mu?') }}
+                <router-link to="/register" class="text-primary">{{ $t('Kayıt Ol') }}</router-link>
               </div>
             </q-form>
           </q-card>

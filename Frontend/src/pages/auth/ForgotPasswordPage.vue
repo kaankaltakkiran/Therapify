@@ -2,16 +2,16 @@
   <q-page class="flex flex-center">
     <div class="auth-form-container">
       <div v-if="!passwordUpdated" class="q-pa-md">
-        <h4 class="text-h4 text-center q-mb-md">Şifre Güncelleme</h4>
+        <h4 class="text-h4 text-center q-mb-md">{{ $t('Şifre Güncelleme') }}</h4>
         <p class="text-body1 text-center q-mb-lg">
-          Şifrenizi güncellemek için lütfen aşağıdaki bilgileri doldurun.
+         {{ $t('Şifrenizi güncellemek için lütfen aşağıdaki bilgileri doldurun.') }}
         </p>
 
         <q-form @submit="onSubmit" class="q-gutter-md">
           <q-input
             v-model="email"
             type="email"
-            label="E-posta"
+            :label="$t('E-posta')"
             :rules="[
               (val) => !!val || 'E-posta gerekli',
               (val) => /^[^@]+@[^@]+\.[^@]+$/.test(val) || 'Geçerli bir e-posta adresi girin'
@@ -22,7 +22,7 @@
           <q-input
             v-model="oldPassword"
             :type="showOldPassword ? 'text' : 'password'"
-            label="Mevcut Şifre"
+            :label="$t('Mevcut Şifre')"
             :rules="[(val) => !!val || 'Mevcut şifre gerekli']"
             outlined
           >
@@ -38,7 +38,7 @@
           <q-input
             v-model="newPassword"
             :type="showNewPassword ? 'text' : 'password'"
-            label="Yeni Şifre"
+            :label="$t('Yeni Şifre')"
             :rules="[
               (val) => !!val || 'Yeni şifre gerekli',
               (val) => val.length >= 8 || 'Şifre en az 8 karakter olmalıdır'
@@ -57,7 +57,7 @@
           <q-input
             v-model="confirmPassword"
             :type="showConfirmPassword ? 'text' : 'password'"
-            label="Yeni Şifre (Tekrar)"
+            :label="$t('Yeni Şifre (Tekrar)')"
             :rules="[
               (val) => !!val || 'Şifre tekrarı gerekli',
               (val) => val === newPassword || 'Şifreler eşleşmiyor'
@@ -77,7 +77,7 @@
             <q-btn
               type="submit"
               color="primary"
-              label="Şifreyi Güncelle"
+              :label="$t('Şifreyi Güncelle')"
               :loading="submitting"
               class="full-width"
             />
@@ -87,7 +87,7 @@
             <q-btn
               flat
               color="primary"
-              label="Giriş Sayfasına Dön"
+              :label="$t('Giriş Sayfasına Dön')"
               to="/login"
             />
           </div>
@@ -96,13 +96,13 @@
 
       <div v-else class="q-pa-md text-center">
         <q-icon name="check_circle" color="positive" size="4rem" />
-        <h4 class="text-h4 q-mt-md">Şifre Güncellendi!</h4>
+        <h4 class="text-h4 q-mt-md">{{ $t('Şifre Güncellendi!') }}</h4>
         <p class="text-body1 q-mb-lg">
-          Şifreniz başarıyla güncellendi. Yeni şifrenizle giriş yapabilirsiniz.
+          {{ $t('Şifreniz başarıyla güncellendi. Yeni şifrenizle giriş yapabilirsiniz.') }}
         </p>
         <q-btn
           color="primary"
-          label="Giriş Yap"
+          :label="$t('Giriş Yap')"
           to="/login"
           class="full-width"
         />

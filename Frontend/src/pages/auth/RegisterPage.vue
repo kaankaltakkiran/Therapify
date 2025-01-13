@@ -9,7 +9,7 @@
               <router-link to="/" class="logo-link">
                 <h4 class="text-h4 logo-text q-mb-md">Therapify</h4>
               </router-link>
-              <h5 class="text-h5 text-weight-medium q-mb-sm">Hesap Oluştur</h5>
+              <h5 class="text-h5 text-weight-medium q-mb-sm">{{ $t('Kayıt Ol') }}</h5>
             </div>
 
             <!-- Registration Form -->
@@ -19,7 +19,7 @@
                 <div class="col-12 col-sm-6">
                   <q-input
                     v-model="form.firstName"
-                    label="Ad *"
+                    :label="$t('Ad')"
                     outlined
                     :rules="[(val: string) => !!val || 'Ad alanı zorunludur']"
                   />
@@ -27,7 +27,7 @@
                 <div class="col-12 col-sm-6">
                   <q-input
                     v-model="form.lastName"
-                    label="Soyad *"
+                    :label="$t('Soyad')"
                     outlined
                     :rules="[(val: string) => !!val || 'Soyad alanı zorunludur']"
                   />
@@ -36,7 +36,7 @@
 
               <q-input
                 v-model="form.email"
-                label="E-posta *"
+                :label="$t('E-posta')"
                 type="email"
                 outlined
                 :rules="[
@@ -47,7 +47,7 @@
               <!-- Password Fields -->
               <q-input
                 v-model="form.password"
-                label="Şifre *"
+                :label="$t('Şifre')"
                 :type="showPassword ? 'text' : 'password'"
                 outlined
                 :rules="[
@@ -67,7 +67,7 @@
 
               <q-input
                 v-model="form.confirmPassword"
-                label="Şifre Tekrar *"
+                :label="$t('Şifre Tekrar')"
                 :type="showConfirmPassword ? 'text' : 'password'"
                 outlined
                 :rules="[
@@ -86,7 +86,7 @@
 
               <q-input
                 v-model="form.phone"
-                label="Telefon *"
+                :label="$t('Telefon')"
                 outlined
                 mask="(###) ### ## ##"
                 :rules="[(val: string) => !!val || 'Telefon alanı zorunludur']"
@@ -98,7 +98,7 @@
 
               <q-input
                 v-model="form.birthDate"
-                label="Doğum Tarihi *"
+                :label="$t('Doğum Tarihi')"
                 outlined
                 type="date"
                 mask="####/##/##"
@@ -108,7 +108,7 @@
 
               <q-input
                 v-model="form.address"
-                label="Adres *"
+                :label="$t('Adres')"
                 type="textarea"
                 outlined
                 autogrow
@@ -125,7 +125,7 @@
                 <div class="col">
                   <q-file
                     v-model="form.userImg"
-                    label="Profil Fotoğrafı *"
+                    :label="$t('Profil Fotoğrafı')"
                     outlined
                     accept=".jpg,.jpeg,.png"
                     :rules="[(val: File | null) => !!val || 'Profil fotoğrafı zorunludur']"
@@ -136,7 +136,7 @@
                     </template>
                   </q-file>
                   <div class="text-grey-7 text-caption q-mt-sm">
-                    JPG veya PNG formatında, maksimum 5MB
+                    {{ $t('JPG veya PNG formatında, maksimum 5MB') }}
                   </div>
                 </div>
               </div>
@@ -144,7 +144,7 @@
               <!-- Terms and Conditions -->
               <q-checkbox
                 v-model="form.acceptTerms"
-                label="Kullanım koşullarını ve gizlilik politikasını kabul ediyorum *"
+                :label="$t('Kullanım koşullarını ve gizlilik politikasını kabul ediyorum *')"
                 :rules="[(val: boolean) => !!val || 'Kullanım koşullarını kabul etmelisiniz']"
               />
 
@@ -155,13 +155,13 @@
                 class="full-width q-mt-lg"
                 size="lg"
                 :loading="submitting"
-                label="Kayıt Ol"
+                :label="$t('Kayıt Ol')"
               />
 
               <!-- Login Link -->
               <div class="text-center q-mt-sm">
-                Zaten hesabınız var mı?
-                <router-link to="/login" class="text-primary">Giriş Yap</router-link>
+                {{ $t('Zaten hesabınız var mı?') }}
+                <router-link to="/login" class="text-primary">{{ $t('Giriş Yap') }}</router-link>
               </div>
             </q-form>
           </q-card>

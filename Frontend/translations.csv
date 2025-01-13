@@ -132,6 +132,29 @@ Key,"Turkey, tr","English, en-US"
 ","You can contact us."
 """İletişime Geç""","İletişime Geç","Contact Us"
 ,,
+# Login Page
+"""Giriş Yap""","Giriş Yap","Sign in"
+"""Hesabınıza giriş yapın""","Hesabınıza giriş yapın","Log in to your account"
+"""Şifre""","Şifre","Password"
+"""Şifremi Unuttum""","Şifremi Unuttum
+","Forgot Password"
+"""Hesabınız yok mu?"" ","Hesabınız yok mu? ","Don't you have an account? "
 ,,
+# Forgot Password
+"""Şifre Güncelleme""","Şifre Güncelleme","Password Update"
+"""Şifrenizi güncellemek için lütfen aşağıdaki bilgileri doldurun.""","Şifrenizi güncellemek için lütfen aşağıdaki bilgileri doldurun.
+","Please fill in the information below to update your password."
+"""Mevcut Şifre""","Mevcut Şifre","Current Password"
+"""Yeni Şifre""","Yeni Şifre","New Password"
+"""Yeni Şifre (Tekrar)""","Yeni Şifre (Tekrar)","New Password (Again)"
+"""Şifreyi Güncelle""","Şifreyi Güncelle","Update Password"
+"""Giriş Sayfasına Dön""","Giriş Sayfasına Dön","Back to Home Page"
+"""Şifre Güncellendi!""","Şifre Güncellendi!","Password Updated!"
+"""Şifreniz başarıyla güncellendi. Yeni şifrenizle giriş yapabilirsiniz.""","Şifreniz başarıyla güncellendi. Yeni şifrenizle giriş yapabilirsiniz.","Your password has been successfully updated. You can log in with your new password."
 ,,
-,,
+# Register Page
+"""Doğum Tarihi""","Doğum Tarihi","Date of Birth"
+"""Profil Fotoğrafı""","Profil Fotoğrafı","Profile Photo"
+"""JPG veya PNG formatında, maksimum 5MB""","JPG veya PNG formatında, maksimum 5MB","JPG or PNG format, maximum 5MB"
+"""Kullanım koşullarını ve gizlilik politikasını kabul ediyorum *""","Kullanım koşullarını ve gizlilik politikasını kabul ediyorum *","I agree to the terms of use and privacy policy*"
+"""Zaten hesabınız var mı?""","Zaten hesabınız var mı?","Do you already have an account?"
