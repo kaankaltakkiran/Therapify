@@ -1,6 +1,9 @@
 import { defineBoot } from '#q-app/wrappers';
 import { createI18n } from 'vue-i18n';
 
+//dil seçimi için LocalStorage kullanacağımız için LocalStorage'ı import ediyoruz
+import { LocalStorage } from 'quasar';
+
 import messages from 'src/i18n';
 
 export type MessageLanguages = keyof typeof messages;
@@ -23,7 +26,7 @@ declare module 'vue-i18n' {
 
 export default defineBoot(({ app }) => {
   const i18n = createI18n<{ message: MessageSchema }, MessageLanguages>({
-    locale: 'en-US',
+    locale: LocalStorage.getItem('locale') || 'tr', // uygulama ilk açıldığında locale değeri yoksa 'tr' olarak ayarla varsa LocalStorage'dan al
     legacy: false,
     messages,
   });

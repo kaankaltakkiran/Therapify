@@ -25,24 +25,80 @@
       <q-scroll-area class="fit">
         <q-list padding>
           <q-item clickable v-ripple to="/" exact class="mobile-nav-item">
-            <q-item-section>Ana Sayfa</q-item-section>
+            <q-item-section>{{ $t('Ana Sayfa') }}</q-item-section>
           </q-item>
           <q-item clickable v-ripple @click="navigateAndScroll('services')" class="mobile-nav-item">
-            <q-item-section>Nasıl Çalışır?</q-item-section>
+            <q-item-section>{{ $t('Hizmetlerimiz') }}</q-item-section>
           </q-item>
-          <q-item clickable v-ripple @click="navigateAndScroll('therapists')" class="mobile-nav-item">
-            <q-item-section>Terapistler İçin</q-item-section>
+          <q-item
+            clickable
+            v-ripple
+            @click="navigateAndScroll('therapists')"
+            class="mobile-nav-item"
+          >
+            <q-item-section>{{ $t('Terapistler') }}</q-item-section>
           </q-item>
           <q-item clickable v-ripple to="/contact" exact class="mobile-nav-item">
-            <q-item-section>İletişim</q-item-section>
+            <q-item-section>{{ $t('İletişim') }}</q-item-section>
           </q-item>
           <q-separator class="q-my-md" />
-          <q-item v-if="!isAuthenticated" clickable v-ripple to="/login" exact class="mobile-nav-item">
-            <q-item-section>Giriş</q-item-section>
+          <q-item
+            v-if="!isAuthenticated"
+            clickable
+            v-ripple
+            to="/login"
+            exact
+            class="mobile-nav-item"
+          >
+            <q-item-section>{{ $t('Giriş') }}</q-item-section>
           </q-item>
-          <q-item v-if="!isAuthenticated" clickable v-ripple to="/register" exact class="mobile-nav-item">
-            <q-item-section>Kayıt Ol</q-item-section>
+          <q-item
+            v-if="!isAuthenticated"
+            clickable
+            v-ripple
+            to="/register"
+            exact
+            class="mobile-nav-item"
+          >
+            <q-item-section>{{ $t('Kayıt Ol') }}</q-item-section>
           </q-item>
+          <!--Dil seçimi-->
+          <q-select
+            v-model="locale"
+            :options="localeOptions"
+            dense
+            borderless
+            emit-value
+            map-options
+            options-dense
+            class="language-selector"
+          >
+            <template v-slot:selected>
+              <q-item v-if="locale">
+                <q-item-section avatar>
+                  <q-avatar size="20px">
+                    <img :src="`/images/flags/${locale}.svg`" :alt="locale" />
+                  </q-avatar>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>{{ getLanguageName(locale) }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </template>
+
+            <template v-slot:option="scope">
+              <q-item v-bind="scope.itemProps">
+                <q-item-section avatar>
+                  <q-avatar size="20px">
+                    <img :src="`/images/flags/${scope.opt.value}.svg`" :alt="scope.opt.value" />
+                  </q-avatar>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>{{ scope.opt.label }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
           <q-item v-if="isAuthenticated && user">
             <!-- Profile Dropdown -->
             <q-btn-dropdown
@@ -99,14 +155,30 @@ import { storeToRefs } from 'pinia'
 import { Notify } from 'quasar'
 import { useRouter } from 'vue-router'
 
+import { useI18n } from 'vue-i18n'
+
+const { locale } = useI18n({ useScope: 'global' })
+
+const localeOptions = [
+  { value: 'tr', label: 'Türkçe' },
+  { value: 'en-US', label: 'English' },
+  { value: 'de', label: 'Deutsch' },
+  { value: 'fr', label: 'Français' },
+]
+
+const getLanguageName = (code: string) => {
+  const option = localeOptions.find((opt) => opt.value === code)
+  return option ? option.label : code
+}
+
 const getFileUrl = (path: string | undefined) => {
   if (!path) return 'https://cdn.quasar.dev/img/boy-avatar.png'
-  
+
   // Check if the path is a base64 image
   if (path.startsWith('data:image')) {
     return path
   }
-  
+
   // Handle file path images
   const filename = path.split('/').pop()
   return `http://localhost/uploads/profile_images/${filename}`
@@ -133,7 +205,7 @@ const toggleDrawer = () => {
 
 const navigateAndScroll = async (sectionId: string) => {
   drawerOpen.value = false // Close drawer first
-  
+
   if (router.currentRoute.value.path !== '/') {
     await router.push('/')
     // Wait for navigation and DOM update

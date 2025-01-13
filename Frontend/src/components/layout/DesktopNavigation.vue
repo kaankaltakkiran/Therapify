@@ -1,57 +1,72 @@
 <template>
   <div class="gt-sm row items-center nav-links">
+    <q-btn flat no-caps :label="$t('Ana Sayfa')" to="/" class="nav-link" />
     <q-btn
       flat
       no-caps
-      label="Ana Sayfa"
-      to="/"
-      class="nav-link"
-    />
-    <q-btn
-      flat
-      no-caps
-      label="Nasıl Çalışır?"
+      :label="$t('Hizmetlerimiz')"
       @click="scrollToSection('services')"
       class="nav-link"
     />
     <q-btn
       flat
       no-caps
-      label="Terapistler İçin"
+      :label="$t('Terapistler')"
       @click="scrollToSection('therapists')"
       class="nav-link"
     />
-  <!--   <q-btn flat no-caps label="Terapistlerimiz" to="/therapists" class="nav-link" /> -->
-    <q-btn flat no-caps label="İletişim" to="/contact" class="nav-link" />
+    <!--   <q-btn flat no-caps label="Terapistlerimiz" to="/therapists" class="nav-link" /> -->
+    <q-btn flat no-caps :label="$t('İletişim')" to="/contact" class="nav-link" />
 
-    <!-- Language Selector -->
-    <q-btn-dropdown flat no-caps :label="currentLanguage.label" class="language-selector">
-      <q-list>
-        <q-item
-          v-for="lang in languages"
-          :key="lang.code"
-          clickable
-          v-close-popup
-          @click="changeLanguage(lang.code)"
-          :active="currentLanguage.code === lang.code"
-        >
+    <!--Dil seçimi-->
+    <q-select
+      v-model="locale"
+      :options="localeOptions"
+      dense
+      borderless
+      emit-value
+      map-options
+      options-dense
+      class="language-selector"
+    >
+      <template v-slot:selected>
+        <q-item v-if="locale">
           <q-item-section avatar>
             <q-avatar size="20px">
-              <img :src="lang.flag" :alt="lang.label" />
+              <img :src="`/images/flags/${locale}.svg`" :alt="locale" />
             </q-avatar>
           </q-item-section>
-          <q-item-section>{{ lang.label }}</q-item-section>
-          <q-item-section side v-if="currentLanguage.code === lang.code">
-            <q-icon name="check" color="primary" />
+          <q-item-section>
+            <q-item-label>{{ getLanguageName(locale) }}</q-item-label>
           </q-item-section>
         </q-item>
-      </q-list>
-    </q-btn-dropdown>
+      </template>
+
+      <template v-slot:option="scope">
+        <q-item v-bind="scope.itemProps">
+          <q-item-section avatar>
+            <q-avatar size="20px">
+              <img :src="`/images/flags/${scope.opt.value}.svg`" :alt="scope.opt.value" />
+            </q-avatar>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>{{ scope.opt.label }}</q-item-label>
+          </q-item-section>
+        </q-item>
+      </template>
+    </q-select>
 
     <!-- Auth Buttons -->
     <div v-if="!isAuthenticated" class="auth-buttons q-ml-md">
-      <q-btn flat no-caps label="Giriş" to="/login" class="auth-link q-mr-sm" />
-      <q-btn unelevated no-caps label="Kayıt Ol" to="/register" class="auth-cta" color="primary" />
+      <q-btn flat no-caps :label="$t('Giriş')" to="/login" class="auth-link q-mr-sm" />
+      <q-btn
+        unelevated
+        no-caps
+        :label="$t('Kayıt Ol')"
+        to="/register"
+        class="auth-cta"
+        color="primary"
+      />
     </div>
     <!-- Profile Dropdown -->
     <q-btn-dropdown
@@ -88,11 +103,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+/* import { ref, computed }  from 'vue' */
 import { useRouter } from 'vue-router'
 import { useAuthStore } from 'stores/auth'
 import { storeToRefs } from 'pinia'
 import { Notify } from 'quasar'
+
+import { useI18n } from 'vue-i18n'
+
+const { locale } = useI18n({ useScope: 'global' })
+
+const localeOptions = [
+  { value: 'tr', label: 'Türkçe' },
+  { value: 'en-US', label: 'English' },
+  { value: 'de', label: 'Deutsch' },
+  { value: 'fr', label: 'Français' },
+]
+
+const getLanguageName = (code: string) => {
+  const option = localeOptions.find((opt) => opt.value === code)
+  return option ? option.label : code
+}
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -101,12 +132,12 @@ const { isAuthenticated, user } = storeToRefs(authStore)
 
 const getFileUrl = (path: string | undefined) => {
   if (!path) return 'https://cdn.quasar.dev/img/boy-avatar.png'
-  
+
   // Check if the path is a base64 image
   if (path.startsWith('data:image')) {
     return path
   }
-  
+
   // Handle file path images
   const filename = path.split('/').pop()
   return `http://localhost/uploads/profile_images/${filename}`
@@ -137,39 +168,6 @@ const scrollToSection = async (sectionId: string) => {
       block: 'start',
     })
   }
-}
-
-interface Language {
-  code: 'tr' | 'en'
-  label: string
-  flag: string
-}
-
-const currentLangCode = ref<Language['code']>('tr')
-
-const languages = [
-  {
-    code: 'tr',
-    label: 'Türkçe',
-    flag: '/images/flags/tr.svg',
-  },
-  {
-    code: 'en',
-    label: 'English',
-    flag: '/images/flags/en.svg',
-  },
-] as const satisfies readonly Language[]
-
-const defaultLanguage: Language = languages[0]
-
-const currentLanguage = computed((): Language => {
-  const found = languages.find((lang) => lang.code === currentLangCode.value)
-  return found ?? defaultLanguage
-})
-
-const changeLanguage = (langCode: Language['code']) => {
-  currentLangCode.value = langCode
-  localStorage.setItem('language', langCode)
 }
 </script>
 
@@ -244,20 +242,23 @@ const changeLanguage = (langCode: Language['code']) => {
 
 .language-selector {
   margin: 0 0.5rem;
-  font-weight: 500;
-  padding: 0.5rem 1rem;
-  color: $grey-8;
-  border-radius: 12px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 120px;
 
-  &:hover {
-    background: linear-gradient(135deg, rgba($primary, 0.1), rgba($secondary, 0.1));
-    color: $primary;
-    transform: translateY(-1px);
+  :deep(.q-field__control) {
+    padding: 0 8px;
+    height: 36px;
+    border-radius: 8px;
+    background: rgba($primary, 0.05);
   }
 
-  .q-btn__content {
-    text-transform: none;
+  :deep(.q-field__marginal) {
+    height: 36px;
+  }
+
+  :deep(.q-menu) {
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba($primary, 0.1);
   }
 }
 

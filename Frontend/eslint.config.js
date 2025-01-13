@@ -75,6 +75,13 @@ export default [
         'error',
         { prefer: 'type-imports' }
       ],
+        //string must use single quotes hatasından dolayı aşşığıdaki yapı kullanıldı
+    quotes: [
+      'error',
+      'single',
+      { allowTemplateLiterals: true, avoidEscape: true },
+    ],
+      
 
       // allow debugger during development only
       'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
