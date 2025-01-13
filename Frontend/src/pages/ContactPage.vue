@@ -3,9 +3,9 @@
     <div class="container q-pa-md">
       <!-- Page Header -->
       <div class="text-center q-mb-xl">
-        <h1 class="text-h3 text-weight-bold q-mb-md">İletişim</h1>
+        <h1 class="text-h3 text-weight-bold q-mb-md">{{ t('İletişim') }}</h1>
         <p class="text-h6 text-grey-8 q-mb-xl">
-          Sorularınız için bizimle iletişime geçebilirsiniz. Size en kısa sürede dönüş yapacağız.
+          {{ t('Sorularınız için bizimle iletişime geçebilirsiniz. Size en kısa sürede dönüş yapacağız.') }}
         </p>
       </div>
 
@@ -13,13 +13,13 @@
         <!-- Contact Information -->
         <div class="col-12 col-md-4">
           <div class="contact-info q-pa-md">
-            <h2 class="text-h5 q-mb-lg">İletişim Bilgileri</h2>
+            <h2 class="text-h5 q-mb-lg">{{ t('İletişim Bilgileri') }}</h2>
 
             <!-- Address -->
             <div class="contact-item q-mb-lg">
               <div class="row items-center q-mb-sm">
                 <q-icon name="location_on" color="primary" size="sm" class="q-mr-sm" />
-                <span class="text-subtitle1 text-weight-medium">Adres</span>
+                <span class="text-subtitle1 text-weight-medium">{{ t('Adres') }}</span>
               </div>
               <p class="text-body1 text-grey-8">
                 Terapi Sokak No: 123, Ruh Sağlığı Mahallesi, İstanbul
@@ -30,7 +30,7 @@
             <div class="contact-item q-mb-lg">
               <div class="row items-center q-mb-sm">
                 <q-icon name="phone" color="primary" size="sm" class="q-mr-sm" />
-                <span class="text-subtitle1 text-weight-medium">Telefon</span>
+                <span class="text-subtitle1 text-weight-medium">{{ t('Telefon') }}</span>
               </div>
               <a href="tel:+905551234567" class="text-body1 text-grey-8">+90 (555) 123-4567</a>
             </div>
@@ -39,7 +39,7 @@
             <div class="contact-item q-mb-lg">
               <div class="row items-center q-mb-sm">
                 <q-icon name="email" color="primary" size="sm" class="q-mr-sm" />
-                <span class="text-subtitle1 text-weight-medium">E-posta</span>
+                <span class="text-subtitle1 text-weight-medium">{{ t('E-posta') }}</span>
               </div>
               <a href="mailto:destek@therapify.com" class="text-body1 text-grey-8 text-no-wrap"
                 >destek@therapify.com</a
@@ -61,13 +61,13 @@
         <!-- Contact Form -->
         <div class="col-12 col-md-8">
           <q-card flat bordered class="contact-form-card q-pa-lg">
-            <h2 class="text-h5 q-mb-lg">Bize Ulaşın</h2>
+            <h2 class="text-h5 q-mb-lg">{{ $t('Bize Ulaşın') }}</h2>
             <q-form @submit="onSubmit" class="q-gutter-md">
               <div class="row q-col-gutter-md">
                 <div class="col-12 col-md-6">
                   <q-input
                     v-model="form.firstName"
-                    label="Ad"
+                    :label="$t('Ad')"
                     :rules="[
                       val => !!val || 'Ad alanı zorunludur',
                       val => val.length >= 2 || 'Ad en az 2 karakter olmalıdır'
@@ -82,7 +82,7 @@
                 <div class="col-12 col-md-6">
                   <q-input
                     v-model="form.lastName"
-                    label="Soyad"
+                    :label="$t('Soyad')"
                     :rules="[
                       val => !!val || 'Soyad alanı zorunludur',
                       val => val.length >= 2 || 'Soyad en az 2 karakter olmalıdır'
@@ -98,7 +98,7 @@
 
               <q-input
                 v-model="form.email"
-                label="E-posta"
+                :label="$t('E-posta')"
                 type="email"
                 :rules="[
                   val => !!val || 'E-posta alanı zorunludur',
@@ -113,7 +113,7 @@
 
               <q-input
                 v-model="form.message"
-                label="Mesajınız"
+                :label="$t('Mesaj')"
                 type="textarea"
                 :rules="[
                   val => !!val || 'Mesaj alanı zorunludur',
@@ -131,7 +131,7 @@
                 <q-btn
                   type="submit"
                   color="primary"
-                  label="Gönder"
+                  :label="$t('Gönder')"
                   :loading="submitting"
                   class="q-mt-md submit-button"
                   unelevated
@@ -165,6 +165,11 @@
 import { ref } from 'vue'
 import { useQuasar } from 'quasar'
 import { api } from 'src/boot/axios'
+
+import { useI18n } from 'vue-i18n'; // useI18n fonksiyonunu ekleyin
+
+// i18n kullanımı
+const { t } = useI18n();
 
 const $q = useQuasar()
 

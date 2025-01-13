@@ -58,7 +58,18 @@ export default {
 	"Gizlilik Politikası": `Gizlilik Politikası`,
 	"Tüm hakları saklıdır.": `Tüm hakları saklıdır.`,
 
-
+	// Contact Page
+	"Sorularınız için bizimle iletişime geçebilirsiniz. Size en kısa sürede dönüş yapacağız.": `Sorularınız için bizimle iletişime geçebilirsiniz. Size en kısa sürede dönüş yapacağız.`,
+	"İletişim Bilgileri": `İletişim Bilgileri`,
+	"Adres": `Adres`,
+	"Telefon": `Telefon`,
+	"E-posta": `E-posta`,
+	"Bize Ulaşın": `Bize Ulaşın`,
+	"Ad": `Ad`,
+	"Soyad": `Soyad`,
+	"Mail": `Mail`,
+	"Mesaj": `Mesaj`,
+	"Gönder": `Gönder`,
 
 
 
