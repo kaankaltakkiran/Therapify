@@ -11,4 +11,51 @@ export default {
 	"Giriş": `Login`,
 	"Kayıt Ol": `Register`,
 
+	// Hero Section
+	"Ruhsal İyilik Yolculuğunuza Başlayın" : `Start Your Journey to Spiritual Well-Being`,
+	"Yapay zeka destekli eşleştirme sistemiyle, kişiselleştirilmiş ruh sağlığı desteği için uzman terapistlerle bağlantı kurun"
+: `Connect with expert therapists for personalized mental health support with an AI-powered matching system`,
+	"Aramıza Katıl": `Join Us`,
+	"Daha Fazla Bilgi": `More Information`,
+
+	// Services Section
+	"Yapay Zeka Eşleştirmesi": `Artificial Intelligence Matching`,
+	"Gelişmiş yapay zeka sistemimiz, ihtiyaç ve tercihlerinizi analiz ederek size en uygun terapisti bulur.": `Our advanced artificial intelligence system analyzes your needs and preferences to find the most suitable therapist for you.`,
+	"Güvenli Online Seanslar": `Secure Online Sessions`,
+	"Evinizin rahatlığında, güvenli görüntülü görüşme ve mesajlaşma yoluyla terapistinizle bağlantı kurun.": `Connect with your therapist from the comfort of your home via secure video calling and messaging.`,
+	"İlerleme Takibi": `Progress Tracking`,
+	"Yapay zeka destekli içgörüler ve ilerleme raporlarıyla ruh sağlığı yolculuğunuzu takip edin.": `Track your mental health journey with AI-powered insights and progress reports.`,
+
+	// How İts Work Section
+	"Nasıl Çalışır?": `How it works`,
+	"Hesabınızı oluşturun ve kısa bir değerlendirme yapın": `Create your account and make a short evaluation`,
+	"Eşleştirme": `Pairing`,
+	"Yapay zekamız sizi uygun terapistlerle eşleştirir": `Our artificial intelligence matches you with suitable therapists`,
+	"Randevu Al": `Make an Appointment`,
+	"Size uygun bir zamanda ilk seansınızı planlayın": `Schedule your first session at a time convenient for you`,
+	"Terapiye Başla": `Start Therapy`,
+	"Daha iyi bir ruh sağlığı için yolculuğunuza başlayın": `Start your journey to better mental health`,
+
+	// Therapist Section
+	"Terapistler İçin" : `For Therapists`,
+	"Uzmanlığınıza uygun danışanlarla buluşmak ve pratiğinizi genişletmek için platformumuza katılın.": `Join our platform to meet clients in your specialty and expand your practice.`,
+	"Yapay zeka destekli danışan eşleştirmesi": `Artificial intelligence assisted client matching`,
+	"Esnek planlama": `Flexible planning`,
+	"Güvenli ödeme sistemi": `Secure payment system`,
+	"Mesleki gelişim kaynakları": `Professional development resources`,
+	"Terapist Olarak Katıl": `Participate as a Therapist`,
+
+	// Footer
+	"Yapay zeka destekli eşleştirme ile ruh sağlığı uzmanlarıyla sizi buluşturuyoruz.": `We bring you together with mental health experts with artificial intelligence-supported matching.`,
+	"Hızlı Bağlantılar": `Quick Links`,
+	"Destek": `Support`,
+	"Yardım Merkezi": `Help Center`,
+	"Gizlilik Politikası": `Privacy Policy`,
+	"Tüm hakları saklıdır.": `All rights reserved.`,
+
+
+
+
+
+
 }

@@ -80,7 +80,7 @@ export default [
       'error',
       'single',
       { allowTemplateLiterals: true, avoidEscape: true },
-    ],
+    ], 
       
 
       // allow debugger during development only

@@ -6,7 +6,7 @@
         <div class="col-12 col-md-4 q-pb-sm">
           <div class="text-subtitle1 text-primary q-mb-sm">Therapify</div>
           <p class="text-grey-8 text-body2 q-mb-sm">
-            Yapay zeka destekli eşleştirme ile ruh sağlığı uzmanlarıyla sizi buluşturuyoruz.
+            {{ t('Yapay zeka destekli eşleştirme ile ruh sağlığı uzmanlarıyla sizi buluşturuyoruz.') }}
           </p>
           <div class="row q-gutter-xs">
             <q-btn
@@ -58,42 +58,42 @@
 
         <!-- Quick Links -->
         <div class="col-12 col-md-2">
-          <div class="text-subtitle2 q-mb-sm">Hızlı Bağlantılar</div>
+          <div class="text-subtitle2 q-mb-sm">{{ t('Hızlı Bağlantılar') }}</div>
           <q-list dense padding class="q-pa-none">
          <!--    <q-item clickable v-ripple to="/about" class="q-pa-xs">
               <q-item-section class="text-body2">Hakkımızda</q-item-section>
             </q-item> -->
             <q-item clickable v-ripple to="/contact" class="q-pa-xs">
-              <q-item-section class="text-body2">İletişim</q-item-section>
+              <q-item-section class="text-body2">{{ t('İletişim') }}</q-item-section>
             </q-item>
             <q-item clickable v-ripple to="/register" class="q-pa-xs">
-              <q-item-section class="text-body2">Kayıt Ol</q-item-section>
+              <q-item-section class="text-body2">{{ t('Kayıt Ol') }}</q-item-section>
             </q-item>
             <q-item clickable v-ripple to="/login" class="q-pa-xs">
-              <q-item-section class="text-body2">Giriş Yap</q-item-section>
+              <q-item-section class="text-body2">{{ t('Giriş') }}</q-item-section>
             </q-item>
           </q-list>
         </div>
 
         <!-- Support -->
         <div class="col-12 col-md-2">
-          <div class="text-subtitle2 q-mb-sm">Destek</div>
+          <div class="text-subtitle2 q-mb-sm">{{ t('Destek') }}</div>
           <q-list dense padding class="q-pa-none">
             <q-item clickable v-ripple to="/contact" class="q-pa-xs">
-              <q-item-section class="text-body2">Yardım Merkezi</q-item-section>
+              <q-item-section class="text-body2">{{ t('Yardım Merkezi') }}</q-item-section>
             </q-item>
             <q-item clickable v-ripple to="/privacy" class="q-pa-xs">
-              <q-item-section class="text-body2">Gizlilik Politikası</q-item-section>
+              <q-item-section class="text-body2">{{ t('Gizlilik Politikası') }}</q-item-section>
             </q-item>
             <q-item clickable v-ripple to="/faq" class="q-pa-xs">
-              <q-item-section class="text-body2">SSS</q-item-section>
+              <q-item-section class="text-body2">{{ t('SSS') }} </q-item-section>
             </q-item>
           </q-list>
         </div>
 
         <!-- Contact Info -->
         <div class="col-12 col-md-4">
-          <div class="text-subtitle2 q-mb-sm">İletişim</div>
+          <div class="text-subtitle2 q-mb-sm">{{ t('İletişim') }}</div>
           <q-list dense padding class="q-pa-none">
             <q-item class="q-pa-xs">
               <q-item-section avatar class="q-pr-xs">
@@ -124,23 +124,15 @@
 
       <div class="row justify-between items-center copyright-section q-py-sm">
         <div class="col-12 col-md-auto text-center text-md-left text-caption">
-          © {{ new Date().getFullYear() }} Therapify. Tüm hakları saklıdır.
+          © {{ new Date().getFullYear() }} Therapify. {{ t('Tüm hakları saklıdır.') }}
         </div>
         <div class="col-12 col-md-auto text-center text-md-right">
           <q-btn
             flat
             dense
             no-caps
-            label="Gizlilik Politikası"
+            :label="t('Gizlilik Politikası')"
             to="/privacy"
-            class="footer-link text-caption"
-          />
-          <q-btn
-            flat
-            dense
-            no-caps
-            label="Kullanım Koşulları"
-            to="/terms"
             class="footer-link text-caption"
           />
         </div>
@@ -150,7 +142,11 @@
 </template>
 
 <script setup lang="ts">
-// No script needed for now
+// i18n dil kullanımı
+import { useI18n } from 'vue-i18n'; 
+
+// i18n kullanımı
+const { t } = useI18n()
 </script>
 
 <style lang="scss" scoped>

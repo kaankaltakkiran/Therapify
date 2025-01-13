@@ -11,4 +11,56 @@ export default {
 	"Giriş": `Giriş`,
 	"Kayıt Ol": `Kayıt Ol`,
 
+	// Hero Section
+	"Ruhsal İyilik Yolculuğunuza Başlayın" : `Ruhsal İyilik Yolculuğunuza Başlayın
+`,
+	"Yapay zeka destekli eşleştirme sistemiyle, kişiselleştirilmiş ruh sağlığı desteği için uzman terapistlerle bağlantı kurun"
+: `Yapay zeka destekli eşleştirme sistemiyle, kişiselleştirilmiş ruh sağlığı desteği için uzman terapistlerle bağlantı kurun
+`,
+	"Aramıza Katıl": `Aramıza Katıl`,
+	"Daha Fazla Bilgi": `Daha Fazla Bilgi`,
+
+	// Services Section
+	"Yapay Zeka Eşleştirmesi": `Yapay Zeka Eşleştirmesi
+`,
+	"Gelişmiş yapay zeka sistemimiz, ihtiyaç ve tercihlerinizi analiz ederek size en uygun terapisti bulur.": `Gelişmiş yapay zeka sistemimiz, ihtiyaç ve tercihlerinizi analiz ederek size en uygun terapisti bulur.`,
+	"Güvenli Online Seanslar": `Güvenli Online Seanslar`,
+	"Evinizin rahatlığında, güvenli görüntülü görüşme ve mesajlaşma yoluyla terapistinizle bağlantı kurun.": `Evinizin rahatlığında, güvenli görüntülü görüşme ve mesajlaşma yoluyla terapistinizle bağlantı kurun.`,
+	"İlerleme Takibi": `İlerleme Takibi`,
+	"Yapay zeka destekli içgörüler ve ilerleme raporlarıyla ruh sağlığı yolculuğunuzu takip edin.": `Yapay zeka destekli içgörüler ve ilerleme raporlarıyla ruh sağlığı yolculuğunuzu takip edin.`,
+
+	// How İts Work Section
+	"Nasıl Çalışır?": `Nasıl Çalışır`,
+	"Hesabınızı oluşturun ve kısa bir değerlendirme yapın": `Hesabınızı oluşturun ve kısa bir değerlendirme yapın`,
+	"Eşleştirme": `Eşleştirme
+`,
+	"Yapay zekamız sizi uygun terapistlerle eşleştirir": `Yapay zekamız sizi uygun terapistlerle eşleştirir`,
+	"Randevu Al": `Randevu Al`,
+	"Size uygun bir zamanda ilk seansınızı planlayın": `Size uygun bir zamanda ilk seansınızı planlayın`,
+	"Terapiye Başla": `Terapiye Başla
+`,
+	"Daha iyi bir ruh sağlığı için yolculuğunuza başlayın": `Daha iyi bir ruh sağlığı için yolculuğunuza başlayın`,
+
+	// Therapist Section
+	"Terapistler İçin" : `Terapistler İçin`,
+	"Uzmanlığınıza uygun danışanlarla buluşmak ve pratiğinizi genişletmek için platformumuza katılın.": `Uzmanlığınıza uygun danışanlarla buluşmak ve pratiğinizi genişletmek için platformumuza katılın.`,
+	"Yapay zeka destekli danışan eşleştirmesi": `Yapay zeka destekli danışan eşleştirmesi`,
+	"Esnek planlama": `Esnek planlama`,
+	"Güvenli ödeme sistemi": `Güvenli ödeme sistemi`,
+	"Mesleki gelişim kaynakları": `Mesleki gelişim kaynakları`,
+	"Terapist Olarak Katıl": `Terapist Olarak Katıl`,
+
+	// Footer
+	"Yapay zeka destekli eşleştirme ile ruh sağlığı uzmanlarıyla sizi buluşturuyoruz.": `Yapay zeka destekli eşleştirme ile ruh sağlığı uzmanlarıyla sizi buluşturuyoruz.`,
+	"Hızlı Bağlantılar": `Hızlı Bağlantılar`,
+	"Destek": `Destek`,
+	"Yardım Merkezi": `Yardım Merkezi`,
+	"Gizlilik Politikası": `Gizlilik Politikası`,
+	"Tüm hakları saklıdır.": `Tüm hakları saklıdır.`,
+
+
+
+
+
+
 }

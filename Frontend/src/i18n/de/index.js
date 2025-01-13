@@ -11,4 +11,51 @@ export default {
 	"Giriş": `Anmeldung`,
 	"Kayıt Ol": `Anmelden`,
 
+	// Hero Section
+	"Ruhsal İyilik Yolculuğunuza Başlayın" : `Beginnen Sie Ihre Reise des spirituellen Wohlbefindens`,
+	"Yapay zeka destekli eşleştirme sistemiyle, kişiselleştirilmiş ruh sağlığı desteği için uzman terapistlerle bağlantı kurun"
+: `Verbinden Sie sich mit fachkundigen Therapeuten, um mithilfe eines KI-gestützten Matching-Systems individuelle Unterstützung für Ihre psychische Gesundheit zu erhalten.`,
+	"Aramıza Katıl": `Beitreten`,
+	"Daha Fazla Bilgi": `Mehr Informationen`,
+
+	// Services Section
+	"Yapay Zeka Eşleştirmesi": `Künstliche Intelligenz - Matching`,
+	"Gelişmiş yapay zeka sistemimiz, ihtiyaç ve tercihlerinizi analiz ederek size en uygun terapisti bulur.": `Unser fortschrittliches System der künstlichen Intelligenz analysiert Ihre Bedürfnisse und Vorlieben, um den für Sie am besten geeigneten Therapeuten zu finden.`,
+	"Güvenli Online Seanslar": `Sichere Online-Sitzungen`,
+	"Evinizin rahatlığında, güvenli görüntülü görüşme ve mesajlaşma yoluyla terapistinizle bağlantı kurun.": `Verbinden Sie sich mit Ihrem Therapeuten bequem von zu Hause aus über sichere Videoanrufe und Messaging.`,
+	"İlerleme Takibi": `Fortschrittsverfolgung`,
+	"Yapay zeka destekli içgörüler ve ilerleme raporlarıyla ruh sağlığı yolculuğunuzu takip edin.": `Verfolgen Sie Ihren Weg zur psychischen Gesundheit mit KI-gestützten Einblicken und Fortschrittsberichten.`,
+
+	// How İts Work Section
+	"Nasıl Çalışır?": `Wie es funktioniert`,
+	"Hesabınızı oluşturun ve kısa bir değerlendirme yapın": `Erstellen Sie Ihr Konto und geben Sie eine kurze Bewertung ab`,
+	"Eşleştirme": `Paarung`,
+	"Yapay zekamız sizi uygun terapistlerle eşleştirir": `Unsere künstliche Intelligenz bringt Sie mit passenden Therapeuten zusammen`,
+	"Randevu Al": `Vereinbaren Sie einen Termin`,
+	"Size uygun bir zamanda ilk seansınızı planlayın": `Vereinbaren Sie Ihre erste Sitzung zu einem für Sie passenden Zeitpunkt`,
+	"Terapiye Başla": `Therapie beginnen`,
+	"Daha iyi bir ruh sağlığı için yolculuğunuza başlayın": `Beginnen Sie Ihre Reise zu einer besseren psychischen Gesundheit`,
+
+	// Therapist Section
+	"Terapistler İçin" : `Für Therapeuten`,
+	"Uzmanlığınıza uygun danışanlarla buluşmak ve pratiğinizi genişletmek için platformumuza katılın.": `Treten Sie unserer Plattform bei, um Kunden in Ihrem Fachgebiet zu treffen und Ihre Praxis zu erweitern.`,
+	"Yapay zeka destekli danışan eşleştirmesi": `Durch künstliche Intelligenz unterstützter Kundenabgleich`,
+	"Esnek planlama": `Flexible Planung`,
+	"Güvenli ödeme sistemi": `Sicheres Zahlungssystem`,
+	"Mesleki gelişim kaynakları": `Ressourcen für die berufliche Entwicklung`,
+	"Terapist Olarak Katıl": `Als Therapeut teilnehmen`,
+
+	// Footer
+	"Yapay zeka destekli eşleştirme ile ruh sağlığı uzmanlarıyla sizi buluşturuyoruz.": `Wir bringen Sie mit Experten für psychische Gesundheit mit Hilfe von künstlicher Intelligenz zusammen.`,
+	"Hızlı Bağlantılar": `Schnell-Links`,
+	"Destek": `Unterstützung`,
+	"Yardım Merkezi": `Hilfe-Center`,
+	"Gizlilik Politikası": `Datenschutzrichtlinien`,
+	"Tüm hakları saklıdır.": `Alle Rechte vorbehalten.`,
+
+
+
+
+
+
 }
