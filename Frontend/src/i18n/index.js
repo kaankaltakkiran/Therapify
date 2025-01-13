@@ -2,12 +2,8 @@
 
 import tr from './tr'
 import enUS from './en-US'
-import de from './de'
-import fr from './fr'
 
 export default { 
 	'tr': tr, // Turkey
 	'en-US': enUS, // English
-	'de': de, // German
-	'fr': fr, // French
 }

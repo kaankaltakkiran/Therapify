@@ -116,8 +116,6 @@ const { locale } = useI18n({ useScope: 'global' })
 const localeOptions = [
   { value: 'tr', label: 'Türkçe' },
   { value: 'en-US', label: 'English' },
-  { value: 'de', label: 'Deutsch' },
-  { value: 'fr', label: 'Français' },
 ]
 
 const getLanguageName = (code: string) => {

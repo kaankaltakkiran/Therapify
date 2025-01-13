@@ -1,62 +1,62 @@
-Key,"Turkey, tr","English, en-US","German, de","French, fr"
-,,,,
+Key,"Turkey, tr","English, en-US"
+,,
 # Navbar
-"""Ana Sayfa""","Ana Sayfa","Home Page","Hauptseite","Page d'accueil"
-"""Hizmetlerimiz""","Hizmetlerimiz","Our Services","Unsere Dienstleistungen","Nos services"
-"""Terapistler""","Terapistler","Therapists","Therapeuten","Thérapeutes"
-"""İletişim""","İletişim","Contact","Kontakt","Contact"
-"""Giriş""","Giriş","Login","Anmeldung","Se connecter"
-"""Kayıt Ol""","Kayıt Ol","Register","Anmelden","S'inscrire"
-,,,,
+"""Ana Sayfa""","Ana Sayfa","Home Page"
+"""Hizmetlerimiz""","Hizmetlerimiz","Our Services"
+"""Terapistler""","Terapistler","Therapists"
+"""İletişim""","İletişim","Contact"
+"""Giriş""","Giriş","Login"
+"""Kayıt Ol""","Kayıt Ol","Register"
+,,
 # Hero Section
 """Ruhsal İyilik Yolculuğunuza Başlayın"" ","Ruhsal İyilik Yolculuğunuza Başlayın
-","Start Your Journey to Spiritual Well-Being","Beginnen Sie Ihre Reise des spirituellen Wohlbefindens","Commencez votre voyage de bien-être spirituel"
+","Start Your Journey to Spiritual Well-Being"
 """Yapay zeka destekli eşleştirme sistemiyle, kişiselleştirilmiş ruh sağlığı desteği için uzman terapistlerle bağlantı kurun""
 ","Yapay zeka destekli eşleştirme sistemiyle, kişiselleştirilmiş ruh sağlığı desteği için uzman terapistlerle bağlantı kurun
-","Connect with expert therapists for personalized mental health support with an AI-powered matching system","Verbinden Sie sich mit fachkundigen Therapeuten, um mithilfe eines KI-gestützten Matching-Systems individuelle Unterstützung für Ihre psychische Gesundheit zu erhalten.","Entrez en contact avec des thérapeutes experts pour un soutien personnalisé en matière de santé mentale grâce à un système de correspondance alimenté par l'IA."
-"""Aramıza Katıl""","Aramıza Katıl","Join Us","Beitreten","Nous rejoindre"
-"""Daha Fazla Bilgi""","Daha Fazla Bilgi","More Information","Mehr Informationen","Plus d'informations"
-,,,,
+","Connect with expert therapists for personalized mental health support with an AI-powered matching system"
+"""Aramıza Katıl""","Aramıza Katıl","Join Us"
+"""Daha Fazla Bilgi""","Daha Fazla Bilgi","More Information"
+,,
 # Services Section
 """Yapay Zeka Eşleştirmesi""","Yapay Zeka Eşleştirmesi
-","Artificial Intelligence Matching","Künstliche Intelligenz - Matching","Mise en relation par intelligence artificielle"
-"""Gelişmiş yapay zeka sistemimiz, ihtiyaç ve tercihlerinizi analiz ederek size en uygun terapisti bulur.""","Gelişmiş yapay zeka sistemimiz, ihtiyaç ve tercihlerinizi analiz ederek size en uygun terapisti bulur.","Our advanced artificial intelligence system analyzes your needs and preferences to find the most suitable therapist for you.","Unser fortschrittliches System der künstlichen Intelligenz analysiert Ihre Bedürfnisse und Vorlieben, um den für Sie am besten geeigneten Therapeuten zu finden.","Notre système avancé d'intelligence artificielle analyse vos besoins et vos préférences pour trouver le thérapeute qui vous convient le mieux."
-"""Güvenli Online Seanslar""","Güvenli Online Seanslar","Secure Online Sessions","Sichere Online-Sitzungen","Séances en ligne sécurisées"
-"""Evinizin rahatlığında, güvenli görüntülü görüşme ve mesajlaşma yoluyla terapistinizle bağlantı kurun.""","Evinizin rahatlığında, güvenli görüntülü görüşme ve mesajlaşma yoluyla terapistinizle bağlantı kurun.","Connect with your therapist from the comfort of your home via secure video calling and messaging.","Verbinden Sie sich mit Ihrem Therapeuten bequem von zu Hause aus über sichere Videoanrufe und Messaging.","Connectez-vous avec votre thérapeute depuis le confort de votre domicile grâce à des appels vidéo et des messages sécurisés."
-"""İlerleme Takibi""","İlerleme Takibi","Progress Tracking","Fortschrittsverfolgung","Suivi des progrès"
-"""Yapay zeka destekli içgörüler ve ilerleme raporlarıyla ruh sağlığı yolculuğunuzu takip edin.""","Yapay zeka destekli içgörüler ve ilerleme raporlarıyla ruh sağlığı yolculuğunuzu takip edin.","Track your mental health journey with AI-powered insights and progress reports.","Verfolgen Sie Ihren Weg zur psychischen Gesundheit mit KI-gestützten Einblicken und Fortschrittsberichten.","Suivez votre parcours de santé mentale grâce à des informations et des rapports de progrès alimentés par l'IA."
-,,,,
+","Artificial Intelligence Matching"
+"""Gelişmiş yapay zeka sistemimiz, ihtiyaç ve tercihlerinizi analiz ederek size en uygun terapisti bulur.""","Gelişmiş yapay zeka sistemimiz, ihtiyaç ve tercihlerinizi analiz ederek size en uygun terapisti bulur.","Our advanced artificial intelligence system analyzes your needs and preferences to find the most suitable therapist for you."
+"""Güvenli Online Seanslar""","Güvenli Online Seanslar","Secure Online Sessions"
+"""Evinizin rahatlığında, güvenli görüntülü görüşme ve mesajlaşma yoluyla terapistinizle bağlantı kurun.""","Evinizin rahatlığında, güvenli görüntülü görüşme ve mesajlaşma yoluyla terapistinizle bağlantı kurun.","Connect with your therapist from the comfort of your home via secure video calling and messaging."
+"""İlerleme Takibi""","İlerleme Takibi","Progress Tracking"
+"""Yapay zeka destekli içgörüler ve ilerleme raporlarıyla ruh sağlığı yolculuğunuzu takip edin.""","Yapay zeka destekli içgörüler ve ilerleme raporlarıyla ruh sağlığı yolculuğunuzu takip edin.","Track your mental health journey with AI-powered insights and progress reports."
+,,
 # How İts Work Section
-"""Nasıl Çalışır?""","Nasıl Çalışır","How it works","Wie es funktioniert","Comment cela fonctionne-t-il "
-"""Hesabınızı oluşturun ve kısa bir değerlendirme yapın""","Hesabınızı oluşturun ve kısa bir değerlendirme yapın","Create your account and make a short evaluation","Erstellen Sie Ihr Konto und geben Sie eine kurze Bewertung ab","Créez votre compte et faites une brève évaluation"
+"""Nasıl Çalışır?""","Nasıl Çalışır","How it works"
+"""Hesabınızı oluşturun ve kısa bir değerlendirme yapın""","Hesabınızı oluşturun ve kısa bir değerlendirme yapın","Create your account and make a short evaluation"
 """Eşleştirme""","Eşleştirme
-","Pairing","Paarung","Appariement"
-"""Yapay zekamız sizi uygun terapistlerle eşleştirir""","Yapay zekamız sizi uygun terapistlerle eşleştirir","Our artificial intelligence matches you with suitable therapists","Unsere künstliche Intelligenz bringt Sie mit passenden Therapeuten zusammen","Notre intelligence artificielle vous met en relation avec des thérapeutes appropriés"
-"""Randevu Al""","Randevu Al","Make an Appointment","Vereinbaren Sie einen Termin","Prendre un rendez-vous"
-"""Size uygun bir zamanda ilk seansınızı planlayın""","Size uygun bir zamanda ilk seansınızı planlayın","Schedule your first session at a time convenient for you","Vereinbaren Sie Ihre erste Sitzung zu einem für Sie passenden Zeitpunkt","Planifiez votre première séance à l'heure qui vous convient."
+","Pairing"
+"""Yapay zekamız sizi uygun terapistlerle eşleştirir""","Yapay zekamız sizi uygun terapistlerle eşleştirir","Our artificial intelligence matches you with suitable therapists"
+"""Randevu Al""","Randevu Al","Make an Appointment"
+"""Size uygun bir zamanda ilk seansınızı planlayın""","Size uygun bir zamanda ilk seansınızı planlayın","Schedule your first session at a time convenient for you"
 """Terapiye Başla""","Terapiye Başla
-","Start Therapy","Therapie beginnen","Commencer la thérapie"
-"""Daha iyi bir ruh sağlığı için yolculuğunuza başlayın""","Daha iyi bir ruh sağlığı için yolculuğunuza başlayın","Start your journey to better mental health","Beginnen Sie Ihre Reise zu einer besseren psychischen Gesundheit","Commencez votre voyage vers une meilleure santé mentale"
-,,,,
+","Start Therapy"
+"""Daha iyi bir ruh sağlığı için yolculuğunuza başlayın""","Daha iyi bir ruh sağlığı için yolculuğunuza başlayın","Start your journey to better mental health"
+,,
 # Therapist Section
-"""Terapistler İçin"" ","Terapistler İçin","For Therapists","Für Therapeuten","Pour les thérapeutes"
-"""Uzmanlığınıza uygun danışanlarla buluşmak ve pratiğinizi genişletmek için platformumuza katılın.""","Uzmanlığınıza uygun danışanlarla buluşmak ve pratiğinizi genişletmek için platformumuza katılın.","Join our platform to meet clients in your specialty and expand your practice.","Treten Sie unserer Plattform bei, um Kunden in Ihrem Fachgebiet zu treffen und Ihre Praxis zu erweitern.","Rejoignez notre plateforme pour rencontrer des clients dans votre spécialité et développer votre pratique."
-"""Yapay zeka destekli danışan eşleştirmesi""","Yapay zeka destekli danışan eşleştirmesi","Artificial intelligence assisted client matching","Durch künstliche Intelligenz unterstützter Kundenabgleich","Recherche de clients assistée par l'intelligence artificielle"
-"""Esnek planlama""","Esnek planlama","Flexible planning","Flexible Planung","Planification flexible"
-"""Güvenli ödeme sistemi""","Güvenli ödeme sistemi","Secure payment system","Sicheres Zahlungssystem","Système de paiement sécurisé"
-"""Mesleki gelişim kaynakları""","Mesleki gelişim kaynakları","Professional development resources","Ressourcen für die berufliche Entwicklung","Ressources de développement professionnel"
-"""Terapist Olarak Katıl""","Terapist Olarak Katıl","Participate as a Therapist","Als Therapeut teilnehmen","Participer en tant que thérapeute"
-,,,,
+"""Terapistler İçin"" ","Terapistler İçin","For Therapists"
+"""Uzmanlığınıza uygun danışanlarla buluşmak ve pratiğinizi genişletmek için platformumuza katılın.""","Uzmanlığınıza uygun danışanlarla buluşmak ve pratiğinizi genişletmek için platformumuza katılın.","Join our platform to meet clients in your specialty and expand your practice."
+"""Yapay zeka destekli danışan eşleştirmesi""","Yapay zeka destekli danışan eşleştirmesi","Artificial intelligence assisted client matching"
+"""Esnek planlama""","Esnek planlama","Flexible planning"
+"""Güvenli ödeme sistemi""","Güvenli ödeme sistemi","Secure payment system"
+"""Mesleki gelişim kaynakları""","Mesleki gelişim kaynakları","Professional development resources"
+"""Terapist Olarak Katıl""","Terapist Olarak Katıl","Participate as a Therapist"
+,,
 # Footer
-"""Yapay zeka destekli eşleştirme ile ruh sağlığı uzmanlarıyla sizi buluşturuyoruz.""","Yapay zeka destekli eşleştirme ile ruh sağlığı uzmanlarıyla sizi buluşturuyoruz.","We bring you together with mental health experts with artificial intelligence-supported matching.","Wir bringen Sie mit Experten für psychische Gesundheit mit Hilfe von künstlicher Intelligenz zusammen.","Nous vous mettons en contact avec des experts en santé mentale grâce à une mise en relation assistée par l'intelligence artificielle."
-"""Hızlı Bağlantılar""","Hızlı Bağlantılar","Quick Links","Schnell-Links","Liens rapides"
-"""Destek""","Destek","Support","Unterstützung","Support"
-"""Yardım Merkezi""","Yardım Merkezi","Help Center","Hilfe-Center","Centre d'aide"
-"""Gizlilik Politikası""","Gizlilik Politikası","Privacy Policy","Datenschutzrichtlinien","Politique de confidentialité"
-"""Tüm hakları saklıdır.""","Tüm hakları saklıdır.","All rights reserved.","Alle Rechte vorbehalten.","Tous les droits sont réservés."
-,,,,
-,,,,
-,,,,
-,,,,
-,,,,
-,,,,
+"""Yapay zeka destekli eşleştirme ile ruh sağlığı uzmanlarıyla sizi buluşturuyoruz.""","Yapay zeka destekli eşleştirme ile ruh sağlığı uzmanlarıyla sizi buluşturuyoruz.","We bring you together with mental health experts with artificial intelligence-supported matching."
+"""Hızlı Bağlantılar""","Hızlı Bağlantılar","Quick Links"
+"""Destek""","Destek","Support"
+"""Yardım Merkezi""","Yardım Merkezi","Help Center"
+"""Gizlilik Politikası""","Gizlilik Politikası","Privacy Policy"
+"""Tüm hakları saklıdır.""","Tüm hakları saklıdır.","All rights reserved."
+,,
+,,
+,,
+,,
+,,
+,,

@@ -62,43 +62,6 @@
           >
             <q-item-section>{{ $t('Kayıt Ol') }}</q-item-section>
           </q-item>
-          <!--Dil seçimi-->
-          <q-select
-            v-model="locale"
-            :options="localeOptions"
-            dense
-            borderless
-            emit-value
-            map-options
-            options-dense
-            class="language-selector"
-          >
-            <template v-slot:selected>
-              <q-item v-if="locale">
-                <q-item-section avatar>
-                  <q-avatar size="20px">
-                    <img :src="`/images/flags/${locale}.svg`" :alt="locale" />
-                  </q-avatar>
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label>{{ getLanguageName(locale) }}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </template>
-
-            <template v-slot:option="scope">
-              <q-item v-bind="scope.itemProps">
-                <q-item-section avatar>
-                  <q-avatar size="20px">
-                    <img :src="`/images/flags/${scope.opt.value}.svg`" :alt="scope.opt.value" />
-                  </q-avatar>
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label>{{ scope.opt.label }}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
           <q-item v-if="isAuthenticated && user">
             <!-- Profile Dropdown -->
             <q-btn-dropdown
@@ -155,21 +118,8 @@ import { storeToRefs } from 'pinia'
 import { Notify } from 'quasar'
 import { useRouter } from 'vue-router'
 
-import { useI18n } from 'vue-i18n'
 
-const { locale } = useI18n({ useScope: 'global' })
 
-const localeOptions = [
-  { value: 'tr', label: 'Türkçe' },
-  { value: 'en-US', label: 'English' },
-  { value: 'de', label: 'Deutsch' },
-  { value: 'fr', label: 'Français' },
-]
-
-const getLanguageName = (code: string) => {
-  const option = localeOptions.find((opt) => opt.value === code)
-  return option ? option.label : code
-}
 
 const getFileUrl = (path: string | undefined) => {
   if (!path) return 'https://cdn.quasar.dev/img/boy-avatar.png'

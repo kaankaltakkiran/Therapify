@@ -30,14 +30,16 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 interface Language {
-  code: 'tr' | 'en'
+  code: 'tr' | 'en-US' | 'de' | 'fr'
   label: string
   flag: string
 }
 
-const currentLangCode = ref<Language['code']>('tr')
+const { locale } = useI18n()
+const currentLangCode = ref<Language['code']>(locale.value as Language['code'])
 
 const languages = [
   {
@@ -46,9 +48,9 @@ const languages = [
     flag: '/images/flags/tr.svg',
   },
   {
-    code: 'en',
+    code: 'en-US',
     label: 'English',
-    flag: '/images/flags/en.svg',
+    flag: '/images/flags/en-US.svg',
   },
 ] as const satisfies readonly Language[]
 
@@ -61,6 +63,7 @@ const currentLanguage = computed((): Language => {
 
 const changeLanguage = (langCode: Language['code']) => {
   currentLangCode.value = langCode
+  locale.value = langCode
   localStorage.setItem('language', langCode)
 }
 
