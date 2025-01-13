@@ -1,11 +1,11 @@
 <template>
     <q-page class="q-pa-md">
       <div class="container q-py-lg">
-        <h1 class="text-h4 text-primary q-mb-lg text-center">Sıkça Sorulan Sorular</h1>
+        <h1 class="text-h4 text-primary q-mb-lg text-center">{{ t('Sıkça Sorulan Sorular') }}</h1>
   
         <div class="faq-content q-gutter-y-md">
           <q-expansion-item
-            v-for="(faq, index) in faqs"
+            v-for="(faq, index) in translatedFaqs"
             :key="index"
             :label="faq.question"
             header-class="text-primary"
@@ -22,11 +22,11 @@
         </div>
   
         <div class="contact-section q-mt-xl q-pa-md text-center">
-          <h2 class="text-h5 q-mb-md">Sorunuzu bulamadınız mı?</h2>
-          <p class="q-mb-md">Bizimle iletişime geçebilirsiniz.</p>
+          <h2 class="text-h5 q-mb-md">{{ t('Sorunuzu bulamadınız mı?') }}</h2>
+          <p class="q-mb-md">{{ t('Bizimle iletişime geçebilirsiniz.') }}</p>
           <q-btn
             color="primary"
-            label="İletişime Geç"
+            :label="t('İletişime Geç')"
             to="/contact"
             unelevated
             class="contact-btn"
@@ -37,49 +37,51 @@
   </template>
   
   <script setup lang="ts">
-  const faqs = [
-    {
-      question: 'Therapify nedir?',
-      answer:
-        'Therapify, yapay zeka destekli eşleştirme sistemi ile ruh sağlığı uzmanlarıyla danışanları buluşturan online bir terapi platformudur.',
-    },
-    {
-      question: 'Nasıl terapist bulabilirim?',
-      answer:
-        'Platformumuza kayıt olduktan sonra, size en uygun terapisti bulmak için yapay zeka destekli eşleştirme sistemimizi kullanabilirsiniz.',
-    },
-    {
-      question: 'Online terapi seansları nasıl yapılır?',
-      answer:
-        'Seanslar, güvenli video görüşme platformumuz üzerinden gerçekleştirilir. İnternet bağlantısı olan herhangi bir cihazdan katılabilirsiniz.',
-    },
-    {
-      question: 'Ödeme seçenekleri nelerdir?',
-      answer:
-        'Kredi kartı, banka kartı ve havale/EFT ile ödeme yapabilirsiniz. Ödemeler seans bazlı olarak gerçekleştirilir.',
-    },
-    {
-      question: 'Terapistler nasıl seçiliyor?',
-      answer:
-        'Tüm terapistlerimiz lisanslı ve deneyimli profesyonellerdir. Kapsamlı bir değerlendirme sürecinden geçerek platformumuza katılırlar.',
-    },
-    {
-      question: 'Seans iptali nasıl yapılır?',
-      answer:
-        'Seansınızı başlangıç saatinden en az 24 saat önce iptal edebilirsiniz. İptal işlemi için hesabınızdan veya uygulamamızdan randevularım bölümünü kullanabilirsiniz.',
-    },
-    {
-      question: 'Bilgilerimin gizliliği nasıl sağlanıyor?',
-      answer:
-        'Tüm verileriniz KVKK kapsamında korunmaktadır. SSL şifreleme ve güvenli veri depolama sistemleri kullanıyoruz.',
-    },
-    {
-      question: 'Acil durumlarda ne yapmalıyım?',
-      answer:
-        'Acil durumlarda lütfen 112 Acil Servis veya size en yakın ruh sağlığı acil servisine başvurun. Platform 7/24 acil destek hattımız mevcuttur.',
-    },
-  ]
-  </script>
+import { useI18n } from 'vue-i18n'
+import { computed } from 'vue'
+
+const { t } = useI18n()
+
+const faqs = [
+  {
+    question: 'Therapify nedir?',
+    answer: 'Therapify, yapay zeka destekli eşleştirme sistemi ile ruh sağlığı uzmanlarıyla danışanları buluşturan online bir terapi platformudur.'
+  },
+  {
+    question: 'Nasıl terapist bulabilirim?',
+    answer: 'Platformumuza kayıt olduktan sonra, size en uygun terapisti bulmak için yapay zeka destekli eşleştirme sistemimizi kullanabilirsiniz.'
+  },
+  {
+    question: 'Online terapi seansları nasıl yapılır?',
+    answer: 'Seanslar, güvenli video görüşme platformumuz üzerinden gerçekleştirilir. İnternet bağlantısı olan herhangi bir cihazdan katılabilirsiniz.'
+  },
+  {
+    question: 'Ödeme seçenekleri nelerdir?',
+    answer: 'Kredi kartı, banka kartı ve havale/EFT ile ödeme yapabilirsiniz. Ödemeler seans bazlı olarak gerçekleştirilir.'
+  },
+  {
+    question: 'Terapistler nasıl seçiliyor?',
+    answer: 'Tüm terapistlerimiz lisanslı ve deneyimli profesyonellerdir. Kapsamlı bir değerlendirme sürecinden geçerek platformumuza katılırlar.'
+  },
+  {
+    question: 'Seans iptali nasıl yapılır?',
+    answer: 'Seansınızı başlangıç saatinden en az 24 saat önce iptal edebilirsiniz. İptal işlemi için hesabınızdan veya uygulamamızdan randevularım bölümünü kullanabilirsiniz.'
+  },
+  {
+    question: 'Bilgilerimin gizliliği nasıl sağlanıyor?',
+    answer: 'Tüm verileriniz KVKK kapsamında korunmaktadır. SSL şifreleme ve güvenli veri depolama sistemleri kullanıyoruz.'
+  },
+  {
+    question: 'Acil durumlarda ne yapmalıyım?',
+    answer: 'Acil durumlarda lütfen 112 Acil Servis veya size en yakın ruh sağlığı acil servisine başvurun. Platform 7/24 acil destek hattımız mevcuttur.'
+  }
+]
+
+const translatedFaqs = computed(() => faqs.map(faq => ({
+  question: t(faq.question),
+  answer: t(faq.answer)
+})))
+</script>
   
   <style lang="scss" scoped>
   .container {

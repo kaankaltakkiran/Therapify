@@ -106,6 +106,35 @@ export default {
 	"Gizlilik politikamızla ilgili sorularınız için:": `Gizlilik politikamızla ilgili sorularınız için:
 `,
 
+	// Faq Page
+	"Sıkça Sorulan Sorular": `Sıkça Sorulan Sorular`,
+	"Therapify nedir?": `Therapify nedir?`,
+	"Therapify, yapay zeka destekli eşleştirme sistemi ile ruh sağlığı uzmanlarıyla danışanları buluşturan online bir terapi platformudur.": `Therapify, yapay zeka destekli eşleştirme sistemi ile ruh sağlığı uzmanlarıyla danışanları buluşturan online bir terapi platformudur.
+`,
+	"Nasıl terapist bulabilirim?": `Nasıl terapist bulabilirim?`,
+	"Platformumuza kayıt olduktan sonra, size en uygun terapisti bulmak için yapay zeka destekli eşleştirme sistemimizi kullanabilirsiniz.": `Platformumuza kayıt olduktan sonra, size en uygun terapisti bulmak için yapay zeka destekli eşleştirme sistemimizi kullanabilirsiniz.
+`,
+	"Online terapi seansları nasıl yapılır?": `Online terapi seansları nasıl yapılır?`,
+	"Ödeme seçenekleri nelerdir?": `Ödeme seçenekleri nelerdir?`,
+	"Kredi kartı, banka kartı ve havale/EFT ile ödeme yapabilirsiniz. Ödemeler seans bazlı olarak gerçekleştirilir.": `Kredi kartı, banka kartı ve havale/EFT ile ödeme yapabilirsiniz. Ödemeler seans bazlı olarak gerçekleştirilir.
+`,
+	"Terapistler nasıl seçiliyor?": `Terapistler nasıl seçiliyor?`,
+	"Tüm terapistlerimiz lisanslı ve deneyimli profesyonellerdir. Kapsamlı bir değerlendirme sürecinden geçerek platformumuza katılırlar.": `Tüm terapistlerimiz lisanslı ve deneyimli profesyonellerdir. Kapsamlı bir değerlendirme sürecinden geçerek platformumuza katılırlar.
+`,
+	"Seans iptali nasıl yapılır?": `Seans iptali nasıl yapılır?`,
+	"Seansınızı başlangıç saatinden en az 24 saat önce iptal edebilirsiniz. İptal işlemi için hesabınızdan veya uygulamamızdan randevularım bölümünü kullanabilirsiniz.": `Seansınızı başlangıç saatinden en az 24 saat önce iptal edebilirsiniz. İptal işlemi için hesabınızdan veya uygulamamızdan randevularım bölümünü kullanabilirsiniz.
+`,
+	"Bilgilerimin gizliliği nasıl sağlanıyor?": `Bilgilerimin gizliliği nasıl sağlanıyor?`,
+	"Tüm verileriniz KVKK kapsamında korunmaktadır. SSL şifreleme ve güvenli veri depolama sistemleri kullanıyoruz.": `Tüm verileriniz KVKK kapsamında korunmaktadır. SSL şifreleme ve güvenli veri depolama sistemleri kullanıyoruz.
+`,
+	"Acil durumlarda ne yapmalıyım?": `Acil durumlarda ne yapmalıyım?`,
+	"Acil durumlarda lütfen 112 Acil Servis veya size en yakın ruh sağlığı acil servisine başvurun. Platform 7/24 acil destek hattımız mevcuttur.": `Acil durumlarda lütfen 112 Acil Servis veya size en yakın ruh sağlığı acil servisine başvurun. Platform 7/24 acil destek hattımız mevcuttur.
+`,
+	"Sorunuzu bulamadınız mı?": `Sorunuzu bulamadınız mı?`,
+	"Bizimle iletişime geçebilirsiniz.": `Bizimle iletişime geçebilirsiniz.
+`,
+	"İletişime Geç": `İletişime Geç`,
+
 
 
 

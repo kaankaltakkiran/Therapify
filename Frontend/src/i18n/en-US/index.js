@@ -98,6 +98,27 @@ export default {
 	"Veri işlemeye itiraz etme hakkı": `Right to object to data processing`,
 	"Gizlilik politikamızla ilgili sorularınız için:": `For questions about our privacy policy:`,
 
+	// Faq Page
+	"Sıkça Sorulan Sorular": `Frequently Asked Questions`,
+	"Therapify nedir?": `What is Therapify?`,
+	"Therapify, yapay zeka destekli eşleştirme sistemi ile ruh sağlığı uzmanlarıyla danışanları buluşturan online bir terapi platformudur.": `Therapify is an online therapy platform that brings mental health professionals and clients together with an AI-powered matching system.`,
+	"Nasıl terapist bulabilirim?": `How can I find a therapist?`,
+	"Platformumuza kayıt olduktan sonra, size en uygun terapisti bulmak için yapay zeka destekli eşleştirme sistemimizi kullanabilirsiniz.": `After registering on our platform, you can use our AI-powered matching system to find the most suitable therapist for you.`,
+	"Online terapi seansları nasıl yapılır?": `How are online therapy sessions conducted?`,
+	"Ödeme seçenekleri nelerdir?": `What are the payment options?`,
+	"Kredi kartı, banka kartı ve havale/EFT ile ödeme yapabilirsiniz. Ödemeler seans bazlı olarak gerçekleştirilir.": `You can pay by credit card, debit card and money order/EFT. Payments are made on a session basis.`,
+	"Terapistler nasıl seçiliyor?": `How are the therapists selected?`,
+	"Tüm terapistlerimiz lisanslı ve deneyimli profesyonellerdir. Kapsamlı bir değerlendirme sürecinden geçerek platformumuza katılırlar.": `All our therapists are licensed and experienced professionals. They join our platform after a thorough evaluation process.`,
+	"Seans iptali nasıl yapılır?": `How to cancel a session?`,
+	"Seansınızı başlangıç saatinden en az 24 saat önce iptal edebilirsiniz. İptal işlemi için hesabınızdan veya uygulamamızdan randevularım bölümünü kullanabilirsiniz.": `You can cancel your session at least 24 hours before the start time. You can use the My Appointments section in your account or in our application to cancel.`,
+	"Bilgilerimin gizliliği nasıl sağlanıyor?": `How is the confidentiality of my information ensured?`,
+	"Tüm verileriniz KVKK kapsamında korunmaktadır. SSL şifreleme ve güvenli veri depolama sistemleri kullanıyoruz.": `All your data is protected within the scope of KVKK. We use SSL encryption and secure data storage systems.`,
+	"Acil durumlarda ne yapmalıyım?": `What should I do in an emergency?`,
+	"Acil durumlarda lütfen 112 Acil Servis veya size en yakın ruh sağlığı acil servisine başvurun. Platform 7/24 acil destek hattımız mevcuttur.": `In case of emergency, please contact 112 Emergency Service or your nearest mental health emergency room. Platform 24/7 emergency support line is available.`,
+	"Sorunuzu bulamadınız mı?": `Can't find your question?`,
+	"Bizimle iletişime geçebilirsiniz.": `You can contact us.`,
+	"İletişime Geç": `Contact Us`,
+
 
 
 
