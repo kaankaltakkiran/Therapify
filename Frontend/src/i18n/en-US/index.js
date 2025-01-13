@@ -66,6 +66,38 @@ export default {
 	"Mesaj": `Message`,
 	"Gönder": `Send`,
 
+	// Privacy Page
+	"Gizlilik Politikası": `Privacy Policy`,
+	"1. Veri Toplama ve Kullanım": `1. Data Collection and Use `,
+	"Therapify olarak, kullanıcılarımızın gizliliğini korumayı taahhüt ediyoruz. Bu politika, hangi verileri topladığımızı ve nasıl kullandığımızı açıklar.": `At Therapify, we are committed to protecting the privacy of our users. This policy explains what data we collect and how we use it.`,
+	"Kişisel bilgiler (ad, soyad, e-posta)": `Personal information (name, surname, e-mail)`,
+	"İletişim bilgileri": `Contact details`,
+	"Profil bilgileri": `Profile information`,
+	"Kullanım verileri": `Usage data`,
+	"2. Veri Güvenliği": `2. Data Security`,
+	"Verilerinizi korumak için endüstri standardı güvenlik önlemleri kullanıyoruz:": `We use industry-standard security measures to protect your data:`,
+	"SSL şifreleme": `SSL encryption`,
+	"Güvenli veri depolama": `Secure data storage`,
+	"Düzenli güvenlik güncellemeleri": `Regular security updates`,
+	"Erişim kontrolü": `Access control`,
+	"3. Çerezler ve İzleme": `3. Cookies and Tracking`,
+	"Hizmetlerimizi iyileştirmek için çerezler ve benzer teknolojiler kullanıyoruz:": `We use cookies and similar technologies to improve our services:`,
+	"Oturum çerezleri": `Session cookies`,
+	"Tercih çerezleri": `Preference cookies`,
+	"Analitik çerezler": `Analytical cookies`,
+	"4. Veri Paylaşımı": `4. Data Sharing`,
+	"Verilerinizi üçüncü taraflarla yalnızca aşağıdaki durumlarda paylaşırız:": `We will only share your data with third parties in the following cases:`,
+	"Yasal zorunluluk durumunda": `In case of legal obligation`,
+	"Açık rızanız olduğunda": `With your explicit consent`,
+	"Hizmet sağlayıcılarımızla (veri işleme)": `With our service providers (data processing)`,
+	"5. Kullanıcı Hakları": `5. User Rights`,
+	"KVKK kapsamında aşağıdaki haklara sahipsiniz:": `You have the following rights under KVKK:`,
+	"Verilerinize erişim hakkı": `Right of access to your data`,
+	"Verilerinizi düzeltme hakkı": `Right to rectify your data`,
+	"Verilerinizin silinmesini talep etme hakkı": `Right to request deletion of your data`,
+	"Veri işlemeye itiraz etme hakkı": `Right to object to data processing`,
+	"Gizlilik politikamızla ilgili sorularınız için:": `For questions about our privacy policy:`,
+
 
 
 

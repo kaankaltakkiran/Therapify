@@ -71,6 +71,41 @@ export default {
 	"Mesaj": `Mesaj`,
 	"Gönder": `Gönder`,
 
+	// Privacy Page
+	"Gizlilik Politikası": `Gizlilik Politikası`,
+	"1. Veri Toplama ve Kullanım": `1. Veri Toplama ve Kullanım `,
+	"Therapify olarak, kullanıcılarımızın gizliliğini korumayı taahhüt ediyoruz. Bu politika, hangi verileri topladığımızı ve nasıl kullandığımızı açıklar.": `Therapify olarak, kullanıcılarımızın gizliliğini korumayı taahhüt ediyoruz. Bu politika, hangi verileri topladığımızı ve nasıl kullandığımızı açıklar.
+
+`,
+	"Kişisel bilgiler (ad, soyad, e-posta)": `Kişisel bilgiler (ad, soyad, e-posta)`,
+	"İletişim bilgileri": `İletişim bilgileri`,
+	"Profil bilgileri": `Profil bilgileri`,
+	"Kullanım verileri": `Kullanım verileri`,
+	"2. Veri Güvenliği": `2. Veri Güvenliği`,
+	"Verilerinizi korumak için endüstri standardı güvenlik önlemleri kullanıyoruz:": `Verilerinizi korumak için endüstri standardı güvenlik önlemleri kullanıyoruz:`,
+	"SSL şifreleme": `SSL şifreleme`,
+	"Güvenli veri depolama": `Güvenli veri depolama`,
+	"Düzenli güvenlik güncellemeleri": `Düzenli güvenlik güncellemeleri`,
+	"Erişim kontrolü": `Erişim kontrolü`,
+	"3. Çerezler ve İzleme": `3. Çerezler ve İzleme`,
+	"Hizmetlerimizi iyileştirmek için çerezler ve benzer teknolojiler kullanıyoruz:": `Hizmetlerimizi iyileştirmek için çerezler ve benzer teknolojiler kullanıyoruz:`,
+	"Oturum çerezleri": `Oturum çerezleri`,
+	"Tercih çerezleri": `Tercih çerezleri`,
+	"Analitik çerezler": `Analitik çerezler`,
+	"4. Veri Paylaşımı": `4. Veri Paylaşımı`,
+	"Verilerinizi üçüncü taraflarla yalnızca aşağıdaki durumlarda paylaşırız:": `Verilerinizi üçüncü taraflarla yalnızca aşağıdaki durumlarda paylaşırız:`,
+	"Yasal zorunluluk durumunda": `Yasal zorunluluk durumunda`,
+	"Açık rızanız olduğunda": `Açık rızanız olduğunda`,
+	"Hizmet sağlayıcılarımızla (veri işleme)": `Hizmet sağlayıcılarımızla (veri işleme)`,
+	"5. Kullanıcı Hakları": `5. Kullanıcı Hakları`,
+	"KVKK kapsamında aşağıdaki haklara sahipsiniz:": `KVKK kapsamında aşağıdaki haklara sahipsiniz:`,
+	"Verilerinize erişim hakkı": `Verilerinize erişim hakkı`,
+	"Verilerinizi düzeltme hakkı": `Verilerinizi düzeltme hakkı`,
+	"Verilerinizin silinmesini talep etme hakkı": `Verilerinizin silinmesini talep etme hakkı`,
+	"Veri işlemeye itiraz etme hakkı": `Veri işlemeye itiraz etme hakkı`,
+	"Gizlilik politikamızla ilgili sorularınız için:": `Gizlilik politikamızla ilgili sorularınız için:
+`,
+
 
 
 
