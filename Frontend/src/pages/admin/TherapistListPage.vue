@@ -1,11 +1,11 @@
 <template>
   <q-page class="q-pa-md">
     <div class="row items-center q-mb-lg">
-      <div class="text-h5 q-mr-md">Onaylı Terapistler</div>
+      <div class="text-h5 q-mr-md">{{ $t('Onaylı Terapistler') }}</div>
       <q-space />
       <q-input
         v-model="search"
-        placeholder="Ara..."
+        :placeholder="$t('Ara...')"
         outlined
         dense
         clearable
@@ -227,8 +227,12 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useQuasar } from 'quasar'
-import type { QTableColumn } from 'quasar'
+
 import { api } from 'src/boot/axios'
+import { useI18n } from 'vue-i18n'
+
+
+const { t } = useI18n()
 
 //Terapist bilgilerini tutan interface
 interface Therapist {
@@ -258,59 +262,50 @@ const search = ref('')
 const viewDialog = ref(false)
 const selectedTherapist = ref<Therapist | null>(null)
 
-const columns: QTableColumn[] = [
+const columns = computed(() => [
   {
     name: 'user',
     required: true,
-    label: 'Terapist',
-    align: 'left',
+    label: t('Terapist'),
+    align: 'left' as const,
     field: (row: Therapist) => row.first_name + ' ' + row.last_name,
     sortable: true,
   },
   {
     name: 'title',
-    align: 'left',
-    label: 'Ünvan',
+    align: 'left' as const,
+    label: t('Ünvan'),
     field: 'title',
     sortable: true,
   },
- /*  {
-    name: 'specialties',
-    align: 'left',
-    label: 'Uzmanlık Alanları',
-    field: 'specialties',
-    format: (val: Array<{ id: number; name: string }>) => (
-      val.map(specialty => specialty.name).join(', ')
-    ),
-  }, */
   {
     name: 'session_fee',
-    align: 'left',
-    label: 'Seans Ücreti',
+    align: 'left' as const,
+    label: t('Seans Ücreti (TL)'),
     field: 'session_fee',
     sortable: true,
   },
   {
     name: 'session_duration',
-    align: 'left',
-    label: 'Seans Süresi',
+    align: 'left' as const,
+    label: t('Seans Süresi (Dakika)'),
     field: 'session_duration',
     sortable: true,
   },
   {
     name: 'languages',
-    align: 'left',
-    label: 'Konuşulan Diller',
+    align: 'left' as const,
+    label: t('Konuşulan Diller'),
     field: 'languages_spoken',
     sortable: true,
   },
   {
     name: 'actions',
-    align: 'right',
-    label: 'İşlemler',
+    align: 'right' as const,
+    label: t('İşlemler'),
     field: 'id',
   },
-]
+])
 
 const initialPagination = {
   sortBy: 'first_name',

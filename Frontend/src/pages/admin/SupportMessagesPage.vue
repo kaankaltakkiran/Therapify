@@ -1,6 +1,6 @@
 <template>
   <q-page class="q-pa-md">
-    <div class="text-h4 q-mb-md">Destek Talepleri</div>
+    <div class="text-h4 q-mb-md">{{ $t('Destek Talepleri') }}</div>
 
     <!-- Messages Table -->
     <q-table
@@ -95,10 +95,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { api } from 'src/boot/axios'
 import { useQuasar } from 'quasar'
 import { date } from 'quasar'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const $q = useQuasar()
 
@@ -124,11 +127,11 @@ const initialPagination = {
   rowsPerPage: 10
 }
 
-const columns = [
+const columns = computed(() => [
   {
     name: 'first_name',
     required: true,
-    label: 'Ad',
+    label: t('Ad'),
     align: 'left' as const,
     field: 'first_name',
     sortable: true
@@ -136,7 +139,7 @@ const columns = [
   {
     name: 'last_name',
     required: true,
-    label: 'Soyad',
+    label: t('Soyad'),
     align: 'left' as const,
     field: 'last_name',
     sortable: true
@@ -144,7 +147,7 @@ const columns = [
   {
     name: 'email',
     required: true,
-    label: 'E-posta',
+    label: t('E-posta'),
     align: 'left' as const,
     field: 'email',
     sortable: true
@@ -152,7 +155,7 @@ const columns = [
   {
     name: 'status',
     required: true,
-    label: 'Durum',
+    label: t('Durum'),
     align: 'left' as const,
     field: 'status',
     sortable: true
@@ -160,7 +163,7 @@ const columns = [
   {
     name: 'created_at',
     required: true,
-    label: 'Tarih',
+    label: t('Başvuru Tarihi'),
     align: 'left' as const,
     field: 'created_at',
     format: (val: string) => formatDate(val),
@@ -169,11 +172,11 @@ const columns = [
   {
     name: 'actions',
     required: true,
-    label: 'İşlemler',
+    label: t('İşlemler'),
     align: 'center' as const,
     field: 'actions'
   }
-]
+])
 
 const fetchMessages = async () => {
   loading.value = true

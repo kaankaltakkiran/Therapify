@@ -186,4 +186,15 @@ export default {
 	"Yeni Başvuru": `New Application`,
 	"Ayarlar": `Settings`,
 	"Hoş Geldin": `Welcome`,
+
+	// Teraphist List Page
+	"Onaylı Terapistler": `Approved Therapists`,
+	"Terapist": `Therapist`,
+
+
+
+
+
+
+
 }

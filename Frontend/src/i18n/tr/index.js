@@ -204,4 +204,15 @@ export default {
 	"Yeni Başvuru": `Yeni Başvuru`,
 	"Ayarlar": `Ayarlar`,
 	"Hoş Geldin": `Hoş Geldin`,
+
+	// Teraphist List Page
+	"Onaylı Terapistler": `Onaylı Terapistler`,
+	"Terapist": `Terapist`,
+
+
+
+
+
+
+
 }
