@@ -1,0 +1,13 @@
+# Environment files
+.env
+Frontend/.env
+api/.env
+database/.env
+
+# Keep example files
+!.env.example
+!Frontend/.env.example
+!api/.env.example
+!database/.env.example
+
+# ... existing code ... 
