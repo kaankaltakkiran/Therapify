@@ -1,6 +1,8 @@
 <template>
   <q-page>
     <!-- Hero Section -->
+    <h2>saasddddddddddddddd</h2>
+
     <section class="hero-section">
       <div class="container q-pa-md">
         <div class="row items-center">
