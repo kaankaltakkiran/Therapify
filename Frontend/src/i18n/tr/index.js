@@ -72,9 +72,8 @@ export default {
 	"Gönder": `Gönder`,
 
 	// Privacy Page
-	"Gizlilik Politikası": `Gizlilik Politikası`,
 	"1. Veri Toplama ve Kullanım": `1. Veri Toplama ve Kullanım `,
-	"Therapify olarak, kullanıcılarımızın gizliliğini korumayı taahhüt ediyoruz. Bu politika, hangi verileri topladığımızı ve nasıl kullandığımızı açıklar.": `Therapify olarak, kullanıcılarımızın gizliliğini korumayı taahhüt ediyoruz. Bu politika, hangi verileri topladığımızı ve nasıl kullandığımızı açıklar.
+	"Therapify olarak, kullanıcılarımızın gizliliğini korumayı taahhüt ediyoruz. Bu politika, hangi verileri topladığımızı ve nasıl kullandığımızı açıklar.": `Therapify olarak, kullanıcılarımızın gizliliğini korumayı taahhüt ediyoruz. Bu politika, hangi verileri topladığımızı ve nasıl kullandığımızı açıklar. 
 
 `,
 	"Kişisel bilgiler (ad, soyad, e-posta)": `Kişisel bilgiler (ad, soyad, e-posta)`,
@@ -162,4 +161,31 @@ export default {
 	"JPG veya PNG formatında, maksimum 5MB": `JPG veya PNG formatında, maksimum 5MB`,
 	"Kullanım koşullarını ve gizlilik politikasını kabul ediyorum *": `Kullanım koşullarını ve gizlilik politikasını kabul ediyorum *`,
 	"Zaten hesabınız var mı?": `Zaten hesabınız var mı?`,
+
+	// Therapist Register Page
+	"Platformumuza katılarak danışanlarla buluşun ve pratiğinizi genişletin": `Platformumuza katılarak danışanlarla buluşun ve pratiğinizi genişletin`,
+	"Kişisel Bilgiler": `Kişisel Bilgiler`,
+	"Profesyonel Bilgiler": `Profesyonel Bilgiler`,
+	"Belgeler": `Belgeler`,
+	"Onay": `Onay`,
+	"İleri": `İleri`,
+	"Geri": `Geri`,
+	"Ünvan": `Ünvan`,
+	"Lisans Numarası": `Lisans Numarası`,
+	"Deneyim (Yıl)": `Deneyim (Yıl)`,
+	"Uzmanlık Alanları": `Uzmanlık Alanları`,
+	"Eğitim Bilgileri": `Eğitim Bilgileri`,
+	"Hakkında": `Hakkında`,
+	"Seans Ücreti (TL)": `Seans Ücreti (TL)`,
+	"Seans Süresi (Dakika)": `Seans Süresi (Dakika)`,
+	"Konuşulan Diller": `Konuşulan Diller`,
+	"Online Görüşme Yapıyorum": `Online Görüşme Yapıyorum`,
+	"Yüz Yüze Görüşme Yapıyorum": `Yüz Yüze Görüşme Yapıyorum`,
+	"Ofis Adresi": `Ofis Adresi`,
+	"Özgeçmiş (Cv)": `Özgeçmiş (Cv)`,
+	"Diploma": `Diploma`,
+	"Lisans Belgesi": `Lisans Belgesi`,
+	"Terapist sözleşmesini okudum ve kabul ediyorum *": `Terapist sözleşmesini okudum ve kabul ediyorum *`,
+	"Başvurunuz gönderildikten sonra ekibimiz tarafından incelenecek ve en kısa sürede size dönüş yapılacaktır.": `Başvurunuz gönderildikten sonra ekibimiz tarafından incelenecek ve en kısa sürede size dönüş yapılacaktır.`,
+	"Başvuruyu Gönder": `Başvuruyu Gönder`,
 }

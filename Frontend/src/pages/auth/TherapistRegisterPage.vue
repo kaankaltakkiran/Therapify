@@ -9,9 +9,9 @@
               <router-link to="/" class="logo-link">
                 <h4 class="text-h4 logo-text q-mb-md">Therapify</h4>
               </router-link>
-              <h5 class="text-h5 text-weight-medium q-mb-sm">Terapist Olarak Katıl</h5>
+              <h5 class="text-h5 text-weight-medium q-mb-sm">{{ $t('Terapist Olarak Katıl') }}</h5>
               <p class="text-grey-8">
-                Platformumuza katılarak danışanlarla buluşun ve pratiğinizi genişletin
+                {{ $t('Platformumuza katılarak danışanlarla buluşun ve pratiğinizi genişletin') }}
               </p>
             </div>
 
@@ -20,12 +20,12 @@
               <!-- Stepper -->
               <q-stepper v-model="step" ref="stepper" color="primary" animated flat class="q-mb-lg">
                 <!-- Personal Information Step -->
-                <q-step :name="1" title="Kişisel Bilgiler" icon="person" :done="step > 1">
+                <q-step :name="1" :title="$t('Kişisel Bilgiler')" icon="person" :done="step > 1">
                   <div class="row q-col-gutter-md">
                     <div class="col-12 col-sm-6">
                       <q-input
                         v-model="form.firstName"
-                        label="Ad *"
+                        :label="$t('Ad')"
                         outlined
                         :rules="[(val: string) => !!val || 'Ad alanı zorunludur']"
                       />
@@ -33,7 +33,7 @@
                     <div class="col-12 col-sm-6">
                       <q-input
                         v-model="form.lastName"
-                        label="Soyad *"
+                        :label="$t('Soyad')"
                         outlined
                         :rules="[(val: string) => !!val || 'Soyad alanı zorunludur']"
                       />
@@ -42,7 +42,7 @@
 
                   <q-input
                     v-model="form.email"
-                    label="E-posta *"
+                    :label="$t('E-posta')"
                     type="email"
                     outlined
                     :rules="[
@@ -53,18 +53,18 @@
 
                   <q-input
                     v-model="form.password"
-                    label="Şifre *"
+                    :label="$t('Şifre')"
                     type="password"
                     outlined
                     :rules="[
                       (val: string) => !!val || 'Şifre alanı zorunludur',
-                      (val: string) => val.length >= 6 || 'Şifre en az 6 karakter olmalıdır',
+                      (val: string) => val.length >= 8 || 'Şifre en az 8 karakter olmalıdır',
                     ]"
                   />
 
                   <q-input
                     v-model="form.confirmPassword"
-                    label="Şifre Tekrar *"
+                    :label="$t('Yeni Şifre (Tekrar)')"
                     type="password"
                     outlined
                     :rules="[
@@ -75,7 +75,7 @@
 
                   <q-input
                     v-model="form.phone"
-                    label="Telefon *"
+                    :label="$t('Telefon')"
                     outlined
                     mask="(###) ### ## ##"
                     :rules="[(val: string) => !!val || 'Telefon alanı zorunludur']"
@@ -87,7 +87,7 @@
 
                   <q-input
                     v-model="form.birthDate"
-                    label="Doğum Tarihi *"
+                    :label="$t('Doğum Tarihi')"
                     outlined
                     type="date"
                     mask="####/##/##"
@@ -97,7 +97,7 @@
 
                   <q-input
                     v-model="form.address"
-                    label="Adres *"
+                    :label="$t('Adres')"
                     type="textarea"
                     outlined
                     autogrow
@@ -106,11 +106,11 @@
                 </q-step>
 
                 <!-- Professional Information Step -->
-                <q-step :name="2" title="Profesyonel Bilgiler" icon="work" :done="step > 2">
+                <q-step :name="2" :title="$t('Profesyonel Bilgiler')" icon="work" :done="step > 2">
                   <q-select
                     v-model="form.title"
                     :options="titles"
-                    label="Ünvan *"
+                    :label="$t('Ünvan')"
                     outlined
                     emit-value
                     map-options
@@ -119,14 +119,14 @@
 
                   <q-input
                     v-model="form.licenseNumber"
-                    label="Lisans Numarası *"
+                    :label="$t('Lisans Numarası')"
                     outlined
                     :rules="[(val: string) => !!val || 'Lisans numarası zorunludur']"
                   />
 
                   <q-input
                     v-model.number="form.experienceYears"
-                    label="Deneyim (Yıl) *"
+                    :label="$t('Deneyim (Yıl)')"
                     type="number"
                     outlined
                     :rules="[
@@ -138,7 +138,7 @@
                   <q-select
                     v-model="form.specialties"
                     :options="specialties"
-                    label="Uzmanlık Alanları *"
+                    :label="$t('Uzmanlık Alanları')"
                     outlined
                     multiple
                     use-chips
@@ -150,7 +150,7 @@
 
                   <q-input
                     v-model="form.education"
-                    label="Eğitim Bilgileri *"
+                    :label="$t('Eğitim Bilgileri')"
                     type="textarea"
                     outlined
                     autogrow
@@ -160,7 +160,7 @@
 
                   <q-input
                     v-model="form.aboutText"
-                    label="Hakkında *"
+                    :label="$t('Hakkında')"
                     type="textarea"
                     outlined
                     autogrow
@@ -170,7 +170,7 @@
 
                   <q-input
                     v-model.number="form.sessionFee"
-                    label="Seans Ücreti (TL) *"
+                    :label="$t('Seans Ücreti (TL)')"
                     type="number"
                     outlined
                     :rules="[
@@ -181,7 +181,7 @@
 
                   <q-input
                     v-model.number="form.sessionDuration"
-                    label="Seans Süresi (Dakika) *"
+                    :label="$t('Seans Süresi (Dakika)')"
                     type="number"
                     outlined
                     :rules="[
@@ -193,7 +193,7 @@
                   <q-select
                     v-model="form.languagesSpoken"
                     :options="languages"
-                    label="Konuşulan Diller *"
+                    :label="$t('Konuşulan Diller')"
                     outlined
                     multiple
                     use-chips
@@ -204,20 +204,20 @@
                     <div class="col-12 col-sm-6">
                       <q-checkbox
                         v-model="form.videoSessionAvailable"
-                        label="Online Görüşme Yapıyorum"
+                        :label="$t('Online Görüşme Yapıyorum')"
                       />
                     </div>
                     <div class="col-12 col-sm-6">
                       <q-checkbox
                         v-model="form.faceToFaceSessionAvailable"
-                        label="Yüz Yüze Görüşme Yapıyorum"
+                        :label="$t('Yüz Yüze Görüşme Yapıyorum')"
                       />
                     </div>
                   </div>
 
                   <q-input
                     v-model="form.officeAddress"
-                    label="Ofis Adresi"
+                    :label="$t('Ofis Adresi')"
                     type="textarea"
                     outlined
                     autogrow
@@ -232,7 +232,7 @@
                 </q-step>
 
                 <!-- Documents Step -->
-                <q-step :name="3" title="Belgeler" icon="attach_file" :done="step > 3">
+                <q-step :name="3" :title="$t('Belgeler')" icon="attach_file" :done="step > 3">
                   <!-- Profile Image -->
                   <div class="row items-center q-col-gutter-md q-mb-md">
                     <div class="col-auto">
@@ -243,7 +243,7 @@
                     <div class="col">
                       <q-file
                         v-model="form.userImg"
-                        label="Profil Fotoğrafı *"
+                        :label="$t('Profil Fotoğrafı')"
                         outlined
                         accept=".jpg,.jpeg,.png"
                         :rules="[
@@ -263,7 +263,7 @@
                         </template>
                       </q-file>
                       <div class="text-grey-7 text-caption q-mt-sm">
-                        JPG veya PNG formatında, maksimum 5MB
+                        {{ $t('JPG veya PNG formatında, maksimum 5MB') }}
                       </div>
                     </div>
                   </div>
@@ -271,7 +271,7 @@
                   <!-- CV Upload -->
                   <q-file
                     v-model="form.cvFile"
-                    label="Özgeçmiş (CV) *"
+                    :label="$t('Özgeçmiş (Cv)')"
                     outlined
                     accept=".pdf,.doc,.docx"
                     :rules="[
@@ -297,7 +297,7 @@
                   <!-- Diploma Upload -->
                   <q-file
                     v-model="form.diplomaFile"
-                    label="Diploma *"
+                    :label="$t('Diploma')"
                     outlined
                     accept=".pdf,.jpg,.jpeg,.png"
                     :rules="[
@@ -319,7 +319,7 @@
                   <!-- License Upload -->
                   <q-file
                     v-model="form.licenseFile"
-                    label="Lisans Belgesi *"
+                    :label="$t('Lisans Belgesi')"
                     outlined
                     accept=".pdf,.jpg,.jpeg,.png"
                     :rules="[
@@ -340,23 +340,22 @@
                 </q-step>
 
                 <!-- Terms Step -->
-                <q-step :name="4" title="Onay" icon="done">
+                <q-step :name="4" :title="$t('Onay')" icon="done">
                   <q-checkbox
                     v-model="form.acceptTerms"
-                    label="Kullanım koşullarını ve gizlilik politikasını kabul ediyorum *"
+                    :label="$t('Kullanım koşullarını ve gizlilik politikasını kabul ediyorum *')"
                     :rules="[(val: boolean) => !!val || 'Kullanım koşullarını kabul etmelisiniz']"
                   />
 
                   <q-checkbox
                     v-model="form.acceptProfessionalTerms"
-                    label="Terapist sözleşmesini okudum ve kabul ediyorum *"
+                    :label="$t('Terapist sözleşmesini okudum ve kabul ediyorum *')"
                     :rules="[(val: boolean) => !!val || 'Terapist sözleşmesini kabul etmelisiniz']"
                   />
 
                   <div class="text-grey-8 q-mt-md">
                     <p>
-                      Başvurunuz gönderildikten sonra ekibimiz tarafından incelenecek ve en kısa
-                      sürede size dönüş yapılacaktır.
+                      {{ $t('Başvurunuz gönderildikten sonra ekibimiz tarafından incelenecek ve en kısa sürede size dönüş yapılacaktır.') }}
                     </p>
                   </div>
                 </q-step>
@@ -364,14 +363,14 @@
 
               <!-- Navigation Buttons -->
               <div class="row justify-between q-mt-md">
-                <q-btn v-if="step > 1" flat color="primary" label="Geri" @click="handlePrevious" />
+                <q-btn v-if="step > 1" flat color="primary" :label="$t('Geri')" @click="handlePrevious" />
                 <q-space />
-                <q-btn v-if="step < 4" color="primary" label="İleri" @click="handleNext" />
+                <q-btn v-if="step < 4" color="primary" :label="$t('İleri')" @click="handleNext" />
                 <q-btn
                   v-else
                   type="submit"
                   color="primary"
-                  label="Başvuruyu Gönder"
+                  :label="$t('Başvuruyu Gönder')"
                   :loading="submitting"
                 />
               </div>
@@ -492,7 +491,7 @@ const specialties = [
   'Oyun Terapisi',
 ]
 
-const languages = ['Türkçe', 'English', 'Deutsch', 'Français', 'Español', 'العربية', 'Русский']
+const languages = ['Türkçe', 'English', 'Deutsch', 'Français', 'Español', 'العربية', 'Русский'] 
 
 const form = ref<TherapistForm>({
   firstName: '',
