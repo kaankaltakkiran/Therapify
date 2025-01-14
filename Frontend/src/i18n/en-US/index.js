@@ -170,4 +170,20 @@ export default {
 	"Terapist sözleşmesini okudum ve kabul ediyorum *": `I have read and accept the therapist agreement*`,
 	"Başvurunuz gönderildikten sonra ekibimiz tarafından incelenecek ve en kısa sürede size dönüş yapılacaktır.": `After your application is submitted, our team will review it and get back to you as soon as possible.`,
 	"Başvuruyu Gönder": `Submit Application`,
+
+	// Therapist Applications Page
+	"Terapist Başvuruları": `Therapist Applications`,
+	"Durum Filtresi": `Status Filter`,
+	"Ara...": `Search...`,
+	"Başvuran": `Applicant`,
+	"Başvuru Tarihi": `Application Date`,
+	"İşlemler": `Transactions`,
+	"Durum": `Status`,
+	"Gösterge Paneli": `Dashboard`,
+	"Site Ayarları": `Site Settings`,
+	"Destek Talepleri": `Support Requests`,
+	"Çıkış Yap": `Log Out`,
+	"Yeni Başvuru": `New Application`,
+	"Ayarlar": `Settings`,
+	"Hoş Geldin": `Welcome`,
 }

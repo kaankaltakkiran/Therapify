@@ -67,7 +67,7 @@
             <q-btn-dropdown
               class="glossy full-width"
               color="secondary"
-              :label="'Hoşgeldin ' + user.first_name"
+              :label="$t('Hoş Geldin') + ' ' + user.first_name"
             >
               <div class="row no-wrap q-pa-md">
                 <div class="column items-center">
@@ -84,7 +84,7 @@
                   </div>
                   <q-btn
                     color="negative"
-                    label="Çıkış Yap"
+                    :label="$t('Çıkış Yap')"
                     push
                     size="sm"
                     v-close-popup

@@ -13,6 +13,43 @@
             </q-btn>
           </div>
         </q-toolbar-title>
+          <!--Dil seçimi-->
+    <q-select
+      v-model="locale"
+      :options="localeOptions"
+      dense
+      borderless
+      emit-value
+      map-options
+      options-dense
+      class="language-selector"
+    >
+      <template v-slot:selected>
+        <q-item v-if="locale">
+          <q-item-section avatar>
+            <q-avatar size="20px">
+              <img :src="`/images/flags/${locale}.svg`" :alt="locale" />
+            </q-avatar>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>{{ getLanguageName(locale) }}</q-item-label>
+          </q-item-section>
+        </q-item>
+      </template>
+
+      <template v-slot:option="scope">
+        <q-item v-bind="scope.itemProps">
+          <q-item-section avatar>
+            <q-avatar size="20px">
+              <img :src="`/images/flags/${scope.opt.value}.svg`" :alt="scope.opt.value" />
+            </q-avatar>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>{{ scope.opt.label }}</q-item-label>
+          </q-item-section>
+        </q-item>
+      </template>
+    </q-select>
 
         <!-- Admin Profile Menu -->
         <q-btn-dropdown flat no-caps>
@@ -37,7 +74,7 @@
               <q-item-section avatar>
                 <q-icon name="settings" />
               </q-item-section>
-              <q-item-section>Ayarlar</q-item-section>
+              <q-item-section>{{ $t('Ayarlar') }}</q-item-section>
             </q-item>
 
             <q-separator />
@@ -46,7 +83,7 @@
               <q-item-section avatar>
                 <q-icon name="logout" />
               </q-item-section>
-              <q-item-section>Çıkış Yap</q-item-section>
+              <q-item-section>{{ $t('Çıkış Yap') }}</q-item-section>
             </q-item>
           </q-list>
         </q-btn-dropdown>
@@ -69,7 +106,7 @@
             <q-item-section avatar>
               <q-icon name="dashboard" />
             </q-item-section>
-            <q-item-section>Dashboard</q-item-section>
+            <q-item-section>{{ $t('Gösterge Paneli') }}</q-item-section>
           </q-item>
 
           <!-- Users -->
@@ -77,7 +114,7 @@
             <q-item-section avatar>
               <q-icon name="people" />
             </q-item-section>
-            <q-item-section>Terapistler</q-item-section>
+            <q-item-section>{{ $t('Terapistler') }}</q-item-section>
           </q-item>
 
           <!-- Therapist Applications -->
@@ -86,8 +123,8 @@
               <q-icon name="assignment" />
             </q-item-section>
             <q-item-section>
-              <div>Terapist Başvuruları</div>
-              <div class="text-caption">{{ pendingApplicationsCount }} yeni başvuru</div>
+              <div>{{ $t('Terapist Başvuruları') }}</div>
+              <div class="text-caption">{{ pendingApplicationsCount }} {{ $t('Yeni Başvuru') }}</div>
             </q-item-section>
             <q-item-section side v-if="pendingApplicationsCount > 0">
               <q-badge color="primary" floating>{{ pendingApplicationsCount }}</q-badge>
@@ -99,7 +136,7 @@
             <q-item-section avatar>
               <q-icon name="settings" />
             </q-item-section>
-            <q-item-section>Site Ayarları</q-item-section>
+            <q-item-section>{{ $t('Site Ayarları') }}</q-item-section>
           </q-item>
 
           <!-- Support Messages -->
@@ -108,7 +145,7 @@
               <q-icon name="support_agent" />
             </q-item-section>
             <q-item-section>
-              Destek Talepleri
+              {{ $t('Destek Talepleri') }}
               <q-badge v-if="unreadMessagesCount > 0" color="red" floating>
                 {{ unreadMessagesCount }}
               </q-badge>
@@ -150,6 +187,20 @@ import { useRouter, useRoute } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useAuthStore } from 'stores/auth'
 import { api } from 'src/boot/axios'
+
+import { useI18n } from 'vue-i18n'
+
+const { locale } = useI18n({ useScope: 'global' })
+
+const localeOptions = [
+  { value: 'tr', label: 'Türkçe' },
+  { value: 'en-US', label: 'English' },
+]
+
+const getLanguageName = (code: string) => {
+  const option = localeOptions.find((opt) => opt.value === code)
+  return option ? option.label : code
+}
 
 const router = useRouter()
 const route = useRoute()

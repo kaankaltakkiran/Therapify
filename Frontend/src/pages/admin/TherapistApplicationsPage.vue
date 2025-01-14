@@ -2,12 +2,12 @@
   <!--Terapist Onaylama Sayfası-->
   <q-page class="q-pa-md">
     <div class="row items-center q-mb-lg">
-      <div class="text-h5 q-mr-md">Terapist Başvuruları</div>
+      <div class="text-h5 q-mr-md">{{ $t('Terapist Başvuruları') }}</div>
       <q-space />
       <q-select
         v-model="filter"
         :options="statusOptions"
-        label="Durum Filtresi"
+        :label="$t('Durum Filtresi')"
         outlined
         dense
         options-dense
@@ -19,7 +19,7 @@
       />
       <q-input
         v-model="search"
-        placeholder="Ara..."
+        :placeholder="$t('Ara...')"
         outlined
         dense
         clearable
@@ -339,8 +339,10 @@
 import { ref, computed, onMounted } from 'vue'
 import { useQuasar, Dialog } from 'quasar'
 import { api } from 'src/boot/axios'
+import { useI18n } from 'vue-i18n'
 
 const $q = useQuasar()
+const { t } = useI18n()
 Dialog.create = Dialog.create || $q.dialog // Ensure Dialog.create exists
 
 //TherapistApplication interface
@@ -388,11 +390,11 @@ const initialPagination = {
 }
 
 //Table columns
-const columns = [
+const columns = computed(() => [
   {
     name: 'user',
     required: true,
-    label: 'Başvuran',
+    label: t('Başvuran'),
     align: 'left' as const,
     field: (row: TherapistApplication) => row.user,
     sortable: true,
@@ -400,46 +402,46 @@ const columns = [
   {
     name: 'education',
     align: 'left' as const,
-    label: 'Eğitim',
+    label: t('Eğitim Bilgileri'),
     field: 'education',
     sortable: true,
   },
   {
     name: 'license_number',
     align: 'left' as const,
-    label: 'Lisans No',
+    label: t('Lisans Numarası'),
     field: 'license_number',
     sortable: true,
   },
   {
     name: 'experience_years',
     align: 'left' as const,
-    label: 'Deneyim',
+    label: t('Deneyim (Yıl)'),
     field: 'experience_years',
     sortable: true,
   },
   {
     name: 'application_status',
     align: 'left' as const,
-    label: 'Durum',
+    label: t('Durum'),
     field: 'application_status',
     sortable: true,
   },
   {
     name: 'created_at',
     align: 'left' as const,
-    label: 'Başvuru Tarihi',
+    label: t('Başvuru Tarihi'),
     field: 'created_at',
     sortable: true,
   },
   {
     name: 'actions',
     align: 'right' as const,
-    label: 'İşlemler',
+    label: t('İşlemler'),
     field: 'id',
     sortable: false,
   },
-]
+])
 
 // Status options
 const statusOptions = [
@@ -491,7 +493,7 @@ const fetchApplications = async () => {
     const response = await api.post('/admin.php', {
       method: 'get-therapist-applications',
     })
-    console.log(response.data)
+   // console.log(response.data)
 
     if (response.data.success) {
       applications.value = response.data.applications

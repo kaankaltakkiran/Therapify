@@ -188,4 +188,20 @@ export default {
 	"Terapist sözleşmesini okudum ve kabul ediyorum *": `Terapist sözleşmesini okudum ve kabul ediyorum *`,
 	"Başvurunuz gönderildikten sonra ekibimiz tarafından incelenecek ve en kısa sürede size dönüş yapılacaktır.": `Başvurunuz gönderildikten sonra ekibimiz tarafından incelenecek ve en kısa sürede size dönüş yapılacaktır.`,
 	"Başvuruyu Gönder": `Başvuruyu Gönder`,
+
+	// Therapist Applications Page
+	"Terapist Başvuruları": `Terapist Başvuruları`,
+	"Durum Filtresi": `Durum Filtresi`,
+	"Ara...": `Ara...`,
+	"Başvuran": `Başvuran`,
+	"Başvuru Tarihi": `Başvuru Tarihi`,
+	"İşlemler": `İşlemler`,
+	"Durum": `Durum`,
+	"Gösterge Paneli": `Gösterge Paneli`,
+	"Site Ayarları": `Site Ayarları`,
+	"Destek Talepleri": `Destek Talepleri`,
+	"Çıkış Yap": `Çıkış Yap`,
+	"Yeni Başvuru": `Yeni Başvuru`,
+	"Ayarlar": `Ayarlar`,
+	"Hoş Geldin": `Hoş Geldin`,
 }
