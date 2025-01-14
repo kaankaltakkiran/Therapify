@@ -53,7 +53,12 @@ export default defineConfig((ctx) => {
 
       // publicPath: '/',
       // analyze: true,
-      // env: {},
+      //env değerini al devolopment ve production için
+       env: {
+        API_URL: ctx.dev 
+          ? process.env.VITE_API_URL 
+          : process.env.VITE_API_URL
+       },
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,

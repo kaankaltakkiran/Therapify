@@ -115,6 +115,7 @@ export default {
 	"Platformumuza kayıt olduktan sonra, size en uygun terapisti bulmak için yapay zeka destekli eşleştirme sistemimizi kullanabilirsiniz.": `Platformumuza kayıt olduktan sonra, size en uygun terapisti bulmak için yapay zeka destekli eşleştirme sistemimizi kullanabilirsiniz.
 `,
 	"Online terapi seansları nasıl yapılır?": `Online terapi seansları nasıl yapılır?`,
+	"Seanslar, güvenli video görüşme platformumuz üzerinden gerçekleştirilir. İnternet bağlantısı olan herhangi bir cihazdan katılabilirsiniz.": `Seanslar, güvenli video görüşme platformumuz üzerinden gerçekleştirilir. İnternet bağlantısı olan herhangi bir cihazdan katılabilirsiniz.`,
 	"Ödeme seçenekleri nelerdir?": `Ödeme seçenekleri nelerdir?`,
 	"Kredi kartı, banka kartı ve havale/EFT ile ödeme yapabilirsiniz. Ödemeler seans bazlı olarak gerçekleştirilir.": `Kredi kartı, banka kartı ve havale/EFT ile ödeme yapabilirsiniz. Ödemeler seans bazlı olarak gerçekleştirilir.
 `,

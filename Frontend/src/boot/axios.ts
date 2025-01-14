@@ -11,7 +11,16 @@ declare module 'vue' {
   }
 }
 
-const api = axios.create({ baseURL: 'http://localhost/Therapify' })
+// Get API URL from environment variables
+const apiUrl = import.meta.env.VITE_API_URL
+
+if (!apiUrl) {
+  console.error('API URL is not defined in environment variables')
+}
+
+// console.log('API URL:', apiUrl)
+
+const api = axios.create({ baseURL: apiUrl})
 
 // api control
 api.interceptors.request.use(

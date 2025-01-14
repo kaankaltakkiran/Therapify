@@ -86,7 +86,7 @@
               <q-item-section class="text-body2">{{ t('Gizlilik Politikası') }}</q-item-section>
             </q-item>
             <q-item clickable v-ripple to="/faq" class="q-pa-xs">
-              <q-item-section class="text-body2">{{ t('SSS') }} </q-item-section>
+              <q-item-section class="text-body2">SSS </q-item-section>
             </q-item>
           </q-list>
         </div>
