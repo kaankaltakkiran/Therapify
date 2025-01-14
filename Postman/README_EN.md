@@ -28,16 +28,17 @@ This folder contains the Postman collection for testing and interacting with the
 #### 2. Register User
 - **Method**: POST
 - **Endpoint**: `/api/auth.php`
-- **Body**: Form-data
-  - method: "register"
-  - first_name
-  - last_name
-  - email
-  - password
-  - address
-  - phone_number
-  - birth_of_date
-  - user_img (file)
+- **Body**: JSON
+  ```json
+  {
+    "method": "register",
+    "first_name": "John",
+    "last_name": "Doe",
+    "email": "user@example.com",
+    "password": "password123",
+    "user_role": "user"
+  }
+  ```
 - **Response**: Success message and user ID
 
 #### 3. Register Therapist
@@ -68,6 +69,11 @@ This folder contains the Postman collection for testing and interacting with the
 #### 1. Get Therapist Applications
 - **Method**: POST
 - **Endpoint**: `/api/admin.php`
+- **Header**: 
+  ```
+  Authorization: Bearer {{token}}
+  Content-Type: application/json
+  ```
 - **Body**: JSON
   ```json
   {
@@ -79,27 +85,84 @@ This folder contains the Postman collection for testing and interacting with the
 #### 2. Update Application Status
 - **Method**: POST
 - **Endpoint**: `/api/admin.php`
+- **Header**: 
+  ```
+  Authorization: Bearer {{token}}
+  Content-Type: application/json
+  ```
 - **Body**: JSON
   ```json
   {
     "method": "update-application-status",
     "application_id": 1,
-    "status": "approved",
-    "admin_notes": "Your notes here"
+    "status": "approved"
   }
   ```
 - **Response**: Success message
 
-#### 3. Get Pending Applications Count
+#### 3. Submit Contact
 - **Method**: POST
 - **Endpoint**: `/api/admin.php`
 - **Body**: JSON
   ```json
   {
-    "method": "get-pending-count"
+    "method": "submit-contact",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "message": "Your message here"
   }
   ```
-- **Response**: Count of pending applications
+- **Response**: Success message
+
+#### 4. Get Contact Messages
+- **Method**: POST
+- **Endpoint**: `/api/admin.php`
+- **Header**: 
+  ```
+  Authorization: Bearer {{token}}
+  Content-Type: application/json
+  ```
+- **Body**: JSON
+  ```json
+  {
+    "method": "get-contact-messages"
+  }
+  ```
+- **Response**: List of all contact messages
+
+#### 5. Update Message Status
+- **Method**: POST
+- **Endpoint**: `/api/admin.php`
+- **Header**: 
+  ```
+  Authorization: Bearer {{token}}
+  Content-Type: application/json
+  ```
+- **Body**: JSON
+  ```json
+  {
+    "method": "update-contact-status",
+    "messageId": 1,
+    "status": "read"
+  }
+  ```
+- **Response**: Success message
+
+#### 6. Get Unread Messages Count
+- **Method**: POST
+- **Endpoint**: `/api/admin.php`
+- **Header**: 
+  ```
+  Authorization: Bearer {{token}}
+  Content-Type: application/json
+  ```
+- **Body**: JSON
+  ```json
+  {
+    "method": "get-unread-messages-count"
+  }
+  ```
+- **Response**: Count of unread messages
 
 ### Therapist
 

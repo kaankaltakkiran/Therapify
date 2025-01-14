@@ -26,16 +26,17 @@ Bu klasör, Therapify API uç noktalarını test etmek ve etkileşimde bulunmak 
 #### 2. Kullanıcı Kaydı
 - **Metod**: POST
 - **Uç Nokta**: `/api/auth.php`
-- **Gövde**: Form-data
-  - method: "register"
-  - first_name (ad)
-  - last_name (soyad)
-  - email (e-posta)
-  - password (şifre)
-  - address (adres)
-  - phone_number (telefon numarası)
-  - birth_of_date (doğum tarihi)
-  - user_img (kullanıcı resmi - dosya)
+- **Gövde**: JSON
+  ```json
+  {
+    "method": "register",
+    "first_name": "Ad",
+    "last_name": "Soyad",
+    "email": "email@ornek.com",
+    "password": "sifre123",
+    "user_role": "user"
+  }
+  ```
 - **Yanıt**: Başarı mesajı ve kullanıcı ID'si
 
 #### 3. Terapist Kaydı
@@ -66,6 +67,11 @@ Bu klasör, Therapify API uç noktalarını test etmek ve etkileşimde bulunmak 
 #### 1. Terapist Başvurularını Al
 - **Metod**: POST
 - **Uç Nokta**: `/api/admin.php`
+- **Header**: 
+  ```
+  Authorization: Bearer {{token}}
+  Content-Type: application/json
+  ```
 - **Gövde**: JSON
   ```json
   {
@@ -77,27 +83,84 @@ Bu klasör, Therapify API uç noktalarını test etmek ve etkileşimde bulunmak 
 #### 2. Başvuru Durumunu Güncelle
 - **Metod**: POST
 - **Uç Nokta**: `/api/admin.php`
+- **Header**: 
+  ```
+  Authorization: Bearer {{token}}
+  Content-Type: application/json
+  ```
 - **Gövde**: JSON
   ```json
   {
     "method": "update-application-status",
     "application_id": 1,
-    "status": "approved",
-    "admin_notes": "Notlarınızı buraya yazın"
+    "status": "approved"
   }
   ```
 - **Yanıt**: Başarı mesajı
 
-#### 3. Bekleyen Başvuru Sayısını Al
+#### 3. İletişim Mesajı Gönder
 - **Metod**: POST
 - **Uç Nokta**: `/api/admin.php`
 - **Gövde**: JSON
   ```json
   {
-    "method": "get-pending-count"
+    "method": "submit-contact",
+    "name": "Ad Soyad",
+    "email": "email@ornek.com",
+    "message": "Mesajınız"
   }
   ```
-- **Yanıt**: Bekleyen başvuruların sayısı
+- **Yanıt**: Başarı mesajı
+
+#### 4. İletişim Mesajlarını Al
+- **Metod**: POST
+- **Uç Nokta**: `/api/admin.php`
+- **Header**: 
+  ```
+  Authorization: Bearer {{token}}
+  Content-Type: application/json
+  ```
+- **Gövde**: JSON
+  ```json
+  {
+    "method": "get-contact-messages"
+  }
+  ```
+- **Yanıt**: Tüm iletişim mesajlarının listesi
+
+#### 5. Mesaj Durumunu Güncelle
+- **Metod**: POST
+- **Uç Nokta**: `/api/admin.php`
+- **Header**: 
+  ```
+  Authorization: Bearer {{token}}
+  Content-Type: application/json
+  ```
+- **Gövde**: JSON
+  ```json
+  {
+    "method": "update-contact-status",
+    "messageId": 1,
+    "status": "read"
+  }
+  ```
+- **Yanıt**: Başarı mesajı
+
+#### 6. Okunmamış Mesaj Sayısını Al
+- **Metod**: POST
+- **Uç Nokta**: `/api/admin.php`
+- **Header**: 
+  ```
+  Authorization: Bearer {{token}}
+  Content-Type: application/json
+  ```
+- **Gövde**: JSON
+  ```json
+  {
+    "method": "get-unread-messages-count"
+  }
+  ```
+- **Yanıt**: Okunmamış mesaj sayısı
 
 ### Terapist
 
