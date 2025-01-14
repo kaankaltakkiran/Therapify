@@ -10,44 +10,12 @@ header("Access-Control-Max-Age: 86400");
 define('JWT_SECRET_KEY', 'vypLCUJ3Q8oFj7'); // Use a secure secret key in production
 define('JWT_EXPIRE_TIME', 3600); // Token validity period (in seconds, 1 hour)
 
-// Load environment variables
-$env = parse_ini_file(__DIR__ . '/.env');
-
 // Constants for file uploads
-define('UPLOAD_BASE_PATH', '/var/www/my_webapp__2/www/uploads');
-define('UPLOAD_BASE_URL', $env['UPLOAD_BASE_URL'] ?? '/uploads'); // This will be the public URL path
+define('UPLOAD_BASE_PATH', '/srv/http/uploads');
+define('UPLOAD_BASE_URL', '/uploads'); // This will be the public URL path
 
 // Function to get public URL for uploaded files
 function getPublicPath($serverPath) {
-    // If the path is empty, return empty string
-    if (empty($serverPath)) {
-        return '';
-    }
-
-    // Get environment variables
-    $env = parse_ini_file(__DIR__ . '/.env');
-    $appEnv = $env['APP_ENV'] ?? 'development';
-
-    // If in production, return full URL
-    if ($appEnv === 'production') {
-        $filename = basename($serverPath);
-        $type = '';
-        
-        // Determine file type from path
-        if (strpos($serverPath, 'cv') !== false) {
-            $type = 'cv';
-        } elseif (strpos($serverPath, 'diploma') !== false) {
-            $type = 'diploma';
-        } elseif (strpos($serverPath, 'license') !== false) {
-            $type = 'license';
-        } elseif (strpos($serverPath, 'profile_images') !== false || strpos($serverPath, 'user_img') !== false) {
-            $type = 'profile_images';
-        }
-
-        return $env['UPLOAD_BASE_URL'] . '/' . $type . '/' . $filename;
-    }
-
-    // For development, use local path
     return str_replace(UPLOAD_BASE_PATH, UPLOAD_BASE_URL, $serverPath);
 }
 
