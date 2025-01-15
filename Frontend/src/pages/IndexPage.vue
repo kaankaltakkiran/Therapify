@@ -40,7 +40,6 @@
         </div>
       </div>
     </section>
-    <h1>Kaan Baba Oldu</h1>
     <!-- Services Section -->
     <section id="services" class="services-section">
       <div class="container q-pa-md">
