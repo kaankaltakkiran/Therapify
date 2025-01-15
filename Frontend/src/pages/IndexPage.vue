@@ -40,6 +40,7 @@
         </div>
       </div>
     </section>
+    <h1>Kaan</h1>
 
     <!-- Services Section -->
     <section id="services" class="services-section">
