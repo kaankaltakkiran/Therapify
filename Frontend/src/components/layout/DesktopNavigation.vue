@@ -143,6 +143,7 @@ const getFileUrl = (path: string | undefined) => {
 
   // Ortam kontrolü
   const isProduction = window.location.hostname === 'therapify.kaankaltakkiran.com'
+  console.log(isProduction)
   const baseUrl = isProduction 
     ? 'https://therapify-api.kaankaltakkiran.com/uploads'
     : 'http://localhost'
@@ -154,7 +155,8 @@ const getFileUrl = (path: string | undefined) => {
 }
 
 
-// console.log(import.meta.env.VITE_UPLOAD_URL)
+
+ console.log(import.meta.env.VITE_UPLOAD_URL)
 
 // Logout işlemi pinia storedaki fonksiyon
 const handleLogout = async () => {
