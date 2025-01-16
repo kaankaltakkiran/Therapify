@@ -140,7 +140,7 @@ const getFileUrl = (path: string | undefined) => {
   return `${import.meta.env.VITE_UPLOAD_URL}${path}`
 }
 
-console.log(import.meta.env.VITE_UPLOAD_URL)
+//console.log(import.meta.env.VITE_UPLOAD_URL)
 
 // Logout işlemi pinia storedaki fonksiyon
 const handleLogout = async () => {
