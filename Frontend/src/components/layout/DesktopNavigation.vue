@@ -154,7 +154,7 @@ const getFileUrl = (path: string | undefined) => {
   // Use environment-specific URL
   const baseUrl = window.location.hostname === 'therapify.kaankaltakkiran.com'
     ? 'https://therapify-api.kaankaltakkiran.com/uploads'
-    : 'http://localhost/uploads'
+    : 'http://localhost/uploadssssss'
 
   return `${baseUrl}/${cleanPath}`
 }
