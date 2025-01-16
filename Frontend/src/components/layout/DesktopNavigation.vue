@@ -131,32 +131,37 @@ const { isAuthenticated, user } = storeToRefs(authStore)
 const getFileUrl = (path: string | undefined) => {
   if (!path) return 'https://cdn.quasar.dev/img/boy-avatar.png'
 
-  // Base64 image kontrolü
+  // Check if the path is a base64 image
   if (path.startsWith('data:image')) {
     return path
   }
 
-  // Eğer tam URL içeriyorsa aynen döndür
-  if (path.startsWith('https://') || path.startsWith('http://')) {
+  // Handle file path images
+  // If path already contains the full URL, return it as is
+  if (path.startsWith('https://therapify-api.kaankaltakkiran.com') || path.startsWith('http://localhost')) {
     return path
   }
 
-  // Ortam kontrolü
-  const isProduction = window.location.hostname === 'therapify.kaankaltakkiran.com'
-  console.log(isProduction)
-  const baseUrl = isProduction 
-    ? 'https://therapify-api.kaankaltakkiran.com/uploads'
-    : 'http://localhost'
+  // Remove any leading slashes and 'uploads' from the path
+  let cleanPath = path
+  if (cleanPath.startsWith('/')) {
+    cleanPath = cleanPath.substring(1)
+  }
+  if (cleanPath.startsWith('uploads/')) {
+    cleanPath = cleanPath.substring(7)
+  }
 
-  // Fazlalık slash'leri temizle
-  const cleanPath = path.replace(/^\/|^uploads\//, '')
+  // Always use the production URL in production build
+  const baseUrl = process.env.NODE_ENV === 'production'
+    ? 'https://therapify-api.kaankaltakkiran.com/uploads'
+    : 'http://localhost/uploads'
 
   return `${baseUrl}/${cleanPath}`
 }
 
 
 
- console.log(import.meta.env.VITE_UPLOAD_URL)
+// console.log(import.meta.env.VITE_UPLOAD_URL)
 
 // Logout işlemi pinia storedaki fonksiyon
 const handleLogout = async () => {

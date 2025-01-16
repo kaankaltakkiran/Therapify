@@ -144,9 +144,8 @@ const getFileUrl = (path: string | undefined) => {
     cleanPath = cleanPath.substring(7)
   }
 
-  // Check if we're in production by looking at the hostname
-  const isProduction = window.location.hostname === 'therapify.kaankaltakkiran.com'
-  const baseUrl = isProduction 
+  // Always use the production URL in production build
+  const baseUrl = process.env.NODE_ENV === 'production'
     ? 'https://therapify-api.kaankaltakkiran.com/uploads'
     : 'http://localhost/uploads'
 
