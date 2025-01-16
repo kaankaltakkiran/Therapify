@@ -122,9 +122,6 @@ import { useRouter } from 'vue-router'
 
 
 const getFileUrl = (path: string | undefined) => {
-  console.log('Original path:', path)
-  console.log('VITE_UPLOAD_URL:', import.meta.env.VITE_UPLOAD_URL)
-
   if (!path) return 'https://cdn.quasar.dev/img/boy-avatar.png'
 
   // Check if the path is a base64 image
@@ -133,8 +130,8 @@ const getFileUrl = (path: string | undefined) => {
   }
 
   // Handle file path images
-  // If path already contains the full URL, return it as is
-  if (path.startsWith('http')) {
+  // If path already contains the full production URL, return it as is
+  if (path.startsWith('https://therapify-api.kaankaltakkiran.com') || path.startsWith('http://localhost')) {
     return path
   }
 
@@ -147,12 +144,12 @@ const getFileUrl = (path: string | undefined) => {
     cleanPath = cleanPath.substring(7)
   }
 
-  // Ensure VITE_UPLOAD_URL doesn't end with a slash
-  const baseUrl = import.meta.env.VITE_UPLOAD_URL.replace(/\/$/, '')
-  const finalUrl = `${baseUrl}/${cleanPath}`
-  
-  console.log('Final URL:', finalUrl)
-  return finalUrl
+  // Use environment-specific URL
+  const baseUrl = import.meta.env.DEV 
+    ? 'http://localhost/uploads'
+    : 'https://therapify-api.kaankaltakkiran.com/uploads'
+
+  return `${baseUrl}/${cleanPath}`
 }
 
 const drawerOpen = ref(false)
