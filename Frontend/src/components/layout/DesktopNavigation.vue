@@ -154,7 +154,7 @@ const getFileUrl = (path: string | undefined) => {
   // Always use the production URL in production build
   const baseUrl = process.env.NODE_ENV === 'production'
     ? 'https://therapify-api.kaankaltakkiran.com/uploads'
-    : 'http://localhost/uploads'
+    : 'https://therapify-api.kaankaltakkiran.com/uploads'
 
   return `${baseUrl}/${cleanPath}`
 }
