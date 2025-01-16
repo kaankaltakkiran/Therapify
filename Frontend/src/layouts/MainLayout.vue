@@ -130,7 +130,15 @@ const getFileUrl = (path: string | undefined) => {
   }
 
   // Handle file path images
-  return `${import.meta.env.VITE_UPLOAD_URL}${path}`
+  // If path already contains the full URL, return it as is
+  if (path.startsWith('http')) {
+    return path
+  }
+
+  // If path starts with /uploads, remove it since it's included in VITE_UPLOAD_URL
+  const cleanPath = path.startsWith('/uploads') ? path.substring(8) : path
+
+  return `${import.meta.env.VITE_UPLOAD_URL}/${cleanPath}`
 }
 
 const drawerOpen = ref(false)
