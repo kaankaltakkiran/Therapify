@@ -137,7 +137,7 @@ const getFileUrl = (path: string | undefined) => {
   }
 
   // Handle file path images
-  // If path already contains the full production URL, return it as is
+  // If path already contains the full URL, return it as is
   if (path.startsWith('https://therapify-api.kaankaltakkiran.com') || path.startsWith('http://localhost')) {
     return path
   }
@@ -152,9 +152,9 @@ const getFileUrl = (path: string | undefined) => {
   }
 
   // Use environment-specific URL
-  const baseUrl = import.meta.env.DEV 
-    ? 'http://localhost/uploads'
-    : 'https://therapify-api.kaankaltakkiran.com/uploads'
+  const baseUrl = window.location.hostname === 'therapify.kaankaltakkiran.com'
+    ? 'https://therapify-api.kaankaltakkiran.com/uploads'
+    : 'http://localhost/uploads'
 
   return `${baseUrl}/${cleanPath}`
 }
