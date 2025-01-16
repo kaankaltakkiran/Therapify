@@ -151,10 +151,11 @@ const getFileUrl = (path: string | undefined) => {
     cleanPath = cleanPath.substring(7)
   }
 
-  // Use environment-specific URL
-  const baseUrl = window.location.hostname === 'therapify.kaankaltakkiran.com'
+  // Check if we're in production by looking at the hostname
+  const isProduction = window.location.hostname === 'therapify.kaankaltakkiran.com'
+  const baseUrl = isProduction 
     ? 'https://therapify-api.kaankaltakkiran.com/uploads'
-    : 'http://localhost/uploadssssss'
+    : 'http://localhost/uploads'
 
   return `${baseUrl}/${cleanPath}`
 }
