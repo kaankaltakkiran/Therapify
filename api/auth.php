@@ -70,7 +70,8 @@ function generateJWT($user) {
         'exp' => $expire,
         'user_id' => $user['id'],
         'email' => $user['email'],
-        'user_role' => $user['user_role']
+        'user_role' => $user['user_role'],
+        'user_img' => $user['user_img'] ?? null
     ];
 
     $header = base64_encode(json_encode(['typ' => 'JWT', 'alg' => 'HS256']));
@@ -564,6 +565,21 @@ function loginUser($DB, $data) {
                 // Remove sensitive data
                 unset($user['password']);
 
+                // Handle user image path
+                if (!empty($user['user_img'])) {
+                    // If path doesn't start with http or https, prepend the base URL
+                    if (!preg_match('/^https?:\/\//', $user['user_img'])) {
+                        // Remove any leading slashes
+                        $user['user_img'] = ltrim($user['user_img'], '/');
+                        // If we're in production
+                        if (getenv('APP_ENV') === 'production') {
+                            $user['user_img'] = 'https://therapify-api.kaankaltakkiran.com/uploads/' . $user['user_img'];
+                        } else {
+                            $user['user_img'] = 'http://localhost/uploads/' . $user['user_img'];
+                        }
+                    }
+                }
+
                 // Generate JWT token
                 $token = generateJWT($user);
 
@@ -608,6 +624,7 @@ function loginUser($DB, $data) {
             $response['error'] = "User not found";
         }
     } catch (Exception $e) {
+        error_log("Login error: " . $e->getMessage());
         $response['error'] = "Login failed: " . $e->getMessage();
     }
 

@@ -129,9 +129,8 @@ const getFileUrl = (path: string | undefined) => {
     return path
   }
 
-  // Handle file path images
   // If path already contains the full URL, return it as is
-  if (path.startsWith('https://therapify-api.kaankaltakkiran.com') || path.startsWith('http://localhost')) {
+  if (path.startsWith('https://')) {
     return path
   }
 
@@ -144,11 +143,8 @@ const getFileUrl = (path: string | undefined) => {
     cleanPath = cleanPath.substring(7)
   }
 
-  // Always use the production URL in production build
-  const baseUrl = process.env.NODE_ENV === 'production'
-    ? 'https://therapify-api.kaankaltakkiran.com/uploads'
-    : 'http://localhost/uploads'
-
+  // Use VITE_UPLOAD_URL from environment
+  const baseUrl = import.meta.env.VITE_UPLOAD_URL || 'http://localhost/uploads'
   return `${baseUrl}/${cleanPath}`
 }
 

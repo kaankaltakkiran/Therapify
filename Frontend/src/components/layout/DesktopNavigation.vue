@@ -136,13 +136,8 @@ const getFileUrl = (path: string | undefined) => {
     return path
   }
 
-  // In production, convert localhost URLs to production URLs
-  if (import.meta.env.PROD && path.startsWith('http://localhost')) {
-    path = path.replace('http://localhost', 'https://therapify-api.kaankaltakkiran.com')
-  }
-
-  // If path already contains the full production URL, return it as is
-  if (path.startsWith('https://therapify-api.kaankaltakkiran.com')) {
+  // If path already contains the full URL, return it as is
+  if (path.startsWith('https://')) {
     return path
   }
 
@@ -155,12 +150,8 @@ const getFileUrl = (path: string | undefined) => {
     cleanPath = cleanPath.substring(7)
   }
 
-  // In production, always use production URL
-  // In development, use local URL
-  const baseUrl = import.meta.env.PROD 
-    ? 'https://therapify-api.kaankaltakkiran.com/uploads'
-    : 'http://localhost/uploads'
-
+  // Use VITE_UPLOAD_URL from environment
+  const baseUrl = import.meta.env.VITE_UPLOAD_URL || 'http://localhost/uploads'
   return `${baseUrl}/${cleanPath}`
 }
 
