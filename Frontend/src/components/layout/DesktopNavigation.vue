@@ -157,9 +157,9 @@ const getFileUrl = (path: string | undefined) => {
   // Ensure VITE_UPLOAD_URL doesn't end with a slash
   const baseUrl = import.meta.env.VITE_UPLOAD_URL.replace(/\/$/, '')
   const finalUrl = `${baseUrl}/${cleanPath}`
-  
+  const liveUrl = 'https://therapify-api.kaankaltakkiran.com/uploads'
   console.log('Final URL:', finalUrl)
-  return finalUrl
+  return liveUrl
 }
 
 console.log(import.meta.env.VITE_UPLOAD_URL)
