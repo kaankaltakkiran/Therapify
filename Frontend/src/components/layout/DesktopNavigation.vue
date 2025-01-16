@@ -138,8 +138,10 @@ const getFileUrl = (path: string | undefined) => {
 
   // Handle file path images
   const filename = path.split('/').pop()
-  return `http://localhost/uploads/profile_images/${filename}`
+  return `${import.meta.env.VITE_UPLOAD_URL}/profile_images/${filename}`
 }
+
+
 
 // Logout işlemi pinia storedaki fonksiyon
 const handleLogout = async () => {

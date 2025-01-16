@@ -35,6 +35,14 @@ interface AuthResponse {
   user?: User
 }
 
+interface ApiError extends Error {
+  response?: {
+    data?: {
+      error?: string
+    }
+  }
+}
+
 //kullanıcı ve token bilgileri
 interface AuthState {
   user: User | null
@@ -135,44 +143,29 @@ export const useAuthStore = defineStore('auth', {
     },
 
     //register işlemi
-    async register(userData: {
-      first_name: string
-      last_name: string
-      email: string
-      password: string
-      address: string
-      phone_number: string
-      birth_of_date: string
-      user_img?: string
-    }) {
+    async register(formData: FormData) {
       try {
-        //kullanıcı bilgilerini apiye gonderecegimiz veriler
-        const response = await api.post<AuthResponse>('/auth.php', {
-          method: 'register',
-          ...userData,
+        const response = await api.post('/auth.php', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
         })
-        //işlem başarılıysa
+
         if (response.data.success) {
           Notify.create({
-            color: 'positive',
-            message: response.data.message || 'Registration successful!', // Added fallback message
+            type: 'positive',
+            message: 'Kayıt başarılı. Giriş yapabilirsiniz.',
             position: 'top-right',
           })
           return true
+        } else {
+          throw new Error(response.data.error || 'Kayıt işlemi başarısız.')
         }
-
-        // hata varsa
+      } catch (error: unknown) {
+        const apiError = error as ApiError
         Notify.create({
-          color: 'negative',
-          message: response.data.error || 'Registration failed',
-          position: 'top-right',
-        })
-        return false
-      } catch (error) {
-        console.error('Register error:', error)
-        Notify.create({
-          color: 'negative',
-          message: 'Error registering',
+          type: 'negative',
+          message: apiError.response?.data?.error || apiError.message || 'Kayıt işlemi başarısız.',
           position: 'top-right',
         })
         return false
