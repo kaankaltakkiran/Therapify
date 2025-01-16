@@ -137,11 +137,10 @@ const getFileUrl = (path: string | undefined) => {
   }
 
   // Handle file path images
-  const filename = path.split('/').pop()
-  return `${import.meta.env.VITE_UPLOAD_URL}/profile_images/${filename}`
+  return `${import.meta.env.VITE_UPLOAD_URL}${path}`
 }
 
-
+console.log(import.meta.env.VITE_UPLOAD_URL)
 
 // Logout işlemi pinia storedaki fonksiyon
 const handleLogout = async () => {
