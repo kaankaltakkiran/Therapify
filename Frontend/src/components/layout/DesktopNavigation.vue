@@ -153,12 +153,14 @@ const getFileUrl = (path: string | undefined) => {
 
   // Check if we're in production by looking at the hostname
   const isProduction = window.location.hostname === 'therapify.kaankaltakkiran.com'
+  console.log(isProduction);
   const baseUrl = isProduction 
     ? 'https://therapify-api.kaankaltakkiran.com/uploads'
     : 'http://localhost/uploads'
 
   return `${baseUrl}/${cleanPath}`
 }
+console.log("kaan ")
 
 console.log(import.meta.env.VITE_UPLOAD_URL)
 
