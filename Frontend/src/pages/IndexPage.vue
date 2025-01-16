@@ -6,13 +6,17 @@
         <div class="row items-center">
           <div class="col-12 col-md-6 text-center text-md-left">
             <h1 class="text-h3 text-md-h2 text-weight-bold q-mb-md text-white">
-             {{ t('Ruhsal İyilik Yolculuğunuza Başlayın') }}
+              {{ t('Ruhsal İyilik Yolculuğunuza Başlayın') }}
             </h1>
             <p
               class="text-body1 text-md-h6 q-mb-lg text-white text-weight-medium"
               style="opacity: 0.95"
             >
-             {{ t('Yapay zeka destekli eşleştirme sistemiyle, kişiselleştirilmiş ruh sağlığı desteği için uzman terapistlerle bağlantı kurun') }}
+              {{
+                t(
+                  'Yapay zeka destekli eşleştirme sistemiyle, kişiselleştirilmiş ruh sağlığı desteği için uzman terapistlerle bağlantı kurun',
+                )
+              }}
             </p>
             <div class="q-gutter-md">
               <q-btn
@@ -51,7 +55,11 @@
               <q-card-section>
                 <div class="text-h6">{{ t('Yapay Zeka Eşleştirmesi') }}</div>
                 <p class="text-grey-8">
-                  {{ t('Gelişmiş yapay zeka sistemimiz, ihtiyaç ve tercihlerinizi analiz ederek size en uygun terapisti bulur.') }}
+                  {{
+                    t(
+                      'Gelişmiş yapay zeka sistemimiz, ihtiyaç ve tercihlerinizi analiz ederek size en uygun terapisti bulur.',
+                    )
+                  }}
                 </p>
               </q-card-section>
             </q-card>
@@ -63,7 +71,11 @@
               <q-card-section>
                 <div class="text-h6">{{ t('Güvenli Online Seanslar') }}</div>
                 <p class="text-grey-8">
-                 {{ t('Evinizin rahatlığında, güvenli görüntülü görüşme ve mesajlaşma yoluyla terapistinizle bağlantı kurun.') }}
+                  {{
+                    t(
+                      'Evinizin rahatlığında, güvenli görüntülü görüşme ve mesajlaşma yoluyla terapistinizle bağlantı kurun.',
+                    )
+                  }}
                 </p>
               </q-card-section>
             </q-card>
@@ -75,7 +87,11 @@
               <q-card-section>
                 <div class="text-h6">{{ t('İlerleme Takibi') }}</div>
                 <p class="text-grey-8">
-                 {{ t('Yapay zeka destekli içgörüler ve ilerleme raporlarıyla ruh sağlığı yolculuğunuzu takip edin.') }}
+                  {{
+                    t(
+                      'Yapay zeka destekli içgörüler ve ilerleme raporlarıyla ruh sağlığı yolculuğunuzu takip edin.',
+                    )
+                  }}
                 </p>
               </q-card-section>
             </q-card>
@@ -93,14 +109,18 @@
             <div class="step-card text-center">
               <div class="step-number">1</div>
               <h6 class="text-h6">{{ t('Kayıt Ol') }}</h6>
-              <p class="text-grey-8">{{ t('Hesabınızı oluşturun ve kısa bir değerlendirme yapın') }}</p>
+              <p class="text-grey-8">
+                {{ t('Hesabınızı oluşturun ve kısa bir değerlendirme yapın') }}
+              </p>
             </div>
           </div>
           <div class="col-12 col-md-3">
             <div class="step-card text-center">
               <div class="step-number">2</div>
               <h6 class="text-h6">{{ t('Eşleştirme') }}</h6>
-              <p class="text-grey-8">{{ t('Yapay zekamız sizi uygun terapistlerle eşleştirir') }}</p>
+              <p class="text-grey-8">
+                {{ t('Yapay zekamız sizi uygun terapistlerle eşleştirir') }}
+              </p>
             </div>
           </div>
           <div class="col-12 col-md-3">
@@ -114,12 +134,15 @@
             <div class="step-card text-center">
               <div class="step-number">4</div>
               <h6 class="text-h6">{{ t('Terapiye Başla') }}</h6>
-              <p class="text-grey-8">{{ t('Daha iyi bir ruh sağlığı için yolculuğunuza başlayın') }}</p>
+              <p class="text-grey-8">
+                {{ t('Daha iyi bir ruh sağlığı için yolculuğunuza başlayın') }}
+              </p>
             </div>
           </div>
         </div>
       </div>
     </section>
+    <h1>sa</h1>
 
     <!-- For Therapists -->
     <section id="therapists" class="therapist-section">
@@ -131,7 +154,11 @@
           <div class="col-12 col-md-6">
             <h2 class="text-h3 q-mb-md">{{ t('Terapistler İçin') }}</h2>
             <p class="text-h6 q-mb-lg text-grey-8">
-             {{ t('Uzmanlığınıza uygun danışanlarla buluşmak ve pratiğinizi genişletmek için platformumuza katılın.') }}
+              {{
+                t(
+                  'Uzmanlığınıza uygun danışanlarla buluşmak ve pratiğinizi genişletmek için platformumuza katılın.',
+                )
+              }}
             </p>
             <div class="features q-mb-lg">
               <div class="feature-item q-mb-sm">
@@ -168,10 +195,10 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 // i18n dil kullanımı
-import { useI18n } from 'vue-i18n'; 
+import { useI18n } from 'vue-i18n'
 
 // i18n kullanımı
-const { t } = useI18n();
+const { t } = useI18n()
 
 const scrollToSection = (sectionId: string) => {
   const element = document.getElementById(sectionId)
