@@ -129,6 +129,9 @@ const authStore = useAuthStore()
 const { isAuthenticated, user } = storeToRefs(authStore)
 
 const getFileUrl = (path: string | undefined) => {
+  console.log('Original path:', path)
+  console.log('VITE_UPLOAD_URL:', import.meta.env.VITE_UPLOAD_URL)
+
   if (!path) return 'https://cdn.quasar.dev/img/boy-avatar.png'
 
   // Check if the path is a base64 image
@@ -142,10 +145,21 @@ const getFileUrl = (path: string | undefined) => {
     return path
   }
 
-  // If path starts with /uploads, remove it since it's included in VITE_UPLOAD_URL
-  const cleanPath = path.startsWith('/uploads') ? path.substring(8) : path
+  // Remove any leading slashes and 'uploads' from the path
+  let cleanPath = path
+  if (cleanPath.startsWith('/')) {
+    cleanPath = cleanPath.substring(1)
+  }
+  if (cleanPath.startsWith('uploads/')) {
+    cleanPath = cleanPath.substring(7)
+  }
 
-  return `${import.meta.env.VITE_UPLOAD_URL}/${cleanPath}`
+  // Ensure VITE_UPLOAD_URL doesn't end with a slash
+  const baseUrl = import.meta.env.VITE_UPLOAD_URL.replace(/\/$/, '')
+  const finalUrl = `${baseUrl}/${cleanPath}`
+  
+  console.log('Final URL:', finalUrl)
+  return finalUrl
 }
 
 console.log(import.meta.env.VITE_UPLOAD_URL)
