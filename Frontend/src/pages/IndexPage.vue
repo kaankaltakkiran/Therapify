@@ -142,8 +142,6 @@
         </div>
       </div>
     </section>
-    <h1>sa</h1>
-
     <!-- For Therapists -->
     <section id="therapists" class="therapist-section">
       <div class="container q-pa-md">
