@@ -118,39 +118,29 @@ import { storeToRefs } from 'pinia'
 import { Notify } from 'quasar'
 import { useRouter } from 'vue-router'
 
+function getFileUrl(path: string | undefined | null): string {
+  if (!path) {
+    return '/images/default-avatar.png'
+  }
 
-
-
-const getFileUrl = (path: string | undefined) => {
-  if (!path) return 'https://cdn.quasar.dev/img/boy-avatar.png'
-
-  // Check if the path is a base64 image
-  if (path.startsWith('data:image')) {
+  // If it's a base64 image, return as is
+  if (path.startsWith('data:image/')) {
     return path
   }
 
-  // Handle file path images
-  // If path already contains the full URL, return it as is
-  if (path.startsWith('https://therapify-api.kaankaltakkiran.com') || path.startsWith('http://localhost')) {
+  // If it's already a full URL (http:// or https://), return as is
+  if (path.startsWith('http://') || path.startsWith('https://')) {
     return path
   }
 
-  // Remove any leading slashes and 'uploads' from the path
-  let cleanPath = path
-  if (cleanPath.startsWith('/')) {
-    cleanPath = cleanPath.substring(1)
-  }
-  if (cleanPath.startsWith('uploads/')) {
-    cleanPath = cleanPath.substring(7)
-  }
+  // Extract the filename and subdirectory
+  const parts = path.split('/')
+  const filename = parts.pop() || ''
+  const subdir = parts.length > 0 ? parts[parts.length - 1] : 'profile_images'
 
-  // Check if we're in production by looking at the hostname
-  const isProduction = window.location.hostname === 'therapify.kaankaltakkiran.com'
-  const baseUrl = isProduction 
-    ? 'https://therapify-api.kaankaltakkiran.com/uploads'
-    : 'http://localhost/uploads'
-
-  return `${baseUrl}/${cleanPath}`
+  // Use the environment variable for the base URL
+  const baseUrl = import.meta.env.VITE_UPLOAD_URL
+  return `${baseUrl}/${subdir}/${filename}`
 }
 
 const drawerOpen = ref(false)

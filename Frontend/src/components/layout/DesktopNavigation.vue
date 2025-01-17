@@ -143,11 +143,14 @@ function getFileUrl(path: string | undefined | null): string {
     return path
   }
 
-  // For relative paths, use the environment variable
-  const baseUrl = import.meta.env.VITE_UPLOAD_URL || 'http://localhost/uploads'
-  // Remove any leading slashes and 'uploads' from the path
-  const cleanPath = path.replace(/^\/?(uploads\/)?/, '')
-  return `${baseUrl}/${cleanPath}`
+  // Extract the filename and subdirectory
+  const parts = path.split('/')
+  const filename = parts.pop() || ''
+  const subdir = parts.length > 0 ? parts[parts.length - 1] : 'profile_images'
+
+  // Use the environment variable for the base URL
+  const baseUrl = import.meta.env.VITE_UPLOAD_URL
+  return `${baseUrl}/${subdir}/${filename}`
 }
 
 // console.log(import.meta.env.VITE_UPLOAD_URL)
