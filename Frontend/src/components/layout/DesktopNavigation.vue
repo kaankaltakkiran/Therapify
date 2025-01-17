@@ -128,31 +128,30 @@ const authStore = useAuthStore()
 //tokene sahip kullanıcı var mı
 const { isAuthenticated, user } = storeToRefs(authStore)
 
-const getFileUrl = (path: string | undefined) => {
-  if (!path) return 'https://cdn.quasar.dev/img/boy-avatar.png'
+const getFileUrl = (path: string | undefined): string => {
+  if (!path) {
+    // Varsayılan avatar URL'si
+    return 'https://cdn.quasar.dev/img/boy-avatar.png'
+  }
 
   // Base64 image kontrolü
   if (path.startsWith('data:image')) {
     return path
   }
 
-  // Eğer tam URL içeriyorsa aynen döndür
+  // Tam URL içeriyorsa aynen döndür
   if (path.startsWith('https://') || path.startsWith('http://')) {
-    // Development ortamında production URL'i localhost'a çevir
-    if (process.env.DEV && path.includes('therapify-api.kaankaltakkiran.com')) {
-      return path.replace(
-        'https://therapify-api.kaankaltakkiran.com/uploads',
-        'http://localhost/uploads',
-      )
-    }
     return path
   }
 
-  // Ortam değişkeninden base URL'i al veya varsayılan değeri kullan
-  const baseUrl = import.meta.env.VITE_UPLOAD_URL || 'http://localhost/uploads'
+  // Vite ortam değişkeni kullanımı
+  const baseUrl =
+    import.meta.env.MODE === 'development'
+      ? 'https://therapify-api.kaankaltakkiran.com/uploads' // Geliştirme için doğru URL
+      : import.meta.env.VITE_UPLOAD_URL || 'http://localhost/uploads' // Üretim için doğru URL
 
-  // Fazlalık slash'leri temizle
-  const cleanPath = path.replace(/^\/|^uploads\//, '')
+  // Fazlalık slash'leri temizle ve doğru formatı koru
+  const cleanPath = path.replace(/^\//, '') // Sadece baştaki `/` kaldırılır
 
   return `${baseUrl}/${cleanPath}`
 }
