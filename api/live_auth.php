@@ -17,7 +17,7 @@ ini_set('log_errors', 1);
 ini_set('error_log', '/var/www/my_webapp__2/www/php_errors.log');
 
 // Constants for file uploads
-define('UPLOAD_BASE_PATH', '/var/www/my_webapp__3/www/uploads');
+define('UPLOAD_BASE_PATH', '/var/www/my_webapp__2/www/uploads');
 define('UPLOAD_BASE_URL', 'https://therapify-api.kaankaltakkiran.com/uploads');
 
 // Function to get public URL for uploaded files
@@ -25,24 +25,8 @@ function getPublicPath($serverPath) {
     if (empty($serverPath)) {
         return '';
     }
-
-    // Extract the filename and type from the path
     $filename = basename($serverPath);
-    $type = '';
-    
-    // Determine file type from path
-    if (strpos($serverPath, 'cv') !== false) {
-        $type = 'cv';
-    } elseif (strpos($serverPath, 'diploma') !== false) {
-        $type = 'diploma';
-    } elseif (strpos($serverPath, 'license') !== false) {
-        $type = 'license';
-    } elseif (strpos($serverPath, 'profile_images') !== false || strpos($serverPath, 'user_img') !== false) {
-        $type = 'profile_images';
-    }
-
-    // Always return the full production URL
-    return 'https://therapify-api.kaankaltakkiran.com/uploads/' . $type . '/' . $filename;
+    return UPLOAD_BASE_URL . '/profile_images/' . $filename;
 }
 
 // Handle preflight requests
@@ -247,37 +231,78 @@ function uploadFile($file, $subDir, $allowedTypes = []) {
             chmod($targetDir, 0777);
         }
 
-        // Generate unique filename
-        $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $fileName = uniqid() . '_' . time() . '.' . $fileExtension;
-        $targetPath = $targetDir . '/' . $fileName;
-        error_log("Target file path: " . $targetPath);
-
-        // Check file type if specified
-        if (!empty($allowedTypes)) {
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $mimeType = finfo_file($finfo, $file['tmp_name']);
-            finfo_close($finfo);
-            error_log("File mime type: " . $mimeType);
-
-            if (!in_array($mimeType, $allowedTypes)) {
-                error_log("Invalid file type: " . $mimeType);
+        // Handle base64 image data
+        if (is_string($file) && strpos($file, 'data:image/') === 0) {
+            error_log("Processing base64 image data");
+            
+            // Extract image type and data
+            $parts = explode(';base64,', $file);
+            $imageType = str_replace('data:', '', $parts[0]);
+            $imageData = base64_decode($parts[1]);
+            
+            // Check file type if specified
+            if (!empty($allowedTypes) && !in_array($imageType, $allowedTypes)) {
+                error_log("Invalid file type: " . $imageType);
                 throw new Exception("Invalid file type. Allowed types: " . implode(', ', $allowedTypes));
             }
-        }
-
-        // Move uploaded file
-        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+            
+            // Generate filename based on type
+            $extension = str_replace('image/', '', $imageType);
+            $fileName = uniqid() . '_' . time() . '.' . $extension;
+            $targetPath = $targetDir . '/' . $fileName;
+            
+            // Save the file
+            if (file_put_contents($targetPath, $imageData) === false) {
+                error_log("Failed to save base64 image");
+                throw new Exception("Failed to save image file");
+            }
+            
             chmod($targetPath, 0644);
-            error_log("File uploaded successfully to: " . $targetPath);
-            // Return the full URL path
-            return 'https://therapify-api.kaankaltakkiran.com/uploads/' . $subDir . '/' . $fileName;
-        } else {
-            error_log("Failed to move uploaded file. Upload error code: " . $file['error']);
-            error_log("Temp file exists: " . (file_exists($file['tmp_name']) ? 'yes' : 'no'));
-            error_log("Target dir writable: " . (is_writable($targetDir) ? 'yes' : 'no'));
-            throw new Exception("Failed to move uploaded file");
+            error_log("Base64 image saved successfully to: " . $targetPath);
+            $relativePath = '/profile_images/' . $fileName;
+            error_log("Returning relative path: " . $relativePath);
+            return $relativePath;
         }
+        
+        // Handle regular file upload
+        if (is_array($file)) {
+            error_log("Processing regular file upload: " . $file['name']);
+            
+            // Generate unique filename
+            $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            $fileName = uniqid() . '_' . time() . '.' . $fileExtension;
+            $targetPath = $targetDir . '/' . $fileName;
+            error_log("Target file path: " . $targetPath);
+
+            // Check file type if specified
+            if (!empty($allowedTypes)) {
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                $mimeType = finfo_file($finfo, $file['tmp_name']);
+                finfo_close($finfo);
+                error_log("File mime type: " . $mimeType);
+
+                if (!in_array($mimeType, $allowedTypes)) {
+                    error_log("Invalid file type: " . $mimeType);
+                    throw new Exception("Invalid file type. Allowed types: " . implode(', ', $allowedTypes));
+                }
+            }
+
+            // Move uploaded file
+            if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+                chmod($targetPath, 0644);
+                error_log("File uploaded successfully to: " . $targetPath);
+                $relativePath = '/profile_images/' . $fileName;
+                error_log("Returning relative path: " . $relativePath);
+                return $relativePath;
+            } else {
+                error_log("Failed to move uploaded file. Upload error code: " . $file['error']);
+                error_log("Temp file exists: " . (file_exists($file['tmp_name']) ? 'yes' : 'no'));
+                error_log("Target dir writable: " . (is_writable($targetDir) ? 'yes' : 'no'));
+                throw new Exception("Failed to move uploaded file");
+            }
+        }
+        
+        throw new Exception("Invalid file data provided");
     } catch (Exception $e) {
         error_log("File upload error: " . $e->getMessage());
         throw $e;
@@ -495,12 +520,9 @@ function loginUser($DB, $data) {
                 // Remove sensitive data
                 unset($user['password']);
 
-                // Format user image URL to always use production URL
+                // Format user_img path
                 if (!empty($user['user_img'])) {
-                    if (!preg_match('/^https?:\/\//', $user['user_img'])) {
-                        $filename = basename($user['user_img']);
-                        $user['user_img'] = 'https://therapify-api.kaankaltakkiran.com/uploads/profile_images/' . $filename;
-                    }
+                    $user['user_img'] = getPublicPath($user['user_img']);
                 }
 
                 // Generate JWT token
