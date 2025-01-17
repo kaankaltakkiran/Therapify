@@ -41,47 +41,24 @@ export default defineConfig((ctx) => {
       typescript: {
         strict: true,
         vueShim: true,
-        // extendTsConfig (tsConfig) {}
       },
 
-      vueRouterMode: 'history', // available values: 'hash', 'history'
-      // vueRouterBase,
-      // vueDevtools,
-      // vueOptionsAPI: false,
+      vueRouterMode: 'history',
 
-      // rebuildCache: true, // rebuilds Vite/linter/etc cache on startup
-
-      // publicPath: '/',
-      // analyze: true,
-      //env değerini al devolopment ve production için
-       env: {
-        API_URL: ctx.dev 
-          ? process.env.VITE_API_URL 
-          : process.env.VITE_API_URL
-       },
-      // rawDefine: {}
-      // ignorePublicFolder: true,
-      // minify: false,
-      // polyfillModulePreload: true,
-      // distDir
-
-      // extendViteConf (viteConf) {},
-      // viteVuePluginOptions: {},
+      env: {
+        VITE_API_URL: ctx.dev 
+          ? 'http://localhost'
+          : 'https://therapify-api.kaankaltakkiran.com',
+        VITE_UPLOAD_URL: ctx.dev
+          ? 'http://localhost/uploads'
+          : 'https://therapify-api.kaankaltakkiran.com/uploads'
+      },
 
       vitePlugins: [
         [
           '@intlify/unplugin-vue-i18n/vite',
           {
-            // if you want to use Vue I18n Legacy API, you need to set `compositionOnly: false`
-            // compositionOnly: false,
-
-            // if you want to use named tokens in your Vue I18n messages, such as 'Hello {name}',
-            // you need to set `runtimeOnly: false`
-            // runtimeOnly: false,
-
             ssr: ctx.modeName === 'ssr',
-
-            // you need to set i18n resource including paths !
             include: [fileURLToPath(new URL('./src/i18n', import.meta.url))],
           },
         ],
