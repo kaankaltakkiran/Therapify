@@ -141,20 +141,14 @@ const getFileUrl = (path: string | undefined) => {
     return path
   }
 
-  // Remove any leading slashes and 'uploads' from the path
-  let cleanPath = path
-  if (cleanPath.startsWith('/')) {
-    cleanPath = cleanPath.substring(1)
-  }
-  if (cleanPath.startsWith('uploads/')) {
-    cleanPath = cleanPath.substring(7)
+  // If path starts with /uploads, prepend the base URL
+  if (path.startsWith('/uploads/')) {
+    return `https://therapify-api.kaankaltakkiran.com${path}`
   }
 
-  // Log the base URL to the console
-  const baseUrl = 'https://therapify-api.kaankaltakkiran.com/uploads'
-  console.log('Base URL:', baseUrl)
-
-  return `${baseUrl}/${cleanPath}`
+  // For any other path format, assume it's a relative path and construct the full URL
+  const cleanPath = path.replace(/^\/+/, '').replace(/^uploads\//, '')
+  return `https://therapify-api.kaankaltakkiran.com/uploads/${cleanPath}`
 }
 
 // console.log(import.meta.env.VITE_UPLOAD_URL)

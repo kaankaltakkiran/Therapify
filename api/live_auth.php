@@ -25,8 +25,24 @@ function getPublicPath($serverPath) {
     if (empty($serverPath)) {
         return '';
     }
+
+    // Extract the filename and type from the path
     $filename = basename($serverPath);
-    return UPLOAD_BASE_URL . '/profile_images/' . $filename;
+    $type = '';
+    
+    // Determine file type from path
+    if (strpos($serverPath, 'cv') !== false) {
+        $type = 'cv';
+    } elseif (strpos($serverPath, 'diploma') !== false) {
+        $type = 'diploma';
+    } elseif (strpos($serverPath, 'license') !== false) {
+        $type = 'license';
+    } elseif (strpos($serverPath, 'profile_images') !== false || strpos($serverPath, 'user_img') !== false) {
+        $type = 'profile_images';
+    }
+
+    // Always return the full production URL
+    return 'https://therapify-api.kaankaltakkiran.com/uploads/' . $type . '/' . $filename;
 }
 
 // Handle preflight requests
