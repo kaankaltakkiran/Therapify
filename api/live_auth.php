@@ -232,93 +232,36 @@ $db->closeConnection();
 // File upload handling functions
 function uploadFile($file, $subDir, $allowedTypes = []) {
     try {
-        error_log("Starting file upload process");
-        
         $targetDir = UPLOAD_BASE_PATH . '/' . $subDir;
-        error_log("Target directory: " . $targetDir);
         
         // Create directory if it doesn't exist
         if (!file_exists($targetDir)) {
-            error_log("Creating directory: " . $targetDir);
-            if (!mkdir($targetDir, 0777, true)) {
-                error_log("Failed to create directory. Error: " . error_get_last()['message']);
-                throw new Exception("Failed to create upload directory");
-            }
-            chmod($targetDir, 0777);
+            mkdir($targetDir, 0777, true);
         }
 
-        // Handle base64 image data
-        if (is_string($file) && strpos($file, 'data:image/') === 0) {
-            error_log("Processing base64 image data");
-            
-            // Extract image type and data
-            $parts = explode(';base64,', $file);
-            $imageType = str_replace('data:', '', $parts[0]);
-            $imageData = base64_decode($parts[1]);
-            
-            // Check file type if specified
-            if (!empty($allowedTypes) && !in_array($imageType, $allowedTypes)) {
-                error_log("Invalid file type: " . $imageType);
+        // Generate unique filename
+        $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $fileName = uniqid() . '_' . time() . '.' . $fileExtension;
+        $targetPath = $targetDir . '/' . $fileName;
+
+        // Check file type if specified
+        if (!empty($allowedTypes)) {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mimeType = finfo_file($finfo, $file['tmp_name']);
+            finfo_close($finfo);
+
+            if (!in_array($mimeType, $allowedTypes)) {
                 throw new Exception("Invalid file type. Allowed types: " . implode(', ', $allowedTypes));
             }
-            
-            // Generate filename based on type
-            $extension = str_replace('image/', '', $imageType);
-            $fileName = uniqid() . '_' . time() . '.' . $extension;
-            $targetPath = $targetDir . '/' . $fileName;
-            
-            // Save the file
-            if (file_put_contents($targetPath, $imageData) === false) {
-                error_log("Failed to save base64 image");
-                throw new Exception("Failed to save image file");
-            }
-            
-            chmod($targetPath, 0644);
-            error_log("Base64 image saved successfully to: " . $targetPath);
-            $relativePath = '/profile_images/' . $fileName;
-            error_log("Returning relative path: " . $relativePath);
-            return $relativePath;
         }
-        
-        // Handle regular file upload
-        if (is_array($file)) {
-            error_log("Processing regular file upload: " . $file['name']);
-            
-            // Generate unique filename
-            $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-            $fileName = uniqid() . '_' . time() . '.' . $fileExtension;
-            $targetPath = $targetDir . '/' . $fileName;
-            error_log("Target file path: " . $targetPath);
 
-            // Check file type if specified
-            if (!empty($allowedTypes)) {
-                $finfo = finfo_open(FILEINFO_MIME_TYPE);
-                $mimeType = finfo_file($finfo, $file['tmp_name']);
-                finfo_close($finfo);
-                error_log("File mime type: " . $mimeType);
-
-                if (!in_array($mimeType, $allowedTypes)) {
-                    error_log("Invalid file type: " . $mimeType);
-                    throw new Exception("Invalid file type. Allowed types: " . implode(', ', $allowedTypes));
-                }
-            }
-
-            // Move uploaded file
-            if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-                chmod($targetPath, 0644);
-                error_log("File uploaded successfully to: " . $targetPath);
-                $relativePath = '/profile_images/' . $fileName;
-                error_log("Returning relative path: " . $relativePath);
-                return $relativePath;
-            } else {
-                error_log("Failed to move uploaded file. Upload error code: " . $file['error']);
-                error_log("Temp file exists: " . (file_exists($file['tmp_name']) ? 'yes' : 'no'));
-                error_log("Target dir writable: " . (is_writable($targetDir) ? 'yes' : 'no'));
-                throw new Exception("Failed to move uploaded file");
-            }
+        // Move uploaded file
+        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+            // Return full URL path
+            return 'https://therapify-api.kaankaltakkiran.com/uploads/' . $subDir . '/' . $fileName;
+        } else {
+            throw new Exception("Failed to move uploaded file");
         }
-        
-        throw new Exception("Invalid file data provided");
     } catch (Exception $e) {
         error_log("File upload error: " . $e->getMessage());
         throw $e;
@@ -536,13 +479,7 @@ function loginUser($DB, $data) {
                 // Remove sensitive data
                 unset($user['password']);
 
-                // Format user image URL
-                if (!empty($user['user_img'])) {
-                    // Extract filename from path
-                    $filename = basename($user['user_img']);
-                    // Always use the full production URL for images
-                    $user['user_img'] = 'https://therapify-api.kaankaltakkiran.com/uploads/profile_images/' . $filename;
-                }
+                // No need to modify user_img as it's already stored as full URL
 
                 // Generate JWT token
                 $token = generateJWT($user);

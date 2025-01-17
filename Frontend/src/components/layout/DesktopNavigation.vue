@@ -128,24 +128,26 @@ const authStore = useAuthStore()
 //tokene sahip kullanıcı var mı
 const { isAuthenticated, user } = storeToRefs(authStore)
 
-const getFileUrl = (path: string | undefined) => {
-  if (!path) return 'https://cdn.quasar.dev/img/boy-avatar.png'
+function getFileUrl(path: string | undefined | null): string {
+  if (!path) {
+    return '/images/default-avatar.png'
+  }
 
-  // Check if the path is a base64 image
-  if (path.startsWith('data:image')) {
+  // If it's a base64 image, return as is
+  if (path.startsWith('data:image/')) {
     return path
   }
 
-  // If path already contains the full URL, return it as is
+  // If it's already a full URL (http:// or https://), return as is
   if (path.startsWith('http://') || path.startsWith('https://')) {
     return path
   }
 
-  // Extract filename from path
-  const filename = path.split('/').pop()
-  
-  // Always use the production URL
-  return `https://therapify-api.kaankaltakkiran.com/uploads/profile_images/${filename}`
+  // For relative paths, use the environment variable
+  const baseUrl = import.meta.env.VITE_UPLOAD_URL || 'http://localhost/uploads'
+  // Remove any leading slashes and 'uploads' from the path
+  const cleanPath = path.replace(/^\/?(uploads\/)?/, '')
+  return `${baseUrl}/${cleanPath}`
 }
 
 // console.log(import.meta.env.VITE_UPLOAD_URL)
