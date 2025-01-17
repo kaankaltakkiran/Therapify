@@ -128,21 +128,36 @@ const authStore = useAuthStore()
 //tokene sahip kullanıcı var mı
 const { isAuthenticated, user } = storeToRefs(authStore)
 
-function getFileUrl(path: string | undefined | null): string {
-  if (!path) {
-    return '/images/default-avatar.png'
-  }
+const getFileUrl = (path: string | undefined) => {
+  if (!path) return 'https://cdn.quasar.dev/img/boy-avatar.png'
 
-  // If it's a base64 image, return as is
-  if (path.startsWith('data:image/')) {
+  // Base64 image kontrolü
+  if (path.startsWith('data:image')) {
     return path
   }
 
-  // Always use the production URL
-  return `https://therapify-api.kaankaltakkiran.com/uploads/profile_images/${path.split('/').pop()}`
+  // Eğer tam URL içeriyorsa aynen döndür
+  if (path.startsWith('https://') || path.startsWith('http://')) {
+    // Development ortamında production URL'i localhost'a çevir
+    if (process.env.DEV && path.includes('therapify-api.kaankaltakkiran.com')) {
+      return path.replace(
+        'https://therapify-api.kaankaltakkiran.com/uploads',
+        'http://localhost/uploads',
+      )
+    }
+    return path
+  }
+
+  // Ortam değişkeninden base URL'i al veya varsayılan değeri kullan
+  const baseUrl = import.meta.env.VITE_UPLOAD_URL || 'http://localhost/uploads'
+
+  // Fazlalık slash'leri temizle
+  const cleanPath = path.replace(/^\/|^uploads\//, '')
+
+  return `${baseUrl}/${cleanPath}`
 }
 
-// console.log(import.meta.env.VITE_UPLOAD_URL)
+console.log(import.meta.env.VITE_UPLOAD_URL)
 
 // Logout işlemi pinia storedaki fonksiyon
 const handleLogout = async () => {
