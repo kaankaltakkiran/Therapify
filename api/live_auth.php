@@ -232,34 +232,50 @@ $db->closeConnection();
 // File upload handling functions
 function uploadFile($file, $subDir, $allowedTypes = []) {
     try {
+        error_log("Starting file upload process");
+        
         $targetDir = UPLOAD_BASE_PATH . '/' . $subDir;
+        error_log("Target directory: " . $targetDir);
         
         // Create directory if it doesn't exist
         if (!file_exists($targetDir)) {
-            mkdir($targetDir, 0777, true);
+            error_log("Creating directory: " . $targetDir);
+            if (!mkdir($targetDir, 0777, true)) {
+                error_log("Failed to create directory. Error: " . error_get_last()['message']);
+                throw new Exception("Failed to create upload directory");
+            }
+            chmod($targetDir, 0777);
         }
 
         // Generate unique filename
         $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         $fileName = uniqid() . '_' . time() . '.' . $fileExtension;
         $targetPath = $targetDir . '/' . $fileName;
+        error_log("Target file path: " . $targetPath);
 
         // Check file type if specified
         if (!empty($allowedTypes)) {
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
             $mimeType = finfo_file($finfo, $file['tmp_name']);
             finfo_close($finfo);
+            error_log("File mime type: " . $mimeType);
 
             if (!in_array($mimeType, $allowedTypes)) {
+                error_log("Invalid file type: " . $mimeType);
                 throw new Exception("Invalid file type. Allowed types: " . implode(', ', $allowedTypes));
             }
         }
 
         // Move uploaded file
         if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-            // Return full URL path
+            chmod($targetPath, 0644);
+            error_log("File uploaded successfully to: " . $targetPath);
+            // Always return the production URL
             return 'https://therapify-api.kaankaltakkiran.com/uploads/' . $subDir . '/' . $fileName;
         } else {
+            error_log("Failed to move uploaded file. Upload error code: " . $file['error']);
+            error_log("Temp file exists: " . (file_exists($file['tmp_name']) ? 'yes' : 'no'));
+            error_log("Target dir writable: " . (is_writable($targetDir) ? 'yes' : 'no'));
             throw new Exception("Failed to move uploaded file");
         }
     } catch (Exception $e) {
@@ -479,7 +495,13 @@ function loginUser($DB, $data) {
                 // Remove sensitive data
                 unset($user['password']);
 
-                // No need to modify user_img as it's already stored as full URL
+                // Format user image URL to always use production URL
+                if (!empty($user['user_img'])) {
+                    if (!preg_match('/^https?:\/\//', $user['user_img'])) {
+                        $filename = basename($user['user_img']);
+                        $user['user_img'] = 'https://therapify-api.kaankaltakkiran.com/uploads/profile_images/' . $filename;
+                    }
+                }
 
                 // Generate JWT token
                 $token = generateJWT($user);

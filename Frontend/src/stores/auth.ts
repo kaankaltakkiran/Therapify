@@ -174,29 +174,33 @@ export const useAuthStore = defineStore('auth', {
     //login işlemi
     async login(email: string, password: string) {
       const router = useRouter()
-      //login apiye gonderecegimiz veriler
       try {
         const response = await api.post<AuthResponse>('/auth.php', {
           method: 'login',
           email,
           password,
         })
-        //işlem başarılıysa
+
         if (response.data.success && response.data.token && response.data.user) {
+          // Ensure user image URL is using production URL
+          if (response.data.user.user_img && !response.data.user.user_img.startsWith('https://')) {
+            const filename = response.data.user.user_img.split('/').pop()
+            response.data.user.user_img = `https://therapify-api.kaankaltakkiran.com/uploads/profile_images/${filename}`
+          }
+
           this.token = response.data.token
           this.user = response.data.user
 
-          // Token ve kullanıcı bilgilerini sessionStorage'a kaydet
+          // Store in session storage
           sessionStorage.setItem('token', response.data.token)
           sessionStorage.setItem('user', JSON.stringify(response.data.user))
 
           if (response.data.success) {
             Notify.create({
               color: 'positive',
-              message: response.data.message || 'login successful!', // Added fallback message
+              message: response.data.message || 'Login successful!',
               position: 'top-right',
             })
-
             return true
           }
 
