@@ -17,7 +17,7 @@ ini_set('log_errors', 1);
 ini_set('error_log', '/var/www/my_webapp__2/www/php_errors.log');
 
 // Constants for file uploads
-define('UPLOAD_BASE_PATH', '/var/www/my_webapp__2/www/uploads');
+define('UPLOAD_BASE_PATH', '/var/www/my_webapp__3/www/uploads');
 define('UPLOAD_BASE_URL', 'https://therapify-api.kaankaltakkiran.com/uploads');
 
 // Function to get public URL for uploaded files
@@ -270,7 +270,7 @@ function uploadFile($file, $subDir, $allowedTypes = []) {
         if (move_uploaded_file($file['tmp_name'], $targetPath)) {
             chmod($targetPath, 0644);
             error_log("File uploaded successfully to: " . $targetPath);
-            // Always return the production URL
+            // Return the full URL path
             return 'https://therapify-api.kaankaltakkiran.com/uploads/' . $subDir . '/' . $fileName;
         } else {
             error_log("Failed to move uploaded file. Upload error code: " . $file['error']);
