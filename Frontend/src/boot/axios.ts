@@ -12,11 +12,11 @@ declare module 'vue' {
   }
 }
 
-// API URLs based on environment
+// API URL always points to production try.php
+const API_URL = 'https://therapify-api.kaankaltakkiran.com/Therapify/try.php'
+
+// Upload URL based on environment
 const isLocalhost = window.location.hostname === 'localhost'
-const API_URL = isLocalhost
-  ? 'http://localhost/Therapify/'
-  : 'https://therapify-api.kaankaltakkiran.com/Therapify/'
 const UPLOAD_URL = isLocalhost
   ? 'http://localhost/uploads'
   : 'https://therapify-api.kaankaltakkiran.com/uploads'
