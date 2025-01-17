@@ -130,7 +130,6 @@ const { isAuthenticated, user } = storeToRefs(authStore)
 
 const getFileUrl = (path: string | undefined): string => {
   if (!path) {
-    // Default avatar URL
     return 'https://cdn.quasar.dev/img/boy-avatar.png'
   }
 
@@ -139,39 +138,35 @@ const getFileUrl = (path: string | undefined): string => {
     return path
   }
 
-  // Get the current origin
-  const currentOrigin = window.location.origin
-  console.log('Current origin:', currentOrigin)
   console.log('Original path:', path)
 
-  // If it's already a full URL
+  // Remove duplicate upload paths
+  path = path.replace(/uploads\/profile_images\/uploads\/profile_images/, 'uploads/profile_images')
+  path = path.replace(
+    /http:\/\/localhost\/uploads\/profile_images\/http:\/\/localhost\/uploads\/profile_images/,
+    'http://localhost/uploads/profile_images',
+  )
+
+  // Clean up malformed URLs
+  path = path.replace(/http:\/\/https:\/\//, 'https://')
+  path = path.replace(/https:\/\/http:\/\//, 'http://')
+  path = path.replace(/\/+/g, '/')
+
+  // If it's already a full URL (after cleanup)
   if (path.startsWith('http://') || path.startsWith('https://')) {
-    // If we're on localhost but have a production URL
-    if (currentOrigin.includes('localhost') && path.includes('therapify-api.kaankaltakkiran.com')) {
-      return path.replace(
-        'https://therapify-api.kaankaltakkiran.com/uploads',
-        'http://localhost/uploads',
-      )
-    }
-    // If we're on production but have a localhost URL
-    if (currentOrigin.includes('therapify.kaankaltakkiran.com') && path.includes('localhost')) {
-      return path.replace(
-        'http://localhost/uploads',
-        'https://therapify-api.kaankaltakkiran.com/uploads',
-      )
-    }
     return path
   }
 
-  // For relative paths, construct the full URL based on origin
-  const baseUrl = currentOrigin.includes('localhost')
-    ? 'http://localhost/uploads'
-    : 'https://therapify-api.kaankaltakkiran.com/uploads'
+  // For relative paths
+  // Extract just the filename, removing any path prefixes
+  const filename = path.split('/').pop() || path
 
-  // Clean the path by removing any leading slashes or 'uploads/'
-  const cleanPath = path.replace(/^\/|^uploads\//, '')
+  // Determine base URL based on current origin
+  const baseUrl = window.location.origin.includes('localhost')
+    ? 'http://localhost/uploads/profile_images'
+    : 'https://therapify-api.kaankaltakkiran.com/uploads/profile_images'
 
-  const finalUrl = `${baseUrl}/${cleanPath}`
+  const finalUrl = `${baseUrl}/${filename}`
   console.log('Final URL:', finalUrl)
   return finalUrl
 }
