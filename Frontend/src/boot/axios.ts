@@ -1,6 +1,5 @@
-import { boot } from 'quasar/wrappers'
-import axios from 'axios'
-import type { AxiosInstance } from 'axios'
+import { defineBoot } from '#q-app/wrappers'
+import axios, { type AxiosInstance } from 'axios'
 import { useAuthStore } from 'src/stores/auth'
 import { Notify } from 'quasar'
 import { useRouter } from 'vue-router'
@@ -12,29 +11,18 @@ declare module 'vue' {
   }
 }
 
-// API URL always points to production try.php
-const API_URL = 'https://therapify-api.kaankaltakkiran.com/Therapify/try.php'
+// Get API URL from environment variables
+const apiUrl = import.meta.env.VITE_API_URL
 
-// Upload URL based on environment
-const isLocalhost = window.location.hostname === 'localhost'
-const UPLOAD_URL = isLocalhost
-  ? 'http://localhost/uploads'
-  : 'https://therapify-api.kaankaltakkiran.com/uploads'
+if (!apiUrl) {
+  console.error('API URL is not defined in environment variables')
+}
 
-console.log('Environment:', isLocalhost ? 'Local Development' : 'Production')
-console.log('Using API URL:', API_URL)
-console.log('Using Upload URL:', UPLOAD_URL)
+// console.log('API URL:', apiUrl)
 
-const api = axios.create({
-  baseURL: API_URL,
-  timeout: 30000, // 30 seconds timeout
-  headers: {
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-  },
-})
+const api = axios.create({ baseURL: apiUrl })
 
-// Request interceptor
+// api control
 api.interceptors.request.use(
   (config) => {
     const authStore = useAuthStore()
@@ -48,7 +36,7 @@ api.interceptors.request.use(
   },
 )
 
-// Response interceptor
+// Response interceptor for API calls
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -67,15 +55,15 @@ api.interceptors.response.use(
       })
 
       // Redirect to login
-      router.push('/login')
+      router.push('/auth/login')
     }
     return Promise.reject(error)
   },
 )
 
-export default boot(({ app }) => {
+export default defineBoot(({ app }) => {
   app.config.globalProperties.$axios = axios
   app.config.globalProperties.$api = api
 })
 
-export { api, UPLOAD_URL }
+export { api }
