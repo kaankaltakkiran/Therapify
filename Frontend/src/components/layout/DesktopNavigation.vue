@@ -157,7 +157,7 @@ const getFileUrl = (path: string | undefined) => {
   return `${baseUrl}/${cleanPath}`
 }
 
-console.log(import.meta.env.VITE_UPLOAD_URL)
+console.log('Environment Variables:', process.env.NODE_ENV, process.env.VITE_UPLOAD_URL)
 
 // Logout işlemi pinia storedaki fonksiyon
 const handleLogout = async () => {

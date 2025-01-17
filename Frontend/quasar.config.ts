@@ -46,12 +46,11 @@ export default defineConfig((ctx) => {
       vueRouterMode: 'history',
 
       env: {
-        VITE_API_URL: ctx.dev 
-          ? 'http://localhost'
-          : 'https://therapify-api.kaankaltakkiran.com',
-        VITE_UPLOAD_URL: ctx.dev
-          ? 'http://localhost/uploads'
-          : 'https://therapify-api.kaankaltakkiran.com/uploads'
+        VITE_API_URL: ctx.dev ? 'http://localhost' : 'https://therapify-api.kaankaltakkiran.com',
+        VITE_UPLOAD_URL:
+          process.env.NODE_ENV === 'development'
+            ? 'http://localhost/uploads/'
+            : 'https://therapify-api.kaankaltakkiran.com/uploads/',
       },
 
       vitePlugins: [
