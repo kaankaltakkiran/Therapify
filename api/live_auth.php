@@ -25,8 +25,36 @@ function getPublicPath($serverPath) {
     if (empty($serverPath)) {
         return '';
     }
-    $filename = basename($serverPath);
-    return UPLOAD_BASE_URL . '/profile_images/' . $filename;
+
+    // Get environment variables
+    $env = parse_ini_file(__DIR__ . '/.env');
+    $appEnv = $env['APP_ENV'] ?? 'development';
+    error_log("Current environment: " . $appEnv);
+    error_log("Original server path: " . $serverPath);
+
+    // Extract filename and subdirectory from path
+    $pathInfo = pathinfo($serverPath);
+    $filename = $pathInfo['basename'];
+    
+    // Determine subdirectory from path
+    $subDir = '';
+    if (strpos($serverPath, 'cv') !== false) {
+        $subDir = 'cv';
+    } elseif (strpos($serverPath, 'diploma') !== false) {
+        $subDir = 'diploma';
+    } elseif (strpos($serverPath, 'license') !== false) {
+        $subDir = 'license';
+    } elseif (strpos($serverPath, 'profile_images') !== false) {
+        $subDir = 'profile_images';
+    }
+
+    // Return appropriate URL based on environment
+    $finalPath = ($appEnv === 'production')
+        ? 'https://therapify-api.kaankaltakkiran.com/uploads/' . $subDir . '/' . $filename
+        : 'http://localhost/uploads/' . $subDir . '/' . $filename;
+
+    error_log("Final path: " . $finalPath);
+    return $finalPath;
 }
 
 // Handle preflight requests

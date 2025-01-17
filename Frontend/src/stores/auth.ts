@@ -182,10 +182,38 @@ export const useAuthStore = defineStore('auth', {
         })
 
         if (response.data.success && response.data.token && response.data.user) {
-          // Ensure user image URL is using production URL
-          if (response.data.user.user_img && !response.data.user.user_img.startsWith('https://')) {
-            const filename = response.data.user.user_img.split('/').pop()
-            response.data.user.user_img = `https://therapify-api.kaankaltakkiran.com/uploads/profile_images/${filename}`
+          // Get environment
+          const isDevelopment = import.meta.env.MODE === 'development'
+          console.log('Current environment:', import.meta.env.MODE)
+
+          // Handle user image URL
+          if (response.data.user.user_img) {
+            const baseUrl = isDevelopment
+              ? 'http://localhost/'
+              : 'https://therapify-api.kaankaltakkiran.com/uploads'
+
+            // If it's a relative path, make it absolute
+            if (!response.data.user.user_img.startsWith('http')) {
+              const cleanPath = response.data.user.user_img.replace(/^\/|^uploads\//, '')
+              response.data.user.user_img = `${baseUrl}/${cleanPath}`
+            }
+            // If it's a production URL in development, convert it
+            else if (
+              isDevelopment &&
+              response.data.user.user_img.includes('therapify-api.kaankaltakkiran.com')
+            ) {
+              response.data.user.user_img = response.data.user.user_img.replace(
+                'https://therapify-api.kaankaltakkiran.com/uploads',
+                'http://localhost/uploads',
+              )
+            }
+            // If it's a localhost URL in production, convert it
+            else if (!isDevelopment && response.data.user.user_img.includes('localhost')) {
+              response.data.user.user_img = response.data.user.user_img.replace(
+                'http://localhost/uploads',
+                'https://therapify-api.kaankaltakkiran.com/uploads',
+              )
+            }
           }
 
           this.token = response.data.token
