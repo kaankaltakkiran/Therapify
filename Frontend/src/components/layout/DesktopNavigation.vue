@@ -129,31 +129,31 @@ const authStore = useAuthStore()
 const { isAuthenticated, user } = storeToRefs(authStore)
 
 const getFileUrl = (path: string | undefined) => {
-  if (!path) return 'https://cdn.quasar.dev/img/boy-avatar.png'
+       if (!path) return 'https://cdn.quasar.dev/img/boy-avatar.png'
 
-  // Check if the path is a base64 image
-  if (path.startsWith('data:image')) {
-    return path
-  }
+       // Check if the path is a base64 image
+       if (path.startsWith('data:image')) {
+         return path
+       }
 
-  // If path already contains the full URL, return it as is
-  if (path.startsWith('http://') || path.startsWith('https://')) {
-    return path
-  }
+       // If path already contains the full URL, return it as is
+       if (path.startsWith('http://') || path.startsWith('https://')) {
+         return path
+       }
 
-  // Remove any leading slashes and 'uploads' from the path
-  let cleanPath = path
-  if (cleanPath.startsWith('/')) {
-    cleanPath = cleanPath.substring(1)
-  }
-  if (cleanPath.startsWith('uploads/')) {
-    cleanPath = cleanPath.substring(7)
-  }
+       // Remove any leading slashes and 'uploads' from the path
+       let cleanPath = path
+       if (cleanPath.startsWith('/')) {
+         cleanPath = cleanPath.substring(1)
+       }
+       if (cleanPath.startsWith('uploads/')) {
+         cleanPath = cleanPath.substring(7)
+       }
 
-  // Use environment-specific URL
-  const baseUrl = import.meta.env.VITE_UPLOAD_URL || 'http://localhost/uploads'
-  return `${baseUrl}/${cleanPath}`
-}
+       // Use VITE_UPLOAD_URL from environment
+       const baseUrl = import.meta.env.VITE_UPLOAD_URL || 'http://localhost/uploads'
+       return `${baseUrl}/${cleanPath}`
+     }
 
 // console.log(import.meta.env.VITE_UPLOAD_URL)
 
