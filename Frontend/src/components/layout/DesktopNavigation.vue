@@ -138,34 +138,8 @@ function getFileUrl(path: string | undefined | null): string {
     return path
   }
 
-  // If it's already a full URL (http:// or https://), return as is
-  if (path.startsWith('http://') || path.startsWith('https://')) {
-    return path
-  }
-
-  // Check if we're in production based on the current URL
-  const isProduction = window.location.hostname === 'therapify.kaankaltakkiran.com'
-  
-  // Set base URL based on environment
-  const baseUrl = isProduction 
-    ? 'https://therapify-api.kaankaltakkiran.com/uploads'
-    : 'http://localhost/uploads'
-
-  // Clean up the path
-  let cleanPath = path
-  if (cleanPath.startsWith('/')) {
-    cleanPath = cleanPath.substring(1)
-  }
-  if (cleanPath.startsWith('uploads/')) {
-    cleanPath = cleanPath.substring(7)
-  }
-
-  // Ensure we have profile_images in the path
-  if (!cleanPath.includes('profile_images/')) {
-    cleanPath = `profile_images/${cleanPath}`
-  }
-
-  return `${baseUrl}/${cleanPath}`
+  // Always use the production URL
+  return `https://therapify-api.kaankaltakkiran.com/uploads/profile_images/${path.split('/').pop()}`
 }
 
 // console.log(import.meta.env.VITE_UPLOAD_URL)
