@@ -1,5 +1,6 @@
-import { defineBoot } from '#q-app/wrappers'
-import axios, { type AxiosInstance } from 'axios'
+import { boot } from 'quasar/wrappers'
+import axios from 'axios'
+import type { AxiosInstance } from 'axios'
 import { useAuthStore } from 'src/stores/auth'
 import { Notify } from 'quasar'
 import { useRouter } from 'vue-router'
@@ -11,18 +12,29 @@ declare module 'vue' {
   }
 }
 
-// Get API URL from environment variables
-const apiUrl = import.meta.env.VITE_API_URL
+// API URLs based on environment
+const isLocalhost = window.location.hostname === 'localhost'
+const API_URL = isLocalhost
+  ? 'http://localhost/Therapify/'
+  : 'https://therapify-api.kaankaltakkiran.com/Therapify/'
+const UPLOAD_URL = isLocalhost
+  ? 'http://localhost/uploads'
+  : 'https://therapify-api.kaankaltakkiran.com/uploads'
 
-if (!apiUrl) {
-  console.error('API URL is not defined in environment variables')
-}
+console.log('Environment:', isLocalhost ? 'Local Development' : 'Production')
+console.log('Using API URL:', API_URL)
+console.log('Using Upload URL:', UPLOAD_URL)
 
-// console.log('API URL:', apiUrl)
+const api = axios.create({
+  baseURL: API_URL,
+  timeout: 30000, // 30 seconds timeout
+  headers: {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  },
+})
 
-const api = axios.create({ baseURL: apiUrl })
-
-// api control
+// Request interceptor
 api.interceptors.request.use(
   (config) => {
     const authStore = useAuthStore()
@@ -36,7 +48,7 @@ api.interceptors.request.use(
   },
 )
 
-// Response interceptor for API calls
+// Response interceptor
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -55,15 +67,15 @@ api.interceptors.response.use(
       })
 
       // Redirect to login
-      router.push('/auth/login')
+      router.push('/login')
     }
     return Promise.reject(error)
   },
 )
 
-export default defineBoot(({ app }) => {
+export default boot(({ app }) => {
   app.config.globalProperties.$axios = axios
   app.config.globalProperties.$api = api
 })
 
-export { api }
+export { api, UPLOAD_URL }
