@@ -520,6 +520,11 @@ function loginUser($DB, $data) {
                 // Remove sensitive data
                 unset($user['password']);
 
+                // Format user_img path
+                if (!empty($user['user_img'])) {
+                    $user['user_img'] = getPublicPath($user['user_img']);
+                }
+
                 // Generate JWT token
                 $token = generateJWT($user);
 

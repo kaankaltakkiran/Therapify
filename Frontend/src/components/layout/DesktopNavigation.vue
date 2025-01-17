@@ -137,7 +137,7 @@ const getFileUrl = (path: string | undefined) => {
   }
 
   // If path already contains the full URL, return it as is
-  if (path.startsWith('https://therapify-api.kaankaltakkiran.com') || path.startsWith('http://localhost')) {
+  if (path.startsWith('http://') || path.startsWith('https://')) {
     return path
   }
 
@@ -151,10 +151,7 @@ const getFileUrl = (path: string | undefined) => {
   }
 
   // Use environment-specific URL
-  const baseUrl = import.meta.env.PROD 
-    ? 'https://therapify-api.kaankaltakkiran.com/uploads'
-    : import.meta.env.VITE_UPLOAD_URL || 'http://localhost/uploads'
-
+  const baseUrl = import.meta.env.VITE_UPLOAD_URL || 'http://localhost/uploads'
   return `${baseUrl}/${cleanPath}`
 }
 
