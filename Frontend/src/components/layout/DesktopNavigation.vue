@@ -130,38 +130,45 @@ const { isAuthenticated, user } = storeToRefs(authStore)
 
 const getFileUrl = (path: string | undefined): string => {
   if (!path) {
-    // Varsayılan avatar URL'si
+    // Default avatar URL
     return 'https://cdn.quasar.dev/img/boy-avatar.png'
   }
 
-  // Base64 image kontrolü
+  // If it's a base64 image, return as is
   if (path.startsWith('data:image')) {
     return path
   }
 
-  // Development ortamında mı kontrol et
-  const isDevelopment = import.meta.env.MODE === 'development'
-  console.log('Environment:', import.meta.env.MODE)
+  // Get the current origin
+  const currentOrigin = window.location.origin
+  console.log('Current origin:', currentOrigin)
   console.log('Original path:', path)
 
-  // Eğer tam URL içeriyorsa
-  if (path.startsWith('https://') || path.startsWith('http://')) {
-    if (isDevelopment && path.includes('therapify-api.kaankaltakkiran.com')) {
-      // Development ortamında production URL'i localhost'a çevir
+  // If it's already a full URL
+  if (path.startsWith('http://') || path.startsWith('https://')) {
+    // If we're on localhost but have a production URL
+    if (currentOrigin.includes('localhost') && path.includes('therapify-api.kaankaltakkiran.com')) {
       return path.replace(
         'https://therapify-api.kaankaltakkiran.com/uploads',
         'http://localhost/uploads',
       )
     }
+    // If we're on production but have a localhost URL
+    if (currentOrigin.includes('therapify.kaankaltakkiran.com') && path.includes('localhost')) {
+      return path.replace(
+        'http://localhost/uploads',
+        'https://therapify-api.kaankaltakkiran.com/uploads',
+      )
+    }
     return path
   }
 
-  // Development veya production için base URL'i belirle
-  const baseUrl = isDevelopment
+  // For relative paths, construct the full URL based on origin
+  const baseUrl = currentOrigin.includes('localhost')
     ? 'http://localhost/uploads'
     : 'https://therapify-api.kaankaltakkiran.com/uploads'
 
-  // Fazlalık slash'leri temizle
+  // Clean the path by removing any leading slashes or 'uploads/'
   const cleanPath = path.replace(/^\/|^uploads\//, '')
 
   const finalUrl = `${baseUrl}/${cleanPath}`
