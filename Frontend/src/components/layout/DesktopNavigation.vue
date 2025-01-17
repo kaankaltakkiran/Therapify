@@ -139,21 +139,34 @@ const getFileUrl = (path: string | undefined): string => {
     return path
   }
 
-  // Tam URL içeriyorsa aynen döndür
+  // Development ortamında mı kontrol et
+  const isDevelopment = import.meta.env.MODE === 'development'
+  console.log('Environment:', import.meta.env.MODE)
+  console.log('Original path:', path)
+
+  // Eğer tam URL içeriyorsa
   if (path.startsWith('https://') || path.startsWith('http://')) {
+    if (isDevelopment && path.includes('therapify-api.kaankaltakkiran.com')) {
+      // Development ortamında production URL'i localhost'a çevir
+      return path.replace(
+        'https://therapify-api.kaankaltakkiran.com/uploads',
+        'http://localhost/uploads',
+      )
+    }
     return path
   }
 
-  // Vite ortam değişkeni kullanımı
-  const baseUrl =
-    import.meta.env.MODE === 'development'
-      ? 'https://therapify-api.kaankaltakkiran.com/uploads' // Geliştirme için doğru URL
-      : import.meta.env.VITE_UPLOAD_URL || 'http://localhost/uploads' // Üretim için doğru URL
+  // Development veya production için base URL'i belirle
+  const baseUrl = isDevelopment
+    ? 'http://localhost/uploads'
+    : 'https://therapify-api.kaankaltakkiran.com/uploads'
 
-  // Fazlalık slash'leri temizle ve doğru formatı koru
-  const cleanPath = path.replace(/^\//, '') // Sadece baştaki `/` kaldırılır
+  // Fazlalık slash'leri temizle
+  const cleanPath = path.replace(/^\/|^uploads\//, '')
 
-  return `${baseUrl}/${cleanPath}`
+  const finalUrl = `${baseUrl}/${cleanPath}`
+  console.log('Final URL:', finalUrl)
+  return finalUrl
 }
 
 console.log('Environment Variables:', process.env.NODE_ENV, process.env.VITE_UPLOAD_URL)
