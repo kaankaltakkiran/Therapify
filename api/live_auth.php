@@ -1,20 +1,10 @@
 <?php
-// Load environment variables
-$env = parse_ini_file(__DIR__ . '/.env');
-$allowedOrigin = $env['ALLOWED_ORIGINS'] ?? 'https://therapify.kaankaltakkiran.com';
-
-// Set CORS headers
-header('Access-Control-Allow-Origin: ' . $allowedOrigin);
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
-header('Access-Control-Allow-Credentials: true');
-header('Access-Control-Max-Age: 86400'); // 24 hours
-
-// Handle preflight requests
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
-}
+// CORS headers
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, Origin, Accept");
+header("Access-Control-Allow-Credentials: true");
+header("Access-Control-Max-Age: 86400");
 
 // JWT constants
 define('JWT_SECRET_KEY', 'vypLCUJ3Q8oFj7'); // Use a secure secret key in production
@@ -65,6 +55,12 @@ function getPublicPath($serverPath) {
 
     error_log("Final path: " . $finalPath);
     return $finalPath;
+}
+
+// Handle preflight requests
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    header("HTTP/1.1 200 OK");
+    exit();
 }
 
 // Database connection

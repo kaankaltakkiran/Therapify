@@ -18,17 +18,9 @@ if (!apiUrl) {
   console.error('API URL is not defined in environment variables')
 }
 
-console.log('API URL:', apiUrl) // Debug log
+// console.log('API URL:', apiUrl)
 
-const api = axios.create({
-  baseURL: apiUrl,
-  withCredentials: true, // Enable sending cookies
-  headers: {
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-  },
-  timeout: 30000, // 30 seconds timeout
-})
+const api = axios.create({ baseURL: apiUrl })
 
 // api control
 api.interceptors.request.use(
@@ -37,11 +29,6 @@ api.interceptors.request.use(
     if (authStore.token) {
       config.headers['Authorization'] = `Bearer ${authStore.token}`
     }
-    // Add CORS headers
-    config.headers['Access-Control-Allow-Origin'] =
-      import.meta.env.MODE === 'development'
-        ? 'http://localhost:9000'
-        : 'https://therapify.kaankaltakkiran.com'
     return config
   },
   (error) => {
