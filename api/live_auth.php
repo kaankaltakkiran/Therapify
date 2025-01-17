@@ -536,9 +536,12 @@ function loginUser($DB, $data) {
                 // Remove sensitive data
                 unset($user['password']);
 
-                // Format user_img path
+                // Format user image URL
                 if (!empty($user['user_img'])) {
-                    $user['user_img'] = getPublicPath($user['user_img']);
+                    // Extract filename from path
+                    $filename = basename($user['user_img']);
+                    // Always use the full production URL for images
+                    $user['user_img'] = 'https://therapify-api.kaankaltakkiran.com/uploads/profile_images/' . $filename;
                 }
 
                 // Generate JWT token
