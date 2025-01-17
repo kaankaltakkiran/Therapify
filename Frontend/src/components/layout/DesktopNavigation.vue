@@ -151,7 +151,7 @@ const getFileUrl = (path: string | undefined) => {
   }
 
   // Log the base URL to the console
-  const baseUrl = import.meta.env.VITE_UPLOAD_URL || 'http://localhost/uploads'
+  const baseUrl = 'https://therapify-api.kaankaltakkiran.com/uploads'
   console.log('Base URL:', baseUrl)
 
   return `${baseUrl}/${cleanPath}`
