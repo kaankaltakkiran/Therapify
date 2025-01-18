@@ -128,62 +128,41 @@ const authStore = useAuthStore()
 //tokene sahip kullanıcı var mı
 const { isAuthenticated, user } = storeToRefs(authStore)
 
-// Default avatar if no path provided
-const defaultAvatar = '/images/default-avatar.png'
-
 const getFileUrl = (path: string | undefined): string => {
-  // Return default avatar if no path
-  if (!path) return defaultAvatar
+  if (!path) {
+    // Varsayılan avatar URL'si
+    return 'https://cdn.quasar.dev/img/boy-avatar.png'
+  }
 
-  // If it's a base64 image, return as is
-  if (path.startsWith('data:image')) return path
-
-  // Log for debugging
-  console.log('Original path:', path)
-  console.log('Current origin:', window.location.origin)
-
-  // If it's a full URL
-  if (path.startsWith('http://') || path.startsWith('https://')) {
-    // If we're in local development and have a production URL
-    if (
-      window.location.origin === 'http://localhost:9000' &&
-      path.includes('therapify-api.kaankaltakkiran.com')
-    ) {
-      // Convert production URL to localhost
-      return path.replace(
-        'https://therapify-api.kaankaltakkiran.com/uploads',
-        'http://localhost/uploads',
-      )
-    }
-    // If we're in production and have a localhost URL
-    if (
-      window.location.origin === 'https://therapify.kaankaltakkiran.com' &&
-      path.includes('localhost')
-    ) {
-      // Convert localhost URL to production
-      return path.replace(
-        'http://localhost/uploads',
-        'https://therapify-api.kaankaltakkiran.com/uploads',
-      )
-    }
-    // If URL matches current environment, return as is
+  // Base64 image kontrolü
+  if (path.startsWith('data:image')) {
     return path
   }
 
-  // For relative paths, construct full URL based on environment
-  const baseUrl =
-    window.location.origin === 'http://localhost:9000'
-      ? 'http://localhost/uploads'
-      : 'https://therapify-api.kaankaltakkiran.com/uploads'
+  // Development ortamında mı kontrol et
+  const isDevelopment = import.meta.env.MODE === 'development'
+  console.log('Environment:', import.meta.env.MODE)
+  console.log('Original path:', path)
 
-  // Clean the path by removing any leading slashes and 'uploads/'
-  let cleanPath = path
-  if (cleanPath.startsWith('/')) {
-    cleanPath = cleanPath.substring(1)
+  // Eğer tam URL içeriyorsa
+  if (path.startsWith('https://') || path.startsWith('http://')) {
+    if (isDevelopment && path.includes('therapify-api.kaankaltakkiran.com')) {
+      // Development ortamında production URL'i localhost'a çevir
+      return path.replace(
+        'https://therapify-api.kaankaltakkiran.com/uploads',
+        'http://localhost/uploads',
+      )
+    }
+    return path
   }
-  if (cleanPath.startsWith('uploads/')) {
-    cleanPath = cleanPath.substring(7)
-  }
+
+  // Development veya production için base URL'i belirle
+  const baseUrl = isDevelopment
+    ? 'http://localhost/uploads'
+    : 'https://therapify-api.kaankaltakkiran.com/uploads'
+
+  // Fazlalık slash'leri temizle
+  const cleanPath = path.replace(/^\/|^uploads\//, '')
 
   const finalUrl = `${baseUrl}/${cleanPath}`
   console.log('Final URL:', finalUrl)
