@@ -141,22 +141,32 @@ const getFileUrl = (path: string | undefined): string => {
 
   // Development ortamında mı kontrol et
   const isDevelopment = import.meta.env.MODE === 'development'
-  const uploadUrl = import.meta.env.VITE_UPLOAD_URL
 
-  // Eğer tam URL içeriyorsa
+  // Eğer tam URL içeriyorsa ve production URL değilse
   if (path.startsWith('https://') || path.startsWith('http://')) {
+    // Localhost URL'ini production URL'e çevir
+    if (path.includes('localhost/uploads')) {
+      return path.replace(
+        'http://localhost/uploads',
+        'https://therapify-api.kaankaltakkiran.com/uploads',
+      )
+    }
     return path
   }
 
   // Development veya production için base URL'i belirle
-  const baseUrl =
-    uploadUrl ||
-    (isDevelopment
-      ? 'http://localhost/uploads'
-      : 'https://therapify-api.kaankaltakkiran.com/uploads')
+  const baseUrl = isDevelopment
+    ? 'http://localhost/uploads'
+    : 'https://therapify-api.kaankaltakkiran.com/uploads'
 
-  // Path'in başındaki slash'ı kaldır
-  const cleanPath = path.startsWith('/') ? path.substring(1) : path
+  // Path'in başındaki gereksiz kısımları temizle
+  let cleanPath = path
+  if (cleanPath.startsWith('/')) {
+    cleanPath = cleanPath.substring(1)
+  }
+  if (cleanPath.startsWith('uploads/')) {
+    cleanPath = cleanPath.substring(8)
+  }
 
   return `${baseUrl}/${cleanPath}`
 }
