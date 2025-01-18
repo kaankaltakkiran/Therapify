@@ -130,20 +130,30 @@ const { isAuthenticated, user } = storeToRefs(authStore)
 
 const getFileUrl = (path: string | undefined): string => {
   if (!path) {
+    // Default avatar URL
     return 'https://cdn.quasar.dev/img/boy-avatar.png'
   }
 
-  if (path.startsWith('http')) {
-    return path // Eğer URL tam ise direkt döndür
+  // If it's already a full URL or base64 image, return as is
+  if (path.startsWith('http') || path.startsWith('data:image')) {
+    return path
   }
 
-  const baseUrl = 'https://therapify-api.kaankaltakkiran.com/uploads'
-  return `${baseUrl}/${path.replace(/^\//, '')}`
+  // Get the base URL from environment variable
+  const baseUrl = import.meta.env.VITE_UPLOAD_URL
+
+  // Clean the path by removing any leading slashes or 'uploads' prefix
+  let cleanPath = path
+  if (cleanPath.startsWith('/')) {
+    cleanPath = cleanPath.substring(1)
+  }
+  if (cleanPath.startsWith('uploads/')) {
+    cleanPath = cleanPath.substring(8)
+  }
+
+  // Construct and return the full URL
+  return `${baseUrl}/${cleanPath}`
 }
-
-console.log(getFileUrl('profile_images/678a7d8554dd6_1737129349.png'))
-
-//console.log('Environment Variables:', process.env.NODE_ENV, process.env.VITE_UPLOAD_URL)
 
 // Logout işlemi pinia storedaki fonksiyon
 const handleLogout = async () => {

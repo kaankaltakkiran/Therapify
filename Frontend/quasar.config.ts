@@ -49,13 +49,9 @@ export default defineConfig((ctx) => {
         VITE_API_URL: ctx.dev
           ? 'http://localhost/Therapify/'
           : 'https://therapify-api.kaankaltakkiran.com/Therapify/',
-        /* VITE_UPLOAD_URL:
-          process.env.NODE_ENV === 'development'
-            ? 'http://localhost/uploads/'
-            : 'https://therapify-api.kaankaltakkiran.com/uploads/', */
         VITE_UPLOAD_URL: ctx.dev
-          ? 'http://localhost/uploads/'
-          : 'https://therapify-api.kaankaltakkiran.com/uploads/',
+          ? 'http://localhost/uploads'
+          : 'https://therapify-api.kaankaltakkiran.com/uploads',
       },
 
       vitePlugins: [
