@@ -13,7 +13,7 @@ define('JWT_EXPIRE_TIME', 3600); // Token validity period (in seconds, 1 hour)
 // Load environment variables
 $env = parse_ini_file(__DIR__ . '/.env');
 
-// Constants for file uploads
+// Constants for file uploadsg
 define('UPLOAD_BASE_PATH', '/var/www/my_webapp__2/www/uploads');
 define('UPLOAD_BASE_URL', $env['UPLOAD_BASE_URL'] ?? '/uploads'); // This will be the public URL path
 
