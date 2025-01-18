@@ -47,7 +47,7 @@ export default defineConfig((ctx) => {
 
       env: {
         VITE_API_URL: ctx.dev
-          ? 'http://localhost'
+          ? 'http://localhost/Therapify/'
           : 'https://therapify-api.kaankaltakkiran.com/Therapify/',
         VITE_UPLOAD_URL:
           process.env.NODE_ENV === 'development'
