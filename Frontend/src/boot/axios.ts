@@ -12,7 +12,7 @@ declare module 'vue' {
 }
 
 // Get API URL from environment variables
-const apiUrl = import.meta.env.VITE_API_URL
+const apiUrl = process.env.VITE_API_URL
 
 if (!apiUrl) {
   console.error('API URL is not defined in environment variables')
@@ -20,7 +20,7 @@ if (!apiUrl) {
 
 console.log('API URL:', apiUrl)
 
-const api = axios.create({ baseURL: apiUrl })
+const api = axios.create({ baseURL: process.env.VITE_API_URL || '' })
 
 // api control
 api.interceptors.request.use(
