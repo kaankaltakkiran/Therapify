@@ -143,7 +143,7 @@ const getFileUrl = (path: string | undefined): string => {
 
 console.log(getFileUrl('profile_images/678a7d8554dd6_1737129349.png'))
 
-console.log('Environment Variables:', process.env.NODE_ENV, process.env.VITE_UPLOAD_URL)
+//console.log('Environment Variables:', process.env.NODE_ENV, process.env.VITE_UPLOAD_URL)
 
 // Logout işlemi pinia storedaki fonksiyon
 const handleLogout = async () => {
