@@ -130,46 +130,18 @@ const { isAuthenticated, user } = storeToRefs(authStore)
 
 const getFileUrl = (path: string | undefined): string => {
   if (!path) {
-    // Varsayılan avatar URL'si
     return 'https://cdn.quasar.dev/img/boy-avatar.png'
   }
 
-  // Base64 image kontrolü
-  if (path.startsWith('data:image')) {
-    return path
+  if (path.startsWith('http')) {
+    return path // Eğer URL tam ise direkt döndür
   }
 
-  // Development ortamında mı kontrol et
-  const isDevelopment = import.meta.env.MODE === 'development'
-
-  // Eğer tam URL içeriyorsa ve production URL değilse
-  if (path.startsWith('https://') || path.startsWith('http://')) {
-    // Localhost URL'ini production URL'e çevir
-    if (path.includes('localhost/uploads')) {
-      return path.replace(
-        'http://localhost/uploads',
-        'https://therapify-api.kaankaltakkiran.com/uploads',
-      )
-    }
-    return path
-  }
-
-  // Development veya production için base URL'i belirle
-  const baseUrl = isDevelopment
-    ? 'http://localhost/uploads'
-    : 'https://therapify-api.kaankaltakkiran.com/uploads'
-
-  // Path'in başındaki gereksiz kısımları temizle
-  let cleanPath = path
-  if (cleanPath.startsWith('/')) {
-    cleanPath = cleanPath.substring(1)
-  }
-  if (cleanPath.startsWith('uploads/')) {
-    cleanPath = cleanPath.substring(8)
-  }
-
-  return `${baseUrl}/${cleanPath}`
+  const baseUrl = 'https://therapify-api.kaankaltakkiran.com/uploads'
+  return `${baseUrl}/${path.replace(/^\//, '')}`
 }
+
+console.log(getFileUrl('profile_images/678a7d8554dd6_1737129349.png'))
 
 console.log('Environment Variables:', process.env.NODE_ENV, process.env.VITE_UPLOAD_URL)
 
