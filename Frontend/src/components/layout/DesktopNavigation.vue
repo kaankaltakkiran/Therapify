@@ -129,23 +129,23 @@ const authStore = useAuthStore()
 const { isAuthenticated, user } = storeToRefs(authStore)
 
 const getFileUrl = (path: string | undefined): string => {
-  console.log('Original path:', path)
+  //console.log('Original path:', path)
 
   if (!path) {
-    console.log('No path provided, using default avatar')
+    //console.log('No path provided, using default avatar')
     return 'https://cdn.quasar.dev/img/boy-avatar.png'
   }
 
   // If it's a base64 image, return as is
   if (path.startsWith('data:image')) {
-    console.log('Path is base64 image')
+    //console.log('Path is base64 image')
     return path
   }
 
   // Get the base URL from environment variables
   const isDev = process.env.NODE_ENV === 'development'
   const baseUrl = isDev ? 'http://localhost/uploads' : 'https://therapify.kaankaltakkiran.com/api'
-  console.log('Using base URL:', baseUrl)
+  //console.log('Using base URL:', baseUrl)
 
   // If it contains the old domain, replace it
   if (path.includes('therapify-api.kaankaltakkiran.com')) {
@@ -153,13 +153,13 @@ const getFileUrl = (path: string | undefined): string => {
       'https://therapify-api.kaankaltakkiran.com/uploads',
       'https://therapify.kaankaltakkiran.com/api',
     )
-    console.log('Converted old URL to:', path)
+    //console.log('Converted old URL to:', path)
     return path
   }
 
   // If it's already a full URL with correct domain, return as is
   if (path.startsWith('http')) {
-    console.log('URL already complete:', path)
+    //console.log('URL already complete:', path)
     return path
   }
 
@@ -171,16 +171,16 @@ const getFileUrl = (path: string | undefined): string => {
   if (cleanPath.startsWith('uploads/')) {
     cleanPath = cleanPath.substring(8)
   }
-  console.log('Clean path:', cleanPath)
+  //console.log('Clean path:', cleanPath)
 
   // Construct the final URL
   const finalUrl = `${baseUrl}/${cleanPath}`
-  console.log('Final URL:', finalUrl)
+  //console.log('Final URL:', finalUrl)
   return finalUrl
 }
 
 // Add console log for user object
-console.log('User object:', user)
+//console.log('User object:', user)
 
 // Logout işlemi pinia storedaki fonksiyon
 const handleLogout = async () => {

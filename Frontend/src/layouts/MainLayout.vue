@@ -119,17 +119,54 @@ import { Notify } from 'quasar'
 import { useRouter } from 'vue-router'
 
 function getFileUrl(path: string | undefined | null): string {
+  //console.log('Original path:', path)
+
   if (!path) {
-    return '/images/default-avatar.png'
+    console.log('No path provided, using default avatar')
+    return 'https://cdn.quasar.dev/img/boy-avatar.png'
   }
 
   // If it's a base64 image, return as is
-  if (path.startsWith('data:image/')) {
+  if (path.startsWith('data:image')) {
+    //console.log('Path is base64 image')
     return path
   }
 
-  // Always use the production URL
-  return `https://therapify-api.kaankaltakkiran.com/uploads/profile_images/${path.split('/').pop()}`
+  // Get the base URL from environment variables
+  const isDev = process.env.NODE_ENV === 'development'
+  const baseUrl = isDev ? 'http://localhost/uploads' : 'https://therapify.kaankaltakkiran.com/api'
+  //console.log('Using base URL:', baseUrl)
+
+  // If it contains the old domain, replace it
+  if (path.includes('therapify-api.kaankaltakkiran.com')) {
+    path = path.replace(
+      'https://therapify-api.kaankaltakkiran.com/uploads',
+      'https://therapify.kaankaltakkiran.com/api',
+    )
+    //console.log('Converted old URL to:', path)
+    return path
+  }
+
+  // If it's already a full URL with correct domain, return as is
+  if (path.startsWith('http')) {
+    //console.log('URL already complete:', path)
+    return path
+  }
+
+  // Remove any leading slash and 'uploads' from the path
+  let cleanPath = path
+  if (cleanPath.startsWith('/')) {
+    cleanPath = cleanPath.substring(1)
+  }
+  if (cleanPath.startsWith('uploads/')) {
+    cleanPath = cleanPath.substring(8)
+  }
+  //console.log('Clean path:', cleanPath)
+
+  // Construct the final URL
+  const finalUrl = `${baseUrl}/${cleanPath}`
+  // console.log('Final URL:', finalUrl)
+  return finalUrl
 }
 
 const drawerOpen = ref(false)
