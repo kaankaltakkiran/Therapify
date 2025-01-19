@@ -64,7 +64,7 @@
               </q-card-section>
             </q-card>
           </div>
-          <h>Kaan Baba</h>
+          <h>Kaan Baba assda</h>
           <!-- Online Sessions -->
           <div class="col-12 col-md-4">
             <q-card class="service-card">
