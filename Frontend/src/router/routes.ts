@@ -50,6 +50,7 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
+    // admin paneli için yönlendirme
     path: '/admin',
     component: () => import('layouts/AdminLayout.vue'),
     meta: { requiresAuth: true, requiresAdmin: true },
@@ -64,7 +65,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'support-messages',
-        component: () => import('pages/admin/SupportMessagesPage.vue')
+        component: () => import('pages/admin/SupportMessagesPage.vue'),
       },
       {
         path: 'therapists',
