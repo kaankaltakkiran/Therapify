@@ -136,20 +136,41 @@ const getFileUrl = (path: string | undefined): string => {
     return 'https://cdn.quasar.dev/img/boy-avatar.png'
   }
 
-  // If it's already a full URL or base64 image, return as is
-  if (path.startsWith('http') || path.startsWith('data:image')) {
-    console.log('Path is already a full URL:', path)
+  // If it's a base64 image, return as is
+  if (path.startsWith('data:image')) {
+    console.log('Path is base64 image')
     return path
   }
 
-  // Remove any leading slash for consistency
-  const cleanPath = path.startsWith('/') ? path.substring(1) : path
+  // If it contains the old domain, replace it
+  if (path.includes('therapify-api.kaankaltakkiran.com')) {
+    path = path.replace(
+      'https://therapify-api.kaankaltakkiran.com/uploads',
+      'https://therapify.kaankaltakkiran.com/api',
+    )
+    console.log('Converted old URL to:', path)
+    return path
+  }
+
+  // If it's already a full URL with correct domain, return as is
+  if (path.startsWith('https://therapify.kaankaltakkiran.com/api')) {
+    console.log('URL already correct:', path)
+    return path
+  }
+
+  // Remove any leading slash and 'uploads' from the path
+  let cleanPath = path
+  if (cleanPath.startsWith('/')) {
+    cleanPath = cleanPath.substring(1)
+  }
+  if (cleanPath.startsWith('uploads/')) {
+    cleanPath = cleanPath.substring(8)
+  }
   console.log('Clean path:', cleanPath)
 
-  // Production API URL
+  // Construct the final URL with correct domain
   const finalUrl = `https://therapify.kaankaltakkiran.com/api/${cleanPath}`
   console.log('Final URL:', finalUrl)
-
   return finalUrl
 }
 
