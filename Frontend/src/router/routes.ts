@@ -56,18 +56,21 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
-        redirect: 'therapist-applications',
+        redirect: { name: 'therapist-applications' },
       },
       {
         path: 'therapist-applications',
+        name: 'therapist-applications',
         component: () => import('pages/admin/TherapistApplicationsPage.vue'),
       },
       {
         path: 'support-messages',
+        name: 'support-messages',
         component: () => import('pages/admin/SupportMessagesPage.vue'),
       },
       {
         path: 'therapists',
+        name: 'therapists',
         component: () => import('pages/admin/TherapistListPage.vue'),
       },
     ],
