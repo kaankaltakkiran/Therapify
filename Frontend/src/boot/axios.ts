@@ -12,15 +12,15 @@ declare module 'vue' {
 }
 
 // Get API URL from environment variables
-const apiUrl = process.env.VITE_API_URL
+const apiUrl = import.meta.env.VITE_API_URL || 'https://therapify.kaankaltakkiran.com/api/'
 
-if (!apiUrl) {
-  console.error('API URL is not defined in environment variables')
-}
+// Log the API URL for debugging
+console.log('Current API URL:', apiUrl)
 
-console.log('API URL:', apiUrl)
-
-const api = axios.create({ baseURL: process.env.VITE_API_URL || '' })
+const api = axios.create({
+  baseURL: apiUrl,
+  timeout: 10000, // 10 seconds timeout
+})
 
 // api control
 api.interceptors.request.use(
@@ -29,6 +29,9 @@ api.interceptors.request.use(
     if (authStore.token) {
       config.headers['Authorization'] = `Bearer ${authStore.token}`
     }
+    // Log the full URL being requested
+    const fullUrl = `${config.baseURL || ''}${config.url || ''}`
+    console.log('Making request to:', fullUrl)
     return config
   },
   (error) => {
