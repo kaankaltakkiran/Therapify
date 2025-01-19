@@ -15,7 +15,7 @@ declare module 'vue' {
 const apiUrl = import.meta.env.VITE_API_URL || 'https://therapify.kaankaltakkiran.com/api/'
 
 // Log the API URL for debugging
-console.log('Current API URL:', apiUrl)
+//console.log('Current API URL:', apiUrl)
 
 const api = axios.create({
   baseURL: apiUrl,
