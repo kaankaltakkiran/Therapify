@@ -28,16 +28,26 @@ export default route(function () {
     routes,
     history: createHistory(process.env.VUE_ROUTER_BASE),
   })
-  //token ve kullanıcı bilgilerini sessionStorage'dan al
+
   Router.beforeEach((to, from, next) => {
     const token = sessionStorage.getItem('token')
     const user = sessionStorage.getItem('user')
       ? JSON.parse(sessionStorage.getItem('user') as string)
       : null
 
-    // token kontrolü
+    // Debug logs
+    console.log('Route navigation:', {
+      to: to.fullPath,
+      requiresAuth: to.matched.some((record) => record.meta.requiresAuth),
+      requiresAdmin: to.matched.some((record) => record.meta.requiresAdmin),
+      token: !!token,
+      userRole: user?.user_role,
+    })
+
+    // Check if route requires authentication
     if (to.matched.some((record) => record.meta.requiresAuth)) {
       if (!token || !user) {
+        console.log('No token or user, redirecting to login')
         next({
           path: '/login',
           query: { redirect: to.fullPath },
@@ -45,34 +55,35 @@ export default route(function () {
         return
       }
 
-      // admin route
+      // Check admin routes
       if (to.matched.some((record) => record.meta.requiresAdmin)) {
         if (user.user_role !== 'admin') {
           console.log('Access denied: Admin role required')
           next({ path: '/' })
           return
         }
-        next() // Allow access if user is admin
-        return
       }
 
-      // terapist route
+      // Check therapist routes
       if (to.matched.some((record) => record.meta.requiresTherapist)) {
         if (user.user_role !== 'therapist') {
+          console.log('Access denied: Therapist role required')
           next({ path: '/' })
           return
         }
       }
     }
 
-    // login olduktan sonra login sayfasına yonlendir
+    // Handle guest-only routes (login, register, etc.)
     if (to.matched.some((record) => record.meta.requiresGuest)) {
       if (token && user) {
+        console.log('Authenticated user accessing guest route, redirecting to home')
         next({ path: '/' })
         return
       }
     }
 
+    // Allow navigation
     next()
   })
 
