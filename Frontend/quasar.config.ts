@@ -50,7 +50,7 @@ export default defineConfig((ctx) => {
           ? 'http://localhost/Therapify/'
           : 'https://therapify.kaankaltakkiran.com/api/',
         VITE_UPLOAD_URL: ctx.dev
-          ? 'http://localhost/api'
+          ? 'http://localhost/uploads'
           : 'https://therapify.kaankaltakkiran.com/api',
       },
 
