@@ -14,103 +14,22 @@ define('JWT_EXPIRE_TIME', 3600);
 define('UPLOAD_BASE_PATH', '/var/www/my_webapp__2/www/api');
 define('UPLOAD_BASE_URL', 'https://therapify.kaankaltakkiran.com/api');
 
-// Ensure base upload directory exists and has correct permissions
-if (!file_exists(UPLOAD_BASE_PATH)) {
-    error_log("Creating base upload directory: " . UPLOAD_BASE_PATH);
-    if (!mkdir(UPLOAD_BASE_PATH, 0777, true)) {
-        error_log("Failed to create base upload directory: " . UPLOAD_BASE_PATH);
-        throw new Exception("Failed to create base upload directory");
-    }
-    chmod(UPLOAD_BASE_PATH, 0777);
-    error_log("Base upload directory created successfully");
-}
-
-// Function to handle file uploads
-function uploadFile($file, $subDir, $allowedTypes = []) {
-    error_log("Starting file upload process");
-    try {
-        $targetDir = UPLOAD_BASE_PATH . '/' . $subDir;
-        error_log("Upload target directory: " . $targetDir);
-        
-        // Create directory if it doesn't exist
-        if (!file_exists($targetDir)) {
-            error_log("Creating directory: " . $targetDir);
-            // Create directory with full permissions first
-            if (!mkdir($targetDir, 0777, true)) {
-                error_log("Failed to create directory with mkdir: " . $targetDir);
-                throw new Exception("Failed to create upload directory");
-            }
-            // Set directory permissions
-            if (!chmod($targetDir, 0777)) {
-                error_log("Failed to chmod directory: " . $targetDir);
-                throw new Exception("Failed to set directory permissions");
-            }
-            error_log("Directory created successfully: " . $targetDir);
-        }
-
-        // Generate unique filename
-        $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $fileName = uniqid() . '_' . time() . '.' . $fileExtension;
-        $targetPath = $targetDir . '/' . $fileName;
-        error_log("Target file path: " . $targetPath);
-
-        // Check file type if specified
-        if (!empty($allowedTypes)) {
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $mimeType = finfo_file($finfo, $file['tmp_name']);
-            finfo_close($finfo);
-
-            if (!in_array($mimeType, $allowedTypes)) {
-                error_log("Invalid file type: " . $mimeType . ". Allowed types: " . implode(', ', $allowedTypes));
-                throw new Exception("Invalid file type. Allowed types: " . implode(', ', $allowedTypes));
-            }
-        }
-
-        // Move uploaded file
-        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-            // Set file permissions
-            if (!chmod($targetPath, 0644)) {
-                error_log("Failed to chmod file: " . $targetPath);
-                throw new Exception("Failed to set file permissions");
-            }
-            error_log("File uploaded successfully to: " . $targetPath);
-            // Return relative path for database storage
-            return $subDir . '/' . $fileName;
-        } else {
-            $uploadError = error_get_last();
-            error_log("Failed to move uploaded file. Upload error code: " . $file['error']);
-            error_log("PHP error: " . print_r($uploadError, true));
-            throw new Exception("Failed to move uploaded file: " . $file['error']);
-        }
-    } catch (Exception $e) {
-        error_log("File upload error: " . $e->getMessage());
-        throw $e;
-    }
-}
-
 // Function to get public URL for uploaded files
 function getPublicPath($serverPath) {
-    error_log("Getting public path for: " . $serverPath);
-    
     if (empty($serverPath)) {
-        error_log("Empty server path provided");
         return '';
     }
 
     // If it's already a full URL, return as is
     if (strpos($serverPath, 'http') === 0) {
-        error_log("Path is already a full URL: " . $serverPath);
         return $serverPath;
     }
 
     // Remove any leading slash for consistency
     $serverPath = ltrim($serverPath, '/');
-    error_log("Clean path: " . $serverPath);
 
-    // Construct and return the full URL
-    $finalUrl = UPLOAD_BASE_URL . '/' . $serverPath;
-    error_log("Final URL: " . $finalUrl);
-    return $finalUrl;
+    // Return the full URL
+    return UPLOAD_BASE_URL . '/' . $serverPath;
 }
 
 // Handle preflight requests
@@ -377,6 +296,53 @@ function registerUser($DB, $data) {
     return $response;
 }
 
+// File upload handling functions
+function uploadFile($file, $subDir, $allowedTypes = []) {
+    try {
+        $targetDir = UPLOAD_BASE_PATH . '/' . $subDir;
+        error_log("Upload target directory: " . $targetDir);
+        
+        // Create directory if it doesn't exist
+        if (!file_exists($targetDir)) {
+            if (!mkdir($targetDir, 0777, true)) {
+                error_log("Failed to create directory: " . $targetDir);
+                throw new Exception("Failed to create upload directory");
+            }
+            chmod($targetDir, 0777);
+        }
+
+        // Generate unique filename
+        $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $fileName = uniqid() . '_' . time() . '.' . $fileExtension;
+        $targetPath = $targetDir . '/' . $fileName;
+
+        // Check file type if specified
+        if (!empty($allowedTypes)) {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mimeType = finfo_file($finfo, $file['tmp_name']);
+            finfo_close($finfo);
+
+            if (!in_array($mimeType, $allowedTypes)) {
+                throw new Exception("Invalid file type. Allowed types: " . implode(', ', $allowedTypes));
+            }
+        }
+
+        // Move uploaded file
+        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+            chmod($targetPath, 0644);
+            error_log("File uploaded successfully to: " . $targetPath);
+            // Return path for database storage (relative path starting with /)
+            return '/' . $subDir . '/' . $fileName;
+        } else {
+            error_log("Failed to move uploaded file. Upload error code: " . $file['error']);
+            throw new Exception("Failed to move uploaded file");
+        }
+    } catch (Exception $e) {
+        error_log("File upload error: " . $e->getMessage());
+        throw $e;
+    }
+}
+
 // Therapist registration
 function registerTherapist($DB, $data) {
     $response = ['success' => false];
@@ -399,6 +365,10 @@ function registerTherapist($DB, $data) {
         if ($count > 0) {
             $response['error'] = "This email is already in use";
             $DB->rollback();
+            // Reset auto-increment values
+            $DB->query("ALTER TABLE users AUTO_INCREMENT = @users_auto_increment");
+            $DB->query("ALTER TABLE therapist_details AUTO_INCREMENT = @therapist_details_auto_increment");
+            $DB->query("ALTER TABLE therapist_applications AUTO_INCREMENT = @therapist_applications_auto_increment");
             return $response;
         }
 
@@ -409,55 +379,31 @@ function registerTherapist($DB, $data) {
         // Upload profile image
         $userImgPath = '';
         if (isset($_FILES['user_img'])) {
-            try {
-                $userImgPath = uploadFile($_FILES['user_img'], 'profile_images', $allowedImageTypes);
-                error_log("Profile image uploaded: " . $userImgPath);
-            } catch (Exception $e) {
-                error_log("Profile image upload failed: " . $e->getMessage());
-                throw new Exception("Profile image upload failed: " . $e->getMessage());
-            }
+            $userImgPath = uploadFile($_FILES['user_img'], 'profile_images', $allowedImageTypes);
         }
 
         // Upload CV
         $cvFilePath = '';
         if (isset($_FILES['cv_file'])) {
-            try {
-                $cvFilePath = uploadFile($_FILES['cv_file'], 'cv', $allowedDocTypes);
-                error_log("CV uploaded: " . $cvFilePath);
-            } catch (Exception $e) {
-                error_log("CV upload failed: " . $e->getMessage());
-                throw new Exception("CV upload failed: " . $e->getMessage());
-            }
+            $cvFilePath = uploadFile($_FILES['cv_file'], 'cv', $allowedDocTypes);
         }
 
         // Upload diploma
         $diplomaFilePath = '';
         if (isset($_FILES['diploma_file'])) {
-            try {
-                $diplomaFilePath = uploadFile($_FILES['diploma_file'], 'diploma', array_merge($allowedImageTypes, $allowedDocTypes));
-                error_log("Diploma uploaded: " . $diplomaFilePath);
-            } catch (Exception $e) {
-                error_log("Diploma upload failed: " . $e->getMessage());
-                throw new Exception("Diploma upload failed: " . $e->getMessage());
-            }
+            $diplomaFilePath = uploadFile($_FILES['diploma_file'], 'diploma', array_merge($allowedImageTypes, $allowedDocTypes));
         }
 
         // Upload license
         $licenseFilePath = '';
         if (isset($_FILES['license_file'])) {
-            try {
-                $licenseFilePath = uploadFile($_FILES['license_file'], 'license', array_merge($allowedImageTypes, $allowedDocTypes));
-                error_log("License uploaded: " . $licenseFilePath);
-            } catch (Exception $e) {
-                error_log("License upload failed: " . $e->getMessage());
-                throw new Exception("License upload failed: " . $e->getMessage());
-            }
+            $licenseFilePath = uploadFile($_FILES['license_file'], 'license', array_merge($allowedImageTypes, $allowedDocTypes));
         }
 
         // Hash password
         $hash = password_hash($data['password'], PASSWORD_DEFAULT);
 
-        // Insert user with file paths
+        // Insert user
         $stmt = $DB->prepare("
             INSERT INTO users (
                 first_name, last_name, email, address, phone_number, 
@@ -568,25 +514,21 @@ function registerTherapist($DB, $data) {
             throw new Exception("Failed to create therapist application");
         }
 
-        // Convert file paths to public URLs for response
-        $response['user'] = [
-            'id' => $userId,
-            'first_name' => $data['first_name'],
-            'last_name' => $data['last_name'],
-            'email' => $data['email'],
-            'user_img' => $userImgPath ? getPublicPath($userImgPath) : '',
-            'cv_file' => $cvFilePath ? getPublicPath($cvFilePath) : '',
-            'license_file' => $licenseFilePath ? getPublicPath($licenseFilePath) : ''
-        ];
+        // Send welcome email with temporary password
+        // TODO: Implement email sending functionality
+        // mail($data['email'], "Welcome to Therapify", "Your temporary password is: " . $tempPassword);
 
         $response['success'] = true;
-        $response['message'] = "Therapist registration successful";
+        $response['message'] = "Therapist registration successful. Please check your email for login credentials.";
         $response['user_id'] = $userId;
         $DB->commit();
     } catch (Exception $e) {
         $DB->rollback();
+        // Reset auto-increment values
+        $DB->query("ALTER TABLE users AUTO_INCREMENT = @users_auto_increment");
+        $DB->query("ALTER TABLE therapist_details AUTO_INCREMENT = @therapist_details_auto_increment");
+        $DB->query("ALTER TABLE therapist_applications AUTO_INCREMENT = @therapist_applications_auto_increment");
         $response['error'] = "Registration failed: " . $e->getMessage();
-        error_log("Registration error: " . $e->getMessage());
     }
 
     return $response;
