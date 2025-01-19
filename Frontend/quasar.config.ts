@@ -45,8 +45,6 @@ export default defineConfig((ctx) => {
 
       vueRouterMode: 'history',
 
-      publicPath: '/',
-
       env: {
         VITE_API_URL: ctx.dev
           ? 'http://localhost/Therapify/'
