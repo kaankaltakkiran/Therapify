@@ -129,22 +129,32 @@ const authStore = useAuthStore()
 const { isAuthenticated, user } = storeToRefs(authStore)
 
 const getFileUrl = (path: string | undefined): string => {
+  console.log('Original path:', path)
+
   if (!path) {
-    // Default avatar URL
+    console.log('No path provided, using default avatar')
     return 'https://cdn.quasar.dev/img/boy-avatar.png'
   }
 
   // If it's already a full URL or base64 image, return as is
   if (path.startsWith('http') || path.startsWith('data:image')) {
+    console.log('Path is already a full URL:', path)
     return path
   }
 
   // Remove any leading slash for consistency
   const cleanPath = path.startsWith('/') ? path.substring(1) : path
+  console.log('Clean path:', cleanPath)
 
   // Production API URL
-  return `https://therapify.kaankaltakkiran.com/api/${cleanPath}`
+  const finalUrl = `https://therapify.kaankaltakkiran.com/api/${cleanPath}`
+  console.log('Final URL:', finalUrl)
+
+  return finalUrl
 }
+
+// Add console log for user object
+console.log('User object:', user)
 
 // Logout işlemi pinia storedaki fonksiyon
 const handleLogout = async () => {
