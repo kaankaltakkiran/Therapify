@@ -139,8 +139,11 @@ const getFileUrl = (path: string | undefined): string => {
     return path
   }
 
-  // Production API URL - path already includes the leading slash
-  return `https://therapify.kaankaltakkiran.com/api${path}`
+  // Remove any leading slash for consistency
+  const cleanPath = path.startsWith('/') ? path.substring(1) : path
+
+  // Production API URL
+  return `https://therapify.kaankaltakkiran.com/api/${cleanPath}`
 }
 
 // Logout işlemi pinia storedaki fonksiyon

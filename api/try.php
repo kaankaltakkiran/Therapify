@@ -7,16 +7,10 @@ header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Max-Age: 86400");
 
 // JWT constants
-define('JWT_SECRET_KEY', 'vypLCUJ3Q8oFj7'); // Use a secure secret key in production
-define('JWT_EXPIRE_TIME', 3600); // Token validity period (in seconds, 1 hour)
+define('JWT_SECRET_KEY', 'vypLCUJ3Q8oFj7');
+define('JWT_EXPIRE_TIME', 3600);
 
-// Enable error reporting
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-ini_set('log_errors', 1);
-ini_set('error_log', '/var/www/my_webapp__2/www/php_errors.log');
-
-// Constants for file uploads
+// Constants for file uploads - Production paths only
 define('UPLOAD_BASE_PATH', '/var/www/my_webapp__2/www/api');
 define('UPLOAD_BASE_URL', 'https://therapify.kaankaltakkiran.com/api');
 
@@ -26,35 +20,16 @@ function getPublicPath($serverPath) {
         return '';
     }
 
-    // Get environment variables
-    $env = parse_ini_file(__DIR__ . '/.env');
-    $appEnv = $env['APP_ENV'] ?? 'development';
-    error_log("Current environment: " . $appEnv);
-    error_log("Original server path: " . $serverPath);
-
-    // Extract filename and subdirectory from path
-    $pathInfo = pathinfo($serverPath);
-    $filename = $pathInfo['basename'];
-    
-    // Determine subdirectory from path
-    $subDir = '';
-    if (strpos($serverPath, 'cv') !== false) {
-        $subDir = 'cv';
-    } elseif (strpos($serverPath, 'diploma') !== false) {
-        $subDir = 'diploma';
-    } elseif (strpos($serverPath, 'license') !== false) {
-        $subDir = 'license';
-    } elseif (strpos($serverPath, 'profile_images') !== false) {
-        $subDir = 'profile_images';
+    // If it's already a full URL, return as is
+    if (strpos($serverPath, 'http') === 0) {
+        return $serverPath;
     }
 
-    // Return appropriate URL based on environment
-    $finalPath = ($appEnv === 'production')
-        ? 'https://therapify-api.kaankaltakkiran.com/uploads/' . $subDir . '/' . $filename
-        : 'http://localhost/uploads/' . $subDir . '/' . $filename;
+    // Remove any leading slash for consistency
+    $serverPath = ltrim($serverPath, '/');
 
-    error_log("Final path: " . $finalPath);
-    return $finalPath;
+    // Return the full URL
+    return UPLOAD_BASE_URL . '/' . $serverPath;
 }
 
 // Handle preflight requests
@@ -241,96 +216,127 @@ header('Content-Type: application/json');
 echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 $db->closeConnection();
 
+// User registration
+function registerUser($DB, $data) {
+    $response = ['success' => false];
+
+    try {
+        // Begin transaction
+        $DB->begin_transaction();
+
+        // Store current auto-increment value
+        $DB->query("SET @users_auto_increment = (SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA='Therapify' AND TABLE_NAME='users')");
+
+        // Check if email already exists
+        $stmt = $DB->prepare("SELECT COUNT(*) as count FROM users WHERE email = ?");
+        $stmt->bind_param("s", $data['email']);
+        $stmt->execute();
+        $count = $stmt->get_result()->fetch_assoc()['count'];
+
+        if ($count > 0) {
+            $response['error'] = "This email is already in use";
+            $DB->rollback();
+            // Reset auto-increment value
+            $DB->query("ALTER TABLE users AUTO_INCREMENT = @users_auto_increment");
+            return $response;
+        }
+
+        // Handle profile image upload
+        $userImgPath = '';
+        if (isset($_FILES['user_img'])) {
+            $allowedImageTypes = ['image/jpeg', 'image/png'];
+            try {
+                $userImgPath = uploadFile($_FILES['user_img'], 'profile_images', $allowedImageTypes);
+            } catch (Exception $e) {
+                $response['error'] = "Profile image upload failed: " . $e->getMessage();
+                $DB->rollback();
+                return $response;
+            }
+        }
+
+        // Hash password
+        $hash = password_hash($data['password'], PASSWORD_DEFAULT);
+
+        // Insert user
+        $stmt = $DB->prepare("
+            INSERT INTO users (
+                first_name, last_name, email, address, phone_number, 
+                birth_of_date, user_img, password, user_role
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'user')
+        ");
+
+        $stmt->bind_param(
+            "ssssssss",
+            $data['first_name'],
+            $data['last_name'],
+            $data['email'],
+            $data['address'],
+            $data['phone_number'],
+            $data['birth_of_date'],
+            $userImgPath,
+            $hash
+        );
+
+        if ($stmt->execute()) {
+            $response['success'] = true;
+            $response['message'] = "User registered successfully";
+            $response['user_id'] = $stmt->insert_id;
+            $DB->commit();
+        } else {
+            $response['error'] = "User registration failed";
+            $DB->rollback();
+        }
+    } catch (Exception $e) {
+        $DB->rollback();
+        // Reset auto-increment value
+        $DB->query("ALTER TABLE users AUTO_INCREMENT = @users_auto_increment");
+        $response['error'] = "Database error: " . $e->getMessage();
+    }
+
+    return $response;
+}
+
 // File upload handling functions
 function uploadFile($file, $subDir, $allowedTypes = []) {
     try {
-        error_log("Starting file upload process");
-        
         $targetDir = UPLOAD_BASE_PATH . '/' . $subDir;
-        error_log("Target directory: " . $targetDir);
+        error_log("Upload target directory: " . $targetDir);
         
         // Create directory if it doesn't exist
         if (!file_exists($targetDir)) {
-            error_log("Creating directory: " . $targetDir);
             if (!mkdir($targetDir, 0777, true)) {
-                error_log("Failed to create directory. Error: " . error_get_last()['message']);
+                error_log("Failed to create directory: " . $targetDir);
                 throw new Exception("Failed to create upload directory");
             }
             chmod($targetDir, 0777);
         }
 
-        // Handle base64 image data
-        if (is_string($file) && strpos($file, 'data:image/') === 0) {
-            error_log("Processing base64 image data");
-            
-            // Extract image type and data
-            $parts = explode(';base64,', $file);
-            $imageType = str_replace('data:', '', $parts[0]);
-            $imageData = base64_decode($parts[1]);
-            
-            // Check file type if specified
-            if (!empty($allowedTypes) && !in_array($imageType, $allowedTypes)) {
-                error_log("Invalid file type: " . $imageType);
+        // Generate unique filename
+        $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $fileName = uniqid() . '_' . time() . '.' . $fileExtension;
+        $targetPath = $targetDir . '/' . $fileName;
+
+        // Check file type if specified
+        if (!empty($allowedTypes)) {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mimeType = finfo_file($finfo, $file['tmp_name']);
+            finfo_close($finfo);
+
+            if (!in_array($mimeType, $allowedTypes)) {
                 throw new Exception("Invalid file type. Allowed types: " . implode(', ', $allowedTypes));
             }
-            
-            // Generate filename based on type
-            $extension = str_replace('image/', '', $imageType);
-            $fileName = uniqid() . '_' . time() . '.' . $extension;
-            $targetPath = $targetDir . '/' . $fileName;
-            
-            // Save the file
-            if (file_put_contents($targetPath, $imageData) === false) {
-                error_log("Failed to save base64 image");
-                throw new Exception("Failed to save image file");
-            }
-            
+        }
+
+        // Move uploaded file
+        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
             chmod($targetPath, 0644);
-            error_log("Base64 image saved successfully to: " . $targetPath);
-            $relativePath = '/profile_images/' . $fileName;
-            error_log("Returning relative path: " . $relativePath);
-            return $relativePath;
+            error_log("File uploaded successfully to: " . $targetPath);
+            // Return path for database storage (relative path starting with /)
+            return '/' . $subDir . '/' . $fileName;
+        } else {
+            error_log("Failed to move uploaded file. Upload error code: " . $file['error']);
+            throw new Exception("Failed to move uploaded file");
         }
-        
-        // Handle regular file upload
-        if (is_array($file)) {
-            error_log("Processing regular file upload: " . $file['name']);
-            
-            // Generate unique filename
-            $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-            $fileName = uniqid() . '_' . time() . '.' . $fileExtension;
-            $targetPath = $targetDir . '/' . $fileName;
-            error_log("Target file path: " . $targetPath);
-
-            // Check file type if specified
-            if (!empty($allowedTypes)) {
-                $finfo = finfo_open(FILEINFO_MIME_TYPE);
-                $mimeType = finfo_file($finfo, $file['tmp_name']);
-                finfo_close($finfo);
-                error_log("File mime type: " . $mimeType);
-
-                if (!in_array($mimeType, $allowedTypes)) {
-                    error_log("Invalid file type: " . $mimeType);
-                    throw new Exception("Invalid file type. Allowed types: " . implode(', ', $allowedTypes));
-                }
-            }
-
-            // Move uploaded file
-            if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-                chmod($targetPath, 0644);
-                error_log("File uploaded successfully to: " . $targetPath);
-                $relativePath = '/profile_images/' . $fileName;
-                error_log("Returning relative path: " . $relativePath);
-                return $relativePath;
-            } else {
-                error_log("Failed to move uploaded file. Upload error code: " . $file['error']);
-                error_log("Temp file exists: " . (file_exists($file['tmp_name']) ? 'yes' : 'no'));
-                error_log("Target dir writable: " . (is_writable($targetDir) ? 'yes' : 'no'));
-                throw new Exception("Failed to move uploaded file");
-            }
-        }
-        
-        throw new Exception("Invalid file data provided");
     } catch (Exception $e) {
         error_log("File upload error: " . $e->getMessage());
         throw $e;
@@ -548,11 +554,6 @@ function loginUser($DB, $data) {
                 // Remove sensitive data
                 unset($user['password']);
 
-                // Format user_img path
-                if (!empty($user['user_img'])) {
-                    $user['user_img'] = getPublicPath($user['user_img']);
-                }
-
                 // Generate JWT token
                 $token = generateJWT($user);
 
@@ -648,103 +649,6 @@ function updatePassword($DB, $data) {
 
     } catch (Exception $e) {
         $response['error'] = 'Bir hata oluştu: ' . $e->getMessage();
-    }
-
-    return $response;
-}
-
-// User registration
-function registerUser($DB, $data) {
-    $response = ['success' => false];
-    error_log("Starting user registration process");
-    error_log("POST data: " . print_r($data, true));
-
-    try {
-        $DB->begin_transaction();
-
-        // Check if email exists
-        $stmt = $DB->prepare("SELECT COUNT(*) as count FROM users WHERE email = ?");
-        $stmt->bind_param("s", $data['email']);
-        $stmt->execute();
-        $count = $stmt->get_result()->fetch_assoc()['count'];
-
-        if ($count > 0) {
-            error_log("Email already exists: " . $data['email']);
-            $response['error'] = "This email is already in use";
-            $DB->rollback();
-            return $response;
-        }
-
-        // Handle profile image upload
-        $userImgPath = '';
-        if (isset($data['user_img']) && strpos($data['user_img'], 'data:image/') === 0) {
-            error_log("Processing base64 image upload");
-            $allowedImageTypes = ['image/jpeg', 'image/png'];
-            try {
-                $userImgPath = uploadFile($data['user_img'], 'profile_images', $allowedImageTypes);
-                error_log("Image uploaded successfully. Path: " . $userImgPath);
-            } catch (Exception $e) {
-                error_log("Image upload failed: " . $e->getMessage());
-                $response['error'] = "Profile image upload failed: " . $e->getMessage();
-                $DB->rollback();
-                return $response;
-            }
-        } else if (isset($_FILES['user_img']) && $_FILES['user_img']['error'] === UPLOAD_ERR_OK) {
-            error_log("Processing regular file upload");
-            $allowedImageTypes = ['image/jpeg', 'image/png'];
-            try {
-                $userImgPath = uploadFile($_FILES['user_img'], 'profile_images', $allowedImageTypes);
-                error_log("Image uploaded successfully. Path: " . $userImgPath);
-            } catch (Exception $e) {
-                error_log("Image upload failed: " . $e->getMessage());
-                $response['error'] = "Profile image upload failed: " . $e->getMessage();
-                $DB->rollback();
-                return $response;
-            }
-        } else {
-            error_log("No image uploaded or invalid image data");
-        }
-
-        // Hash password
-        $hash = password_hash($data['password'], PASSWORD_DEFAULT);
-
-        // Insert user
-        $stmt = $DB->prepare("
-            INSERT INTO users (
-                first_name, last_name, email, address, phone_number, 
-                birth_of_date, user_img, password, user_role
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'user')
-        ");
-
-        error_log("Prepared insert statement with image path: " . $userImgPath);
-
-        $stmt->bind_param(
-            "ssssssss",
-            $data['first_name'],
-            $data['last_name'],
-            $data['email'],
-            $data['address'],
-            $data['phone_number'],
-            $data['birth_of_date'],
-            $userImgPath,
-            $hash
-        );
-
-        if ($stmt->execute()) {
-            error_log("User inserted successfully with ID: " . $stmt->insert_id);
-            $response['success'] = true;
-            $response['message'] = "User registered successfully";
-            $response['user_id'] = $stmt->insert_id;
-            $DB->commit();
-        } else {
-            error_log("Database insert failed: " . $stmt->error);
-            $response['error'] = "User registration failed";
-            $DB->rollback();
-        }
-    } catch (Exception $e) {
-        error_log("Registration error: " . $e->getMessage());
-        $DB->rollback();
-        $response['error'] = "Database error: " . $e->getMessage();
     }
 
     return $response;
