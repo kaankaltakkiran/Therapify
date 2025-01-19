@@ -21,7 +21,6 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'contact',
         component: () => import('pages/ContactPage.vue'),
-        meta: { requiresGuest: true },
       },
       {
         path: 'register',
@@ -41,7 +40,6 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'faq',
         component: () => import('pages/FaqPage.vue'),
-        meta: { requiresGuest: true },
       },
       {
         path: 'privacy',
@@ -53,7 +51,7 @@ const routes: RouteRecordRaw[] = [
     // admin paneli için yönlendirme
     path: '/admin',
     component: () => import('layouts/AdminLayout.vue'),
-    /* meta: { requiresAuth: true, requiresAdmin: true }, */
+    meta: { requiresAuth: true, requiresAdmin: true },
     children: [
       {
         path: '',
