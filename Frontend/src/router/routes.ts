@@ -50,14 +50,13 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
-    // admin paneli için yönlendirme
     path: '/admin',
     component: () => import('layouts/AdminLayout.vue'),
     meta: { requiresAuth: true, requiresAdmin: true },
     children: [
       {
         path: '',
-        redirect: '/admin/therapist-applications',
+        redirect: 'therapist-applications',
       },
       {
         path: 'therapist-applications',
@@ -71,10 +70,6 @@ const routes: RouteRecordRaw[] = [
         path: 'therapists',
         component: () => import('pages/admin/TherapistListPage.vue'),
       },
-      /*      {
-        path: 'settings',
-        component: () => import('pages/admin/SettingsPage.vue'),
-      }, */
     ],
   },
   {
