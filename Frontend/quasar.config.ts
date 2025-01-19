@@ -48,10 +48,10 @@ export default defineConfig((ctx) => {
       env: {
         VITE_API_URL: ctx.dev
           ? 'http://localhost/Therapify/'
-          : 'https://therapify-api.kaankaltakkiran.com/Therapify/',
+          : 'https://therapify.kaankaltakkiran.com/api/',
         VITE_UPLOAD_URL: ctx.dev
-          ? 'http://localhost/uploads'
-          : 'https://therapify-api.kaankaltakkiran.com/uploads',
+          ? 'http://localhost/api'
+          : 'https://therapify.kaankaltakkiran.com/api',
       },
 
       vitePlugins: [

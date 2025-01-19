@@ -139,20 +139,8 @@ const getFileUrl = (path: string | undefined): string => {
     return path
   }
 
-  // Get the base URL from environment variable
-  const baseUrl = import.meta.env.VITE_UPLOAD_URL
-
-  // Clean the path by removing any leading slashes or 'uploads' prefix
-  let cleanPath = path
-  if (cleanPath.startsWith('/')) {
-    cleanPath = cleanPath.substring(1)
-  }
-  if (cleanPath.startsWith('uploads/')) {
-    cleanPath = cleanPath.substring(8)
-  }
-
-  // Construct and return the full URL
-  return `${baseUrl}/${cleanPath}`
+  // Production API URL - path already includes the leading slash
+  return `https://therapify.kaankaltakkiran.com/api${path}`
 }
 
 // Logout işlemi pinia storedaki fonksiyon
