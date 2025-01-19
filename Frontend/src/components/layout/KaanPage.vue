@@ -142,11 +142,6 @@ const getFileUrl = (path: string | undefined): string => {
     return path
   }
 
-  // Get the base URL from environment variables
-  const isDev = process.env.NODE_ENV === 'development'
-  const baseUrl = isDev ? 'http://localhost/uploads' : 'https://therapify.kaankaltakkiran.com/api'
-  console.log('Using base URL:', baseUrl)
-
   // If it contains the old domain, replace it
   if (path.includes('therapify-api.kaankaltakkiran.com')) {
     path = path.replace(
@@ -158,8 +153,8 @@ const getFileUrl = (path: string | undefined): string => {
   }
 
   // If it's already a full URL with correct domain, return as is
-  if (path.startsWith('http')) {
-    console.log('URL already complete:', path)
+  if (path.startsWith('https://therapify.kaankaltakkiran.com/api')) {
+    console.log('URL already correct:', path)
     return path
   }
 
@@ -173,8 +168,8 @@ const getFileUrl = (path: string | undefined): string => {
   }
   console.log('Clean path:', cleanPath)
 
-  // Construct the final URL
-  const finalUrl = `${baseUrl}/${cleanPath}`
+  // Construct the final URL with correct domain
+  const finalUrl = `https://therapify.kaankaltakkiran.com/api/${cleanPath}`
   console.log('Final URL:', finalUrl)
   return finalUrl
 }
