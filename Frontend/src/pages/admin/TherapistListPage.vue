@@ -52,7 +52,7 @@
             </div>
           </q-td>
           <q-td key="title" :props="props">{{ props.row.title }}</q-td>
-     <!--      <q-td key="specialties" :props="props">
+          <!--      <q-td key="specialties" :props="props">
             <div class="row q-gutter-x-xs">
               <q-chip
                 v-for="specialty in props.row.specialties"
@@ -231,7 +231,6 @@ import { useQuasar } from 'quasar'
 import { api } from 'src/boot/axios'
 import { useI18n } from 'vue-i18n'
 
-
 const { t } = useI18n()
 
 //Terapist bilgilerini tutan interface
@@ -351,27 +350,23 @@ const openViewDialog = (therapist: Therapist) => {
   selectedTherapist.value = therapist
   viewDialog.value = true
 }
+
 //Kullanıcının yüklediği dosyaların url'sini getirme
 const getFileUrl = (path: string) => {
   if (!path) return ''
 
-  // Extract just the filename
-  const filename = path.split('/').pop()
-
-  // Extract the type from the path
-  let type = ''
-  if (path.includes('cv')) {
-    type = 'cv'
-  } else if (path.includes('diploma')) {
-    type = 'diploma'
-  } else if (path.includes('license')) {
-    type = 'license'
-  } else if (path.includes('profile_images') || path.includes('user_img')) {
-    type = 'profile_images'
+  // If it's already a full URL, return as is
+  if (path.startsWith('http')) {
+    return path
   }
 
-  // Return the URL with the correct path
-  return `http://localhost/uploads/${type}/${filename}`
+  // For development environment
+  if (process.env.DEV) {
+    return `http://localhost/${path}`
+  }
+
+  // For production environment
+  return `https://therapify.kaankaltakkiran.com/api/${path}`
 }
 
 onMounted(() => {

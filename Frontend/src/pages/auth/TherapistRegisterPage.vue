@@ -237,7 +237,13 @@
                   <div class="row items-center q-col-gutter-md q-mb-md">
                     <div class="col-auto">
                       <q-avatar size="100px">
-                        <img :src="imagePreview || 'https://cdn.quasar.dev/img/avatar.png'" />
+                        <img
+                          :src="
+                            imagePreview ||
+                            getFileUrl(form.userImg) ||
+                            'https://cdn.quasar.dev/img/avatar.png'
+                          "
+                        />
                       </q-avatar>
                     </div>
                     <div class="col">
@@ -355,7 +361,11 @@
 
                   <div class="text-grey-8 q-mt-md">
                     <p>
-                      {{ $t('Başvurunuz gönderildikten sonra ekibimiz tarafından incelenecek ve en kısa sürede size dönüş yapılacaktır.') }}
+                      {{
+                        $t(
+                          'Başvurunuz gönderildikten sonra ekibimiz tarafından incelenecek ve en kısa sürede size dönüş yapılacaktır.',
+                        )
+                      }}
                     </p>
                   </div>
                 </q-step>
@@ -363,7 +373,13 @@
 
               <!-- Navigation Buttons -->
               <div class="row justify-between q-mt-md">
-                <q-btn v-if="step > 1" flat color="primary" :label="$t('Geri')" @click="handlePrevious" />
+                <q-btn
+                  v-if="step > 1"
+                  flat
+                  color="primary"
+                  :label="$t('Geri')"
+                  @click="handlePrevious"
+                />
                 <q-space />
                 <q-btn v-if="step < 4" color="primary" :label="$t('İleri')" @click="handleNext" />
                 <q-btn
@@ -491,7 +507,7 @@ const specialties = [
   'Oyun Terapisi',
 ]
 
-const languages = ['Türkçe', 'English', 'Deutsch', 'Français', 'Español', 'العربية', 'Русский'] 
+const languages = ['Türkçe', 'English', 'Deutsch', 'Français', 'Español', 'العربية', 'Русский']
 
 const form = ref<TherapistForm>({
   firstName: '',
@@ -554,6 +570,28 @@ const onFileRejected = (rejectedEntries: QRejectedEntry[]) => {
       position: 'top',
     })
   })
+}
+
+const getFileUrl = (path: File | string | null) => {
+  if (!path) return ''
+
+  // If it's a File object, return empty string (it's not uploaded yet)
+  if (path instanceof File) {
+    return ''
+  }
+
+  // If it's already a full URL, return as is
+  if (path.startsWith('http')) {
+    return path
+  }
+
+  // For development environment
+  if (process.env.DEV) {
+    return `http://localhost/uploads/${path}`
+  }
+
+  // For production environment
+  return `https://therapify.kaankaltakkiran.com/api/${path}`
 }
 
 const onSubmit = async () => {

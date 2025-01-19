@@ -15,35 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 // Database connection
 require_once 'db_connection.php';
 
-// Constants for file uploads - Production paths only
-define('UPLOAD_BASE_PATH', '/var/www/my_webapp__2/www/api');
-define('UPLOAD_BASE_URL', 'https://therapify.kaankaltakkiran.com/api');
-
-// Function to get public URL for uploaded files
-function getPublicPath($serverPath) {
-    error_log("Getting public path for: " . $serverPath);
-    
-    if (empty($serverPath)) {
-        error_log("Empty server path provided");
-        return '';
-    }
-
-    // If it's already a full URL, return as is
-    if (strpos($serverPath, 'http') === 0) {
-        error_log("Path is already a full URL: " . $serverPath);
-        return $serverPath;
-    }
-
-    // Remove any leading slash for consistency
-    $serverPath = ltrim($serverPath, '/');
-    error_log("Clean path: " . $serverPath);
-
-    // Construct and return the full URL
-    $finalUrl = UPLOAD_BASE_URL . '/' . $serverPath;
-    error_log("Final URL: " . $finalUrl);
-    return $finalUrl;
-}
-
 // Get request data
 $data = json_decode(file_get_contents('php://input'), true);
 $METHOD = $data['method'] ?? '';
@@ -135,19 +106,12 @@ function getTherapistApplications($DB) {
             $specialtiesResult = $specialtiesStmt->get_result();
             $application['specialties'] = $specialtiesResult->fetch_all(MYSQLI_ASSOC);
 
-            // Convert file paths to URLs using getPublicPath
-            if (!empty($application['cv_file'])) {
-                $application['cv_file'] = getPublicPath($application['cv_file']);
-            }
-            if (!empty($application['diploma_file'])) {
-                $application['diploma_file'] = getPublicPath($application['diploma_file']);
-            }
-            if (!empty($application['license_file'])) {
-                $application['license_file'] = getPublicPath($application['license_file']);
-            }
-            if (!empty($application['user_img'])) {
-                $application['user_img'] = getPublicPath($application['user_img']);
-            }
+            // Convert file paths to URLs
+            $baseUrl = "http://" . $_SERVER['HTTP_HOST'] . "/Therapify/";
+            
+            $application['cv_file'] = $baseUrl . $application['cv_file'];
+            $application['diploma_file'] = $baseUrl . $application['diploma_file'];
+            $application['license_file'] = $baseUrl . $application['license_file'];
 
             $application['user'] = [
                 'id' => $application['user_id'],
@@ -165,13 +129,13 @@ function getTherapistApplications($DB) {
             unset($application['email']);
             unset($application['address']);
             unset($application['phone_number']);
+            unset($application['user_img']);
         }
 
         $response['success'] = true;
         $response['applications'] = $applications;
         $response['pendingCount'] = $pendingCount;
     } catch (Exception $e) {
-        error_log("Failed to fetch applications: " . $e->getMessage());
         $response['error'] = "Failed to fetch applications: " . $e->getMessage();
     }
 
