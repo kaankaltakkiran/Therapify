@@ -210,36 +210,55 @@
                       </div>
                     </div>
 
+                    <!-- Documents Section -->
                     <div class="col-12 col-md-6">
                       <div class="text-caption q-mb-sm">Belgeler</div>
                       <div class="q-gutter-y-sm">
                         <q-btn
                           outline
                           color="primary"
-                          icon="description"
-                          :label="'CV'"
+                          :icon="getFileIcon(selectedApplication.cv_file)"
                           class="full-width"
                           :href="getFileUrl(selectedApplication.cv_file)"
                           target="_blank"
-                        />
+                        >
+                          <div class="row items-center full-width">
+                            <div class="col">CV</div>
+                            <div class="col text-right text-caption">
+                              {{ getFileName(selectedApplication.cv_file) }}
+                            </div>
+                          </div>
+                        </q-btn>
                         <q-btn
                           outline
                           color="primary"
-                          icon="school"
-                          label="Diploma"
+                          :icon="getFileIcon(selectedApplication.diploma_file)"
                           class="full-width"
                           :href="getFileUrl(selectedApplication.diploma_file)"
                           target="_blank"
-                        />
+                        >
+                          <div class="row items-center full-width">
+                            <div class="col">Diploma</div>
+                            <div class="col text-right text-caption">
+                              {{ getFileName(selectedApplication.diploma_file) }}
+                            </div>
+                          </div>
+                        </q-btn>
                         <q-btn
                           outline
                           color="primary"
-                          icon="badge"
-                          label="Lisans Belgesi"
+                          :icon="getFileIcon(selectedApplication.license_file)"
                           class="full-width"
                           :href="getFileUrl(selectedApplication.license_file)"
                           target="_blank"
-                        />
+                        >
+                          <div class="row items-center full-width">
+                            <div class="col">Lisans Belgesi</div>
+                            <div class="col text-right text-caption">
+                              {{ getFileName(selectedApplication.license_file) }}
+                            </div>
+                          </div>
+                        </q-btn>
                       </div>
                     </div>
                   </div>
@@ -493,7 +512,7 @@ const fetchApplications = async () => {
     const response = await api.post('/admin.php', {
       method: 'get-therapist-applications',
     })
-   // console.log(response.data)
+    // console.log(response.data)
 
     if (response.data.success) {
       applications.value = response.data.applications
@@ -632,26 +651,74 @@ const handleReject = async () => {
 }
 
 //Kullanıcınin yüklediği dosyaların url'sini getirme
-const getFileUrl = (path: string) => {
+const getFileUrl = (path: string): string => {
   if (!path) return ''
 
-  // Extract just the filename
-  const filename = path.split('/').pop()
-
-  // Extract the type from the path
-  let type = ''
-  if (path.includes('cv')) {
-    type = 'cv'
-  } else if (path.includes('diploma')) {
-    type = 'diploma'
-  } else if (path.includes('license')) {
-    type = 'license'
-  } else if (path.includes('profile_images') || path.includes('user_img')) {
-    type = 'profile_images'
+  // If it's a base64 image, return as is
+  if (path.startsWith('data:image')) {
+    return path
   }
 
-  // Return the simple URL format
-  return `http://localhost/uploads/${type}/${filename}`
+  // Get the base URL from environment variables
+  const isDev = process.env.NODE_ENV === 'development'
+  const baseUrl = isDev ? 'http://localhost/uploads' : 'https://therapify.kaankaltakkiran.com/api'
+
+  // If it contains the old domain, replace it
+  if (path.includes('therapify-api.kaankaltakkiran.com')) {
+    return path.replace(
+      'https://therapify-api.kaankaltakkiran.com/uploads',
+      'https://therapify.kaankaltakkiran.com/api',
+    )
+  }
+
+  // If it's already a full URL with correct domain, return as is
+  if (path.startsWith('http') && !path.includes('localhost/Therapify')) {
+    return path
+  }
+
+  // Process the path to get clean version
+  let processedPath = path
+
+  // Remove Therapify from path if it exists
+  if (processedPath.includes('Therapify/')) {
+    const parts = processedPath.split('Therapify/')
+    processedPath = parts[parts.length - 1] || ''
+  }
+
+  // Remove leading slashes
+  processedPath = processedPath.replace(/^\/+/, '')
+
+  // Remove 'uploads/' if it exists at the start
+  processedPath = processedPath.replace(/^uploads\//, '')
+
+  // Construct the final URL
+  return `${baseUrl}/${processedPath}`
+}
+
+// Function to get file name from path
+const getFileName = (path: string) => {
+  if (!path) return ''
+  return path.split('/').pop() || ''
+}
+
+// Function to get file type icon
+const getFileIcon = (path: string) => {
+  if (!path) return 'attach_file'
+  const ext = path.split('.').pop()?.toLowerCase()
+
+  switch (ext) {
+    case 'pdf':
+      return 'picture_as_pdf'
+    case 'doc':
+    case 'docx':
+      return 'description'
+    case 'jpg':
+    case 'jpeg':
+    case 'png':
+      return 'image'
+    default:
+      return 'attach_file'
+  }
 }
 
 // Computed
@@ -696,5 +763,15 @@ onMounted(() => {
   height: 500px;
   border: none;
   border-radius: $generic-border-radius;
+}
+
+.document-card {
+  height: 100%;
+  .q-card__section {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
 }
 </style>
