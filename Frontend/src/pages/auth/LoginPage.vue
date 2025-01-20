@@ -68,7 +68,7 @@
 
               <!-- Register Link -->
               <div class="text-center q-mt-sm">
-               {{ $t('Hesabınız yok mu?') }}
+                {{ $t('Hesabınız yok mu?') }}
                 <router-link to="/register" class="text-primary">{{ $t('Kayıt Ol') }}</router-link>
               </div>
             </q-form>
@@ -111,19 +111,34 @@ const isValidEmail = (email: string) => {
 
 const onSubmit = async () => {
   submitting.value = true
-  //pinia storedan login fonksiyonuna gonderecegimiz veriler
   try {
     const response = await authStore.login(form.value.email, form.value.password)
+    console.log('Login response:', response)
 
-    // işlem basarılıysa login sayfasına yonlendir
-    if (response) {
-      router.push('/')
+    if (response.success) {
+      // Handle redirection based on user role
+      if (response.userRole === 'admin') {
+        console.log('Redirecting admin to therapist applications')
+        await router.push('/admin/therapist-applications')
+      } else if (response.userRole === 'therapist') {
+        console.log('Redirecting therapist to dashboard')
+        await router.push('/therapist/dashboard')
+      } else {
+        console.log('Redirecting user to home page')
+        await router.push('/')
+      }
+    } else {
+      $q.notify({
+        type: 'negative',
+        message: 'Giriş başarısız. Lütfen bilgilerinizi kontrol ediniz.',
+        position: 'top',
+      })
     }
   } catch (error: unknown) {
-    console.error('Registration error:', error)
+    console.error('Login error:', error)
     $q.notify({
       type: 'negative',
-      message: 'Kayıt sırasında bir hata oluştu. Lütfen tekrar deneyiniz.',
+      message: 'Giriş sırasında bir hata oluştu. Lütfen tekrar deneyiniz.',
       position: 'top',
     })
   } finally {

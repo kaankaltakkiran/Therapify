@@ -1,7 +1,5 @@
 import { defineStore } from 'pinia'
 import { api } from 'src/boot/axios'
-import { useRouter } from 'vue-router'
-
 import { Notify } from 'quasar'
 
 //Kullanıcı bilgileri
@@ -173,7 +171,6 @@ export const useAuthStore = defineStore('auth', {
     },
     //login işlemi
     async login(email: string, password: string) {
-      const router = useRouter()
       try {
         const response = await api.post<AuthResponse>('/auth.php', {
           method: 'login',
@@ -182,40 +179,6 @@ export const useAuthStore = defineStore('auth', {
         })
 
         if (response.data.success && response.data.token && response.data.user) {
-          // Get environment
-          const isDevelopment = import.meta.env.MODE === 'development'
-          console.log('Current environment:', import.meta.env.MODE)
-
-          // Handle user image URL
-          if (response.data.user.user_img) {
-            const baseUrl = isDevelopment
-              ? 'http://localhost/'
-              : 'https://therapify-api.kaankaltakkiran.com/uploads'
-
-            // If it's a relative path, make it absolute
-            if (!response.data.user.user_img.startsWith('http')) {
-              const cleanPath = response.data.user.user_img.replace(/^\/|^uploads\//, '')
-              response.data.user.user_img = `${baseUrl}/${cleanPath}`
-            }
-            // If it's a production URL in development, convert it
-            else if (
-              isDevelopment &&
-              response.data.user.user_img.includes('therapify-api.kaankaltakkiran.com')
-            ) {
-              response.data.user.user_img = response.data.user.user_img.replace(
-                'https://therapify-api.kaankaltakkiran.com/uploads',
-                'http://localhost/uploads',
-              )
-            }
-            // If it's a localhost URL in production, convert it
-            else if (!isDevelopment && response.data.user.user_img.includes('localhost')) {
-              response.data.user.user_img = response.data.user.user_img.replace(
-                'http://localhost/uploads',
-                'https://therapify-api.kaankaltakkiran.com/uploads',
-              )
-            }
-          }
-
           this.token = response.data.token
           this.user = response.data.user
 
@@ -223,37 +186,33 @@ export const useAuthStore = defineStore('auth', {
           sessionStorage.setItem('token', response.data.token)
           sessionStorage.setItem('user', JSON.stringify(response.data.user))
 
-          if (response.data.success) {
-            Notify.create({
-              color: 'positive',
-              message: response.data.message || 'Login successful!',
-              position: 'top-right',
-            })
-            return true
-          }
-
-          // Redirect based on user role
-          if (this.user.user_role === 'admin') {
-            router.push('/admin/overview')
-          } else if (this.user.user_role === 'therapist') {
-            router.push('/therapist/dashboard')
-          } else {
-            router.push('/')
-          }
-        } else {
           Notify.create({
-            color: 'negative',
-            message: response.data.error || 'Login failed',
+            color: 'positive',
+            message: response.data.message || 'Login successful!',
             position: 'top-right',
           })
+
+          // Return user role for handling redirection in the component
+          return {
+            success: true,
+            userRole: this.user.user_role,
+          }
         }
+
+        Notify.create({
+          color: 'negative',
+          message: response.data.error || 'Login failed',
+          position: 'top-right',
+        })
+        return { success: false }
       } catch (error) {
         console.error('Login error:', error)
         Notify.create({
           color: 'negative',
-          message: 'Error logging in',
+          message: 'Login failed. Please try again.',
           position: 'top-right',
         })
+        return { success: false }
       }
     },
     //logout işlemi
