@@ -352,21 +352,48 @@ const openViewDialog = (therapist: Therapist) => {
 }
 
 //Kullanıcının yüklediği dosyaların url'sini getirme
-const getFileUrl = (path: string) => {
+const getFileUrl = (path: string): string => {
   if (!path) return ''
 
-  // If it's already a full URL, return as is
-  if (path.startsWith('http')) {
+  // If it's a base64 image, return as is
+  if (path.startsWith('data:image')) {
     return path
   }
 
-  // For development environment
-  if (process.env.DEV) {
-    return `http://localhost/${path}`
+  // Get the base URL from environment variables
+  const isDev = process.env.NODE_ENV === 'development'
+  const baseUrl = isDev ? 'http://localhost/uploads' : 'https://therapify.kaankaltakkiran.com/api'
+
+  // If it contains the old domain, replace it
+  if (path.includes('therapify-api.kaankaltakkiran.com')) {
+    return path.replace(
+      'https://therapify-api.kaankaltakkiran.com/uploads',
+      'https://therapify.kaankaltakkiran.com/api',
+    )
   }
 
-  // For production environment
-  return `https://therapify.kaankaltakkiran.com/api/${path}`
+  // If it's already a full URL with correct domain, return as is
+  if (path.startsWith('http') && !path.includes('localhost/Therapify')) {
+    return path
+  }
+
+  // Process the path to get clean version
+  let processedPath = path
+
+  // Remove Therapify from path if it exists
+  if (processedPath.includes('Therapify/')) {
+    const parts = processedPath.split('Therapify/')
+    processedPath = parts[parts.length - 1] || ''
+  }
+
+  // Remove leading slashes
+  processedPath = processedPath.replace(/^\/+/, '')
+
+  // Remove 'uploads/' if it exists at the start
+  processedPath = processedPath.replace(/^uploads\//, '')
+
+  // Construct the final URL
+  return `${baseUrl}/${processedPath}`
 }
 
 onMounted(() => {
